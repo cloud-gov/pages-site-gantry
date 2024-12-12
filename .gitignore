@@ -1,0 +1,224 @@
+# General Files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
+._*
+.Trashes
+.Spotlight-V100
+.TemporaryItems
+.Trash-*
+*.pid
+*.pid.lock
+*.seed
+*.db
+*.dbmdl
+*.tlog
+*.tmproj
+*.tmp_proj
+*.un~
+*.user
+*.userosscache
+*.userprefs
+*.vbproj.user
+*.vssscc
+*.vspscc
+*.suo
+*.cache
+*.csproj.user
+*.sln.docstates
+*.iws
+
+# Byte-compiled / Optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE / Editor Configurations
+/.idea/
+*.iml
+/.vscode/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+/.vs/
+/.atom/
+/.eclipse/
+/.netbeans/
+/.intellij/
+/.jbuilder/
+/.rubymine/
+/.mine/
+/.textmate/
+/.vim/
+/.emacs.d/
+*.sw*
+
+# Security - Sensitive files
+*.pem
+*.key
+*.crt
+*.csr
+*.gpg
+*.asc
+.secret
+*.vault
+*.token
+*.apikey
+*.credentials
+secrets.yml
+credentials.yml
+config/dev.yml
+config/private.yml
+
+# Dependency Directories
+/node_modules/
+/bower_components/
+/.jekyll-cache/
+/vendor/
+
+# Go specific
+/bin/
+/pkg/
+*.o
+*.a
+*.out
+**/vendor/
+Gopkg.lock
+Gopkg.toml
+go.sum
+go.mod
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Ruby specific
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.gem
+*.rbc
+.capistrano/
+.rspec
+.ruby-version
+.ruby-gemset
+# Ignore Byebug command history file.
+.byebug_history
+
+# Cloud Foundry specific
+manifest.yml
+manifest-*.yml
+*.env
+*.vars.yml
+*.vars-*.yml
+/deployments/
+
+# BOSH specific
+*.release
+/releases/
+/dev_releases/
+/.dev_builds/
+/blobs/
+/config/
+/private.yml
+*.tgz
+
+# Concourse specific
+/fly-*
+/concourse-*
+/pipelines/
+/tasks/
+/groups/
+/resources/
+
+# Logs, Databases, and Configuration Files
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+/log/
+*.env*
+**/log/*.log
+**/log/*.log*
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build Artifacts and Directories
+/dist/
+/tmp/
+/out/
+/build/
+/target/
+/coverage/
+/Release/
+/Debug/
+/x64/
+/x86/
+*.lock
+*.DS_Store
+*.tgz
+/.terraform/
+
+# Certificates and Keys
+*.csr
+*.crt
+*.key
+*.pem
+*.pfx
+
+# System and Miscellaneous
+$RECYCLE.BIN/
+$tf/

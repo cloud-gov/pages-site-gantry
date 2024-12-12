@@ -1,0 +1,8 @@
+{
+  "name": "Security Considerations Workflow",
+  "description": "Checks for security considerations within a pull request description.",
+  "iconName": "cg-logo",
+  "categories": [
+      "Compliance"
+  ]
+}
