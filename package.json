@@ -1,0 +1,20 @@
+{
+  "name": "pages-website-watcher",
+  "version": "1.0.0",
+  "description": "This repo contains Github templates (pull request, issue, etc) for the cloud-gov organization.",
+  "main": "index.js",
+  "scripts": {
+    "start:process": "nodemon --watch index.js",
+    "start:web": "cd tts.gsa.gov && npm run start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.1.7",
+    "snakecase": "^1.0.0"
+  },
+  "engines": {
+    "node": "^20.9.x",
+    "npm": "^10.x.x"
+  }
+}

@@ -1,0 +1,48 @@
+---
+layout: layouts/base
+---
+
+{% capture state %}{% getStateFromDates opens closes %}{% endcapture %}
+
+<div class="grid-container">
+  <div class="grid-row grid-gap">
+    <div class="desktop:grid-col-12 margin-top-4">
+        <a href="{{'/join' | url}}" class="back-breadcrumb">Back to all jobs</a>
+    </div>
+  </div>
+</div>
+<section class="usa-section job-posting padding-top-4">
+  <div class="grid-container">
+    <div class="grid-row grid-gap">
+      <div class="desktop:grid-col-12 usa-prose margin-bottom-3">
+        <h1>{{ title }}</h1>
+        {% if status_alert %}
+          {% include "layouts/jointts/job/status_alert.html" %}
+        {% endif %}
+
+      <div class="grid-row grid-gap padding-top-4">
+        <div class="desktop:grid-col-8 usa-prose" markdown="1">
+          {% if updated %}
+            {% assign updated_date = updated | date: "%B %d, %Y" %}
+            <p><em><strong>Updated on: {{ updated_date }}</strong></em></p>
+          {% endif %}
+          {% include "layouts/jointts/job/basic_info.html" %}
+          {% if role_summary %}
+            {% include "layouts/jointts/job/role_summary.html" %}
+          {% endif %}
+          {% if key_objectives.size > 0 %}
+            {% include "layouts/jointts/job/key_objectives.html" %}
+          {% endif %}
+          {% if qualifications.size > 0 or specialized_requirements.size > 0 %}
+            {% include "layouts/jointts/job/qualifications.html" %}
+          {% endif %}
+          {% include "layouts/jointts/job/how_to_apply.html" %}
+        </div>
+        <div class="desktop:grid-col-4 desktop:margin-top-0" id="job-listing-info-sessions">
+          <!-- Info Sessions -->
+         </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>

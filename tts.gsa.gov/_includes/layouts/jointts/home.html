@@ -1,0 +1,64 @@
+---
+layout: layouts/base
+---
+<section class="usa-site-alert usa-site-alert--info usa-site-alert--slim" aria-label="Site alert">
+  <div class="usa-alert">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <a href="{{ '/join/newsletter' | url }}" class="usa-link">Sign up for job alerts</a> to get notified when TTS positions that interest you are posted on the website.
+      </p>
+    </div>
+  </div>
+</section>
+<div class="tts-title-banner">
+  <img class="tts-banner-bg" src="{{ '/assets/services-bg.webp' | url }}" alt="TTS banner background image" height="200px" width="100%"/>
+  <h1>{{ title }}</h1>
+</div>
+
+{%- assign jobs = collections.job -%}
+{%- assign sorted_info_sessions = global_info_sessions | sort: 'date' -%}
+<section class="usa-section">
+  <div class="grid-container">
+    <div class="grid-row grid-gap">
+      <div class="desktop:grid-col-12 margin-bottom-3">
+        <p class="usa-intro margin-top-0">
+          We’re looking for candidates who are passionate about helping agencies build, buy, and share technology to better serve the public. Our team focuses on all aspects of digital government including account management, software development, product management, procurement, design, content strategy, cloud migration, outreach, and operations.
+        </p>
+        <div class="usa-prose">
+          <p>
+          The Technology Transformation Services (TTS) mission is to design and deliver a digital government with and for the American public. TTS is part of the General Services Administration (GSA).
+          </p>
+          <p>
+          We are accepting applications for the positions listed below. We also post upcoming positions. <a href="{{ '/join/newsletter/' | url }}" class="usa-link">Join our mailing list</a> to be notified when we post new jobs.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="grid-row grid-gap">
+      <div class="desktop:grid-col-8 usa-prose">
+        <!-- Jobs -->
+        {% include "layouts/jointts/jobs.html" %}
+
+        <!-- Other Opportunities -->
+        <h2>Other GSA Opportunities</h2>
+        <p>Check out <a href="https://www.gsa.gov/about-us/find-apply-for-and-land-a-job-at-gsa">careers at GSA</a> and more <a href="https://www.usajobs.gov/Search/Results?j=2210&d=GS&p=1">Information Technology opportunities.</a></p>
+
+        <!-- Application Process -->
+        <h2>Application process</h2>
+        <p>
+          We have an amazing recruitment team who will usher you from application to interview to onboarding with TTS.
+          You’ll have guidance every step of the way! Learn more about our <a href="{{site.baseurl}}/join/hiring-process">hiring process</a>.
+        </p>
+        <p>
+          If you have any questions about the process or positions, please contact
+          our Talent Team at <a href="mailto:joinTTS@gsa.gov">joinTTS@gsa.gov</a>.
+        </p>
+      </div>
+
+      <!-- General Info Sessions -->
+      {% if sorted_info_sessions.size > 0 %}
+        {% include "layouts/jointts/info-sessions-sidebar.html" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

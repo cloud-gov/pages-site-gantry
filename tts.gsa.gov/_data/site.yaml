@@ -1,0 +1,77 @@
+---
+title: Technology Transformation Services
+email: tts-info@gsa.gov
+description: >- # this means to ignore newlines
+  Every interaction with the public is an opportunity to improve trust in
+  the government. For over 50 years, GSA has been working to improve access
+  to government services. Today, GSA’s Technology Transformation Services
+  (TTS) exists to design and deliver a digital government with and for the
+  American people. We apply modern methodologies and technologies to
+  improve the lives of the public and public servants. We help agencies
+  make their services more accessible, efficient, and effective with
+  modern applications, platforms, processes, personnel, and software
+  solutions.
+
+# Whether or not to render the "Suggest edits to this page on GitHub" link on pages
+allow_page_edits: true
+
+# Whether or not to render the alert in the hero
+show_site_alert: true
+
+# Site Navigation
+primary_navigation:
+  - name: Home
+    url: /
+  - name: Join
+    children:
+      - name: Jobs
+        url: "/join/"
+      - name: Hiring process
+        url: "/join/hiring-process/"
+      - name: Reading a federal job resume
+        url: "/join/federal-job-posting/"
+      - name: Preparing your resume
+        url: "/join/resume/"
+      - name: Compensation and benefits
+        url: "/join/compensation-and-benefits/"
+      - name: About the Direct Hire Authority
+        url: "/join/about-the-dha/"
+      - name: Frequently Asked Questions
+        url: "/join/faq/"
+  - name: Our services
+    children:
+      - name: Products
+        url: "/services/products/"
+      - name: Platforms
+        url: "/services/platforms/"
+      - name: People
+        url: "/services/people/"
+
+join_sub_navigation:
+  - name: Hiring process
+    url: /join/hiring-process/
+  - name: Reading a federal job posting
+    url: /join/federal-job-posting/
+  - name: Preparing your resume
+    url: /join/resume/
+  - name: Compensation and benefits
+    url: /join/compensation-and-benefits/
+  - name: About the Direct Hire Authority
+    url: /join/about-the-dha/
+  - name: Sign up for job alerts
+    url: /join/newsletter/
+  - name: Frequently Asked Questions
+    url: /join/faq/
+
+dap:
+  agency: GSA
+
+suggestions: true
+hosts:
+  live: https://tts.gsa.gov/
+  preview: https://federalist-a2423046-fe43-4e75-a2ef-2651e5e123ca.sites.pages.cloud.gov/
+  undefined: http://localhost:8080/
+##########################################################################################
+# The values below here are more advanced and should only be
+# changed if you know what they do
+##########################################################################################

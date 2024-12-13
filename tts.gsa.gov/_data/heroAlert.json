@@ -1,0 +1,3 @@
+{
+  "message": "We’re hiring! <a href=\"{{ '/join' | url }}\" class=\"usa-link\">See open and upcoming positions.</a>"
+}
