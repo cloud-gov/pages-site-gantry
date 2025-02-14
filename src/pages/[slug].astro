@@ -1,0 +1,30 @@
+---
+export const prerender = true;
+import "../index.scss";
+import { rld } from "../rld";
+import Layout from "../layouts/Layout.astro";
+import payloadFetch from "../payload-fetch";
+
+const { title, content } = Astro.props;
+
+// The getStaticPaths() is required for static Astro sites.
+// If using SSR, you will not need this function.
+export async function getStaticPaths() {
+  let data = await payloadFetch("http://localhost:3000/api/pages?draft=true");
+  let pages = await data.json();
+
+  return pages.docs.map((page) => {
+    return {
+      params: { slug: page.slug },
+      props: { title: page.title, content: page.content_html, rld },
+    };
+  });
+}
+---
+
+<Layout title={title}>
+  <article>
+    <h1 set:html={title} />
+    <section class="usa-prose" set:html={content} />
+  </article>
+</Layout>

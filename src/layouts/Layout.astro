@@ -1,0 +1,28 @@
+---
+import Header from '../components/Header.astro'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Agency Homepage</title>
+  </head>
+  <body>
+    <Header />
+    <div class="grid-container">
+      <slot />
+    </div>
+  </body>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</html>
