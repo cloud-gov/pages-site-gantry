@@ -4,10 +4,10 @@ import "../index.scss";
 import Layout from "../layouts/Layout.astro";
 import payloadFetch from "../payload-fetch";
 
-const res = await payloadFetch("http://localhost:3000/api/posts?draft=true");
+const res = await payloadFetch("posts?draft=true");
 const posts = await res.json();
 
-const res2 = await payloadFetch("http://localhost:3000/api/pages?draft=true");
+const res2 = await payloadFetch("pages?draft=true");
 const pages = await res2.json();
 ---
 

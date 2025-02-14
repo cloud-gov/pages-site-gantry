@@ -153,8 +153,6 @@ go.mod
 .byebug_history
 
 # Cloud Foundry specific
-manifest.yml
-manifest-*.yml
 *.env
 *.vars.yml
 *.vars-*.yml
