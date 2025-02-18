@@ -10,7 +10,7 @@ const { title, content } = Astro.props;
 // The getStaticPaths() is required for static Astro sites.
 // If using SSR, you will not need this function.
 export async function getStaticPaths() {
-  let data = await payloadFetch("http://localhost:3000/api/posts?draft=true");
+  let data = await payloadFetch("posts?draft=true");
   let posts = await data.json();
 
   return posts.docs.map((post) => {

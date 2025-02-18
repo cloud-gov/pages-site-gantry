@@ -18,5 +18,8 @@ export default defineConfig({
         }
       }
     },
+  },
+  devToolbar: {
+    enabled: false
   }
 });

@@ -1,0 +1,28 @@
+---
+applications:
+  - name: pages-website-watcher
+    buildpack: nodejs_buildpack
+    routes:
+      - route: pages-editor-preview-dev.app.cloud.gov
+    processes:
+      - type: web
+        command: npm run dev
+        disk_quota: 5G
+        instances: 1
+        memory: 1024MB
+    sidecars:
+      - name: oauth
+        process_types: ["web"]
+        command: npm run oauth
+        memory: 256MB
+    services:
+      - pages-editor-creds
+    env:
+      NODE_ENV: development
+      LOG_LEVEL: verbose
+      NPM_CONFIG_PRODUCTION: false
+      NODE_MODULES_CACHE: false
+      OPTIMIZE_MEMORY: true
+      EDITOR_APP_URL: https://pages-editor-dev.app.cloud.gov
+      ASTRO_ENDPOINT: http://localhost:4321
+    health-check-type: process
