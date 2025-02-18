@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "^22.14.x",
+    "node": "^22.x.x",
     "npm": "^10.x.x"
   },
   "devDependencies": {
