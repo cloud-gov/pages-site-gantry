@@ -40,7 +40,7 @@ jobs:
         image: general-task
         params:
           _: #@ template.replace(data.values.env_cf_editor)
-          CF_APP_NAME: pages-editor-((deploy-env))
+          CF_APP_NAME: pages-website-watcher-((deploy-env))
           CF_MANIFEST: src/.cloudgov/manifest.yml
           CF_VARS_FILE: src/.cloudgov/vars/((deploy-env)).yml
           CF_PATH: src
@@ -60,7 +60,7 @@ resources:
     type: git
     icon: github
     source:
-      uri: git@github.com:((pages-editor-repository-path))
+      uri: git@github.com:((pages-website-watcher-repository-path))
       branch: main
       commit_verification_keys: ((cloud-gov-pages-gpg-keys))
       private_key: ((pages-gpg-operations-github-sshkey.private_key))
