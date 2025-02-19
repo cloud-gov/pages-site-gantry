@@ -13,6 +13,12 @@ app.use(cookieParser())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(async (req, res, next) => {
+  // necessary for iframing
+  res.setHeader('X-Frame-Options', 'ALLOWALL')
+  res.setHeader('Content-Security-Policy', `frame-ancestors ${process.env.EDITOR_APP_URL}`)
+  next()
+})
+app.use(async (req, res, next) => {
     // auth logic from editor app
     // https://github.com/WilsonLe/payload-oauth2/blob/main/src/auth-strategy.ts
     const token = req.cookies['payload-token'];
@@ -36,6 +42,7 @@ app.use(async (req, res, next) => {
       } catch (e) {
         // Handle token expiration
         if (e.code === "ERR_JWT_EXPIRED" || e.code === "ERR_JWS_SIGNATURE_VERIFICATION_FAILED") {
+          console.log(e.code)
           return uauth();
         }
         console.error(e)
@@ -55,7 +62,9 @@ app.use(async (req, res, next) => {
 app.use(async function(req, res) {
   const data = await fetch(path.join(process.env.ASTRO_ENDPOINT, req.path))
   text = await data.text()
-  res.set(Object.fromEntries(data.headers))
+  for (const header of data.headers.entries()) {
+      res.setHeader(...header)
+  }
   res.send(text);
 });
 
