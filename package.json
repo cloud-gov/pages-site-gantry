@@ -17,7 +17,9 @@
     "body-parser": "^2.1.0",
     "cookie-parser": "^1.4.7",
     "express": "^5.0.1",
-    "jose": "^5.9.6"
+    "http-proxy": "^1.18.1",
+    "jose": "^5.9.6",
+    "pino-http": "^10.4.0"
   },
   "author": "",
   "license": "ISC",

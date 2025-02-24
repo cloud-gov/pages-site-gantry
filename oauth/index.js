@@ -4,21 +4,39 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const crypto = require("node:crypto");
 const { jwtVerify} = require("jose");
+const pino = require('pino-http')
+const httpProxy = require('http-proxy')
 
 const app = express();
+const proxy = httpProxy.createProxyServer({
+  target: process.env.ASTRO_ENDPOINT.replace('http', 'ws'),
+  ws: true
+});
+
+var server = require('http').createServer(app);
+server.on('upgrade', function (req, socket, head) {
+  proxy.ws(req, socket, head);
+});
+
 
 const UNAUTHORIZED = 'You are not authorized to visit this site.'
+const RELOAD_PATH = '/reload'
 
 app.use(cookieParser())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(pino())
 app.use(async (req, res, next) => {
   // necessary for iframing
   res.setHeader('X-Frame-Options', 'ALLOWALL')
   res.setHeader('Content-Security-Policy', `frame-ancestors ${process.env.EDITOR_APP_URL}`)
   next()
 })
+
 app.use(async (req, res, next) => {
+    // TODO: document and test this
+    if (req.path === RELOAD_PATH) return next()
+
     // auth logic from editor app
     // https://github.com/WilsonLe/payload-oauth2/blob/main/src/auth-strategy.ts
     const token = req.cookies['payload-token'];
@@ -52,7 +70,7 @@ app.use(async (req, res, next) => {
 
       // check site access
       if (jwtUser.sites.find(s => s.site === 'test')) {
-        next()
+        return next()
       } else {
         console.log('wrong site')
         return uauth();
@@ -65,7 +83,12 @@ app.use(async function(req, res) {
   for (const header of data.headers.entries()) {
       res.setHeader(...header)
   }
+  if (req.path === RELOAD_PATH) {
+    // prevent the reload response from being chunked, it's just OK
+    res.removeHeader('transfer-encoding')
+  }
+
   res.send(text);
 });
 
-app.listen(process.env.PORT);
+server.listen(process.env.PORT);
