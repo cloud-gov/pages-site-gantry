@@ -30,5 +30,9 @@
   "devDependencies": {
     "@types/node": "^22.13.4",
     "sass-embedded": "^1.85.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.34.6",
+    "sass-embedded-linux-x64": "1.85.0"
   }
 }
