@@ -1,24 +1,20 @@
 ---
-export const prerender = true;
 import "../index.scss";
 import Layout from "../layouts/Layout.astro";
-import payloadFetch from "../payload-fetch";
 
-const res = await payloadFetch("posts?draft=true");
-const posts = await res.json();
-
-const res2 = await payloadFetch("pages?draft=true");
-const pages = await res2.json();
+import { getCollection } from "astro:content";
+const posts = await getCollection("posts");
+const pages = await getCollection("pages");
 ---
 
 <Layout>
   {
-    posts.docs.map((post) => (
+    posts.map((post) => (
       <div class="grid-row">
         <div class="tablet:grid-col">
-          <a class="usa-link" href={"/posts/" + post.slug}>
-            <h2 set:html={post.title} />
-            <p set:html={post["Example Custom Field"]} />
+          <a class="usa-link" href={"/posts/" + post.data.slug}>
+            <h2 set:html={post.data.title} />
+            <p set:html={post.data["Example Custom Field"]} />
           </a>
         </div>
       </div>
@@ -26,11 +22,11 @@ const pages = await res2.json();
   }
 
   {
-    pages.docs.map((page) => (
+    pages.map((page) => (
       <div class="grid-row">
         <div class="tablet:grid-col">
-          <a class="usa-link" href={page.slug}>
-            <h2 set:html={page.title} />
+          <a class="usa-link" href={page.data.slug}>
+            <h2 set:html={page.data.title} />
           </a>
         </div>
       </div>

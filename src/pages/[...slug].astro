@@ -1,0 +1,33 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import "../index.scss";
+import Layout from "../layouts/Layout.astro";
+
+const { slug } = Astro.params;
+let { title, content } = Astro.props as any;
+
+if (!Astro.isPrerendered) {
+  const page = await getEntry("pages", slug);
+  if (!page) return Astro.redirect("/404");
+
+  ({ title, content_html: content } = page.data);
+}
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages");
+
+  return pages.map((page) => {
+    return {
+      params: { slug: page.data.slug },
+      props: { title: page.data.title, content: page.data.content_html },
+    };
+  });
+}
+---
+
+<Layout title={title}>
+  <article>
+    <h1 set:html={title} />
+    <section class="usa-prose" set:html={content} />
+  </article>
+</Layout>

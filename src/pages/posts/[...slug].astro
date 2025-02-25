@@ -1,0 +1,33 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import "../../index.scss";
+import PostLayout from "../../layouts/PostLayout.astro";
+
+const { slug } = Astro.params;
+let { title, content } = Astro.props as any;
+
+if (!Astro.isPrerendered) {
+  const post = await getEntry("posts", slug);
+  if (!post) return Astro.redirect("/404");
+
+  ({ title, content_html: content } = post.data);
+}
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+
+  return posts.map((post) => {
+    return {
+      params: { slug: post.data.slug },
+      props: { title: post.data.title, content: post.data.content_html },
+    };
+  });
+}
+---
+
+<PostLayout title={title}>
+  <article>
+    <h1 set:html={title} />
+    <section class="usa-prose" set:html={content} />
+  </article>
+</PostLayout>

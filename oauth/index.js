@@ -5,21 +5,10 @@ const cookieParser = require('cookie-parser')
 const crypto = require("node:crypto");
 const { jwtVerify} = require("jose");
 const pino = require('pino-http')
-// const httpProxy = require('http-proxy')
 
 const app = express();
-// const proxy = httpProxy.createProxyServer({
-//   target: process.env.ASTRO_ENDPOINT.replace('https', 'ws'),
-//   ws: true
-// });
 
 var server = require('http').createServer(app);
-// server.on('upgrade', function (req, socket, head) {
-//   console.log('upgrade request')
-//   console.log(head.toString())
-//   proxy.ws(req, socket, head);
-// });
-
 
 const UNAUTHORIZED = 'You are not authorized to visit this site.'
 const RELOAD_PATH = '/reload'
