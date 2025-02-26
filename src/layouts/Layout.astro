@@ -1,5 +1,5 @@
 ---
-import Header from '../components/Header.astro'
+import Header from "../components/Header.astro";
 ---
 
 <!doctype html>
@@ -15,6 +15,29 @@ import Header from '../components/Header.astro'
     <div class="grid-container">
       <slot />
     </div>
+    <script>
+      import { isDocumentEvent, ready } from "@payloadcms/live-preview";
+      import { EDITOR_APP_URL } from "astro:env/client";
+
+      const serverURL = EDITOR_APP_URL;
+      setTimeout(() => {
+        console.log("send ready");
+        ready({
+          serverURL,
+        });
+      }, 3000);
+
+      window.addEventListener(
+        "message",
+        (event) => {
+          console.log("got event", event);
+          if (isDocumentEvent(event, serverURL)) {
+            location.reload();
+          }
+        },
+        false
+      );
+    </script>
   </body>
 
   <style>

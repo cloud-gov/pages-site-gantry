@@ -1,7 +1,7 @@
 ---
 import { getCollection, getEntry } from "astro:content";
 import "../../index.scss";
-import PostLayout from "../../layouts/PostLayout.astro";
+import Layout from "../../layouts/Layout.astro";
 
 const { slug } = Astro.params;
 let { title, content } = Astro.props as any;
@@ -25,9 +25,9 @@ export async function getStaticPaths() {
 }
 ---
 
-<PostLayout title={title}>
+<Layout title={title}>
   <article>
     <h1 set:html={title} />
     <section class="usa-prose" set:html={content} />
   </article>
-</PostLayout>
+</Layout>

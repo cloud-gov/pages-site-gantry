@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import node from '@astrojs/node';
 
 const RENDER_MODE = <'static' | 'server' | undefined>process.env.RENDER_MODE
@@ -19,6 +19,11 @@ export default defineConfig({
         }
       }
     },
+  },
+  env: {
+    schema: {
+      EDITOR_APP_URL: envField.string({ context: "client", access: "public" }),
+    }
   },
   devToolbar: {
     enabled: false
