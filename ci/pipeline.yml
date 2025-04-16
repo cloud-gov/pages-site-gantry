@@ -26,32 +26,35 @@ jobs:
         instance_vars:
           deploy-env: ((deploy-env))
 
-  - name: deploy-pages-website-watcher
+  - name: new-deploys
     plan:
       - get: src
         params:
           depth: 1
+      - get: s3
         trigger: true
-        passed: [set-pipeline]
       - get: general-task
-      - get: pipeline-tasks
-      - task: deploy
-        file: src/ci/partials/deploy.yml
+      - task: ls-sites
+        file: src/ci/partials/ls-sites.yml
         image: general-task
-        params:
-          _: #@ template.replace(data.values.env_cf_editor)
-          CF_APP_NAME: pages-website-watcher-((deploy-env))
-          CF_MANIFEST: src/.cloudgov/manifest.yml
-          CF_VARS_FILE: src/.cloudgov/vars/((deploy-env)).yml
-          CF_PATH: src
-        on_failure:
-          try:
-            task: cancel-api-deployment
-            file: pipeline-tasks/tasks/cancel-deployment.yml
+      - load_var: sites
+        file: s3/sites.json
+      - across:
+          - var: site
+            values: ((.:sites))
+            max_in_flight: 20
+        do:
+          - task: deploy-site-gantry
+            file: src/ci/partials/deploy.yml
             image: general-task
             params:
               _: #@ template.replace(data.values.env_cf_editor)
-              CF_APP_NAME: pages-((deploy-env))
+              CF_APP_NAME: ((.:site.name))-site-gantry
+              CF_MANIFEST: src/.cloudgov/manifest.yml
+              CF_VARS_FILE: src/.cloudgov/vars/((deploy-env)).yml
+              CF_PATH: src
+              SITE: ((.:site.name))
+              API_KEY: ((.:site.apiKey))
 
 #!  RESOURCES
 
@@ -67,9 +70,17 @@ resources:
 
   - name: general-task
   - name: pipeline-tasks
+  - name: s3
+    type: s3-resource
+    source:
+      access_key_id: ((editor-site-data-access-key-id-((deploy-env))))
+      secret_access_key: ((editor-site-data-secret-access-key-((deploy-env))))
+      bucket: ((editor-site-data-bucket-((deploy-env))))
+      region: us-gov-west-1
 
 #!  RESOURCE TYPES
 
 resource_types:
   - name: git
   - name: registry-image
+  - name: s3-resource

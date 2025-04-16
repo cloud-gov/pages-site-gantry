@@ -1,5 +1,5 @@
 {
-  "name": "pages-website-watcher",
+  "name": "pages-site-gantry",
   "version": "0.1.0",
   "description": "This repo contains Github templates (pull request, issue, etc) for the cloud-gov organization.",
   "main": "index.js",
@@ -25,10 +25,14 @@
   "license": "ISC",
   "engines": {
     "node": "^22.x.x",
-    "npm": "^10.x.x"
+    "npm": "^11.x.x"
   },
   "devDependencies": {
     "@types/node": "^22.13.4",
     "sass-embedded": "^1.85.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.40.0",
+    "sass-embedded-linux-x64": "^1.86.3"
   }
 }
