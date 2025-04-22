@@ -1,10 +1,11 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
-import path from 'node:path';
+
+const RENDER_MODE = <'static' | 'server' | undefined>process.env.RENDER_MODE
 
 export default defineConfig({
-  output: 'static',
+  output: RENDER_MODE || 'server',
   adapter: node({
     mode: 'standalone',
   }),

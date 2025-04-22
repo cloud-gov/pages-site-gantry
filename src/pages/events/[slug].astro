@@ -1,0 +1,40 @@
+---
+import { getEntry, type CollectionEntry } from "astro:content";
+import { createGetStaticPath } from "@/utilities/staticPath";
+import "../../index.scss";
+import Layout from "../../layouts/Layout.astro";
+
+const { slug } = Astro.params;
+
+// TODO: this section is going to be largely copy/paste for each
+// individual page but it's unclear how to generalize it further:
+// 1. the getStaticPaths must be exported from this file
+// 2. the Astro.props/Astro.prerendered properties are specific
+// to this file
+// 3. data needs to be a top-level variable here
+const collectionName = "events";
+let data: CollectionEntry<"events">["data"];
+
+if (!Astro.isPrerendered) {
+  const event = await getEntry(collectionName, slug);
+  if (!event) return Astro.redirect("/404");
+  ({ data } = event);
+} else {
+  // @ts-expect-error
+  ({ data } = Astro.props);
+}
+
+export const getStaticPaths = createGetStaticPath(collectionName);
+---
+
+<Layout title={data.title}>
+  <article class="grid-container">
+    <h1 set:html={data.title} />
+    <p set:html={data.format} />
+    <p set:html={data.location} />
+    <p set:html={data.registrationUrl} />
+    <p set:html={data.startDate} />
+    <p set:html={data.endDate} />
+    <section class="usa-prose" set:html={data.description} />
+  </article>
+</Layout>

@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@astrojs/node": "^9.0.2",
+    "@astrojs/ts-plugin": "^1.10.4",
+    "@payloadcms/richtext-lexical": "^3.35.1",
     "@uswds/uswds": "^3.11.0",
     "astro": "^5.2.5",
     "body-parser": "^2.1.0",

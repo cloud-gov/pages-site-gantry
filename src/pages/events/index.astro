@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+import "../../index.scss";
+import Layout from "../../layouts/Layout.astro";
+
+const events = await getCollection("events");
+---
+
+<Layout>
+  <div class="grid-container">
+    <h1>Events Page</h1>
+    <ul>
+      {
+        events.map((event) => (
+          <li>
+            <a href={`/events/${event.data.slug}`}>{event.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Layout>

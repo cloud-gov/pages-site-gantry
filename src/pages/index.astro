@@ -2,38 +2,13 @@
 export const prerender = true;
 import "../index.scss";
 import Layout from "../layouts/Layout.astro";
-import payloadFetch from "../payload-fetch";
-
-const res = await payloadFetch("posts?draft=true");
-const posts = await res.json();
-
-const res2 = await payloadFetch("pages?draft=true");
-const pages = await res2.json();
+import Hero from "../components/Hero.astro";
+import Tagline from "../components/Tagline.astro";
+import Highlights from "../components/Highlights.astro";
 ---
 
 <Layout>
-  {
-    posts.docs.map((post) => (
-      <div class="grid-row">
-        <div class="tablet:grid-col">
-          <a class="usa-link" href={"/posts/" + post.slug}>
-            <h2 set:html={post.title} />
-            <p set:html={post["Example Custom Field"]} />
-          </a>
-        </div>
-      </div>
-    ))
-  }
-
-  {
-    pages.docs.map((page) => (
-      <div class="grid-row">
-        <div class="tablet:grid-col">
-          <a class="usa-link" href={page.slug}>
-            <h2 set:html={page.title} />
-          </a>
-        </div>
-      </div>
-    ))
-  }
+  <Hero />
+  <Tagline />
+  <Highlights />
 </Layout>

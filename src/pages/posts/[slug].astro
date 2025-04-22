@@ -2,7 +2,7 @@
 export const prerender = true;
 import "../../index.scss";
 import { rld } from "../../rld";
-import PostLayout from "../../layouts/PostLayout.astro";
+import Layout from "../../layouts/Layout.astro";
 import payloadFetch from "../../payload-fetch";
 
 const { title, content } = Astro.props;
@@ -22,9 +22,9 @@ export async function getStaticPaths() {
 }
 ---
 
-<PostLayout title={title}>
+<Layout title={title}>
   <article>
     <h1 set:html={title} />
     <section class="usa-prose" set:html={content} />
   </article>
-</PostLayout>
+</Layout>
