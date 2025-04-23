@@ -1,9 +1,9 @@
 ---
 applications:
-  - name: ((name))
+  - name: ((site))-site-gantry
     buildpack: nodejs_buildpack
     routes:
-      - route: pages-editor-preview-((env)).app.cloud.gov
+      - route: pages-editor-((env))-preview-((site)).app.cloud.gov
     processes:
       - type: web
         command: npm run dev
@@ -16,7 +16,7 @@ applications:
         command: npm run oauth
         memory: 256MB
     services:
-      - pages-editor-creds
+      - pages-editor-((env))-creds
     env:
       NODE_ENV: ((node_env))
       LOG_LEVEL: ((log_level))
@@ -25,4 +25,7 @@ applications:
       OPTIMIZE_MEMORY: true
       EDITOR_APP_URL: https://pages-editor-((env)).app.cloud.gov
       ASTRO_ENDPOINT: http://localhost:4321
+      APP_ENV: ((env))
+      SITE: ((site))
+      PAYLOAD_API_KEY: ((api_key))
     health-check-type: process

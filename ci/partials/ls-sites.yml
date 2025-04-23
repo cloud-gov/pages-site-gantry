@@ -1,0 +1,7 @@
+platform: linux
+inputs: [name: s3]
+outputs: [name: s3]
+run:
+  dir: s3
+  path: bash
+  args: [-c, "find . -type f -exec cat {} + | jq --slurp . > sites.json"]

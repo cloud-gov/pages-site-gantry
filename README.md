@@ -20,6 +20,13 @@ and the proxy runs with:
 node oauth/index.js
 ```
 
+## CI
+
+This repository contains the defintion for a single Concourse pipeline. This pipeline is responsible for reading from a specific S3 bucket and deploying one application per JSON file found there. Those JSON files correspond to sites created by `pages-editor` and contain at least the following properties:
+- `name`: The name of the site
+- `apiKey`: The API key corresponding to a "bot" user for the site. This key has read-only access to the site's contents
+
+
 ## Docker
 
 TBD

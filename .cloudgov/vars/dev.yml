@@ -1,4 +1,3 @@
-name: pages-website-watcher-dev
 instances: 1
 env: dev
 log_level: verbose

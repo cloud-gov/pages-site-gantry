@@ -12,4 +12,6 @@ cf push $CF_APP_NAME \
   --path $CF_PATH \
   --manifest $CF_MANIFEST \
   --vars-file $CF_VARS_FILE \
+  --var site=$SITE \
+  --var api_key=$API_KEY \
   --stack $CF_STACK
