@@ -21,7 +21,8 @@
     "express": "^5.0.1",
     "http-proxy": "^1.18.1",
     "jose": "^5.9.6",
-    "pino-http": "^10.4.0"
+    "pino-http": "^10.4.0",
+    "sanitize-html": "^2.16.0"
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.4",
+    "@types/sanitize-html": "^2.15.0",
     "sass-embedded": "^1.85.0"
   },
   "optionalDependencies": {

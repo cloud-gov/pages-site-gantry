@@ -4,6 +4,8 @@ import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import "../../index.scss";
 import Layout from "../../layouts/Layout.astro";
 import { createGetStaticPath } from "@/utilities/staticPath";
+import sanitizeHtml from "sanitize-html";
+
 const { slug } = Astro.params;
 let data: CollectionEntry<"news">["data"];
 
@@ -20,10 +22,10 @@ export const getStaticPaths = createGetStaticPath("news");
 
 <Layout title={data.title}>
   <article class="grid-container">
-    <h1 set:html={data.title} />
+    <h1 set:text={data.title} />
     <section
       class="usa-prose"
-      set:html={convertLexicalToHTML({ data: data.content })}
+      set:html={sanitizeHtml(convertLexicalToHTML({ data: data.content }))}
     />
   </article>
 </Layout>

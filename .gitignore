@@ -245,6 +245,3 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-
-# reloader
-src/rld.ts

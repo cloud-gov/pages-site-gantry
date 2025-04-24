@@ -1,5 +1,6 @@
 ---
 import { getEntry } from "astro:content";
+import sanitizeHtml from "sanitize-html";
 
 import "../../index.scss";
 import Layout from "../../layouts/Layout.astro";
@@ -13,7 +14,10 @@ const {
 <Layout>
   <div class="grid-container">
     <h1>About us</h1>
-    {subtitle && <h2>{subtitle}</h2>}
-    <div class="usa-prose" set:html={convertLexicalToHTML({ data: content })} />
+    {subtitle && <h2 set:text={subtitle} />}
+    <div
+      class="usa-prose"
+      set:html={sanitizeHtml(convertLexicalToHTML({ data: content }))}
+    />
   </div>
 </Layout>

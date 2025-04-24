@@ -24,17 +24,17 @@ if (!Astro.isPrerendered) {
   ({ data } = Astro.props);
 }
 
-export const getStaticPaths = createGetStaticPath(collectionName);
+export const getStaticPaths = createGetStaticPath("events");
 ---
 
 <Layout title={data.title}>
   <article class="grid-container">
-    <h1 set:html={data.title} />
-    <p set:html={data.format} />
-    <p set:html={data.location} />
-    <p set:html={data.registrationUrl} />
-    <p set:html={data.startDate} />
-    <p set:html={data.endDate} />
-    <section class="usa-prose" set:html={data.description} />
+    <h1 set:text={data.title} />
+    <p set:text={data.format} />
+    <p set:text={data.location} />
+    <p set:text={data.registrationUrl} />
+    <p set:text={data.startDate} />
+    <p set:text={data.endDate} />
+    <section class="usa-prose" set:text={data.description} />
   </article>
 </Layout>

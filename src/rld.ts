@@ -1,1 +1,0 @@
-export const rld = 'ad1c8e816d46965a'

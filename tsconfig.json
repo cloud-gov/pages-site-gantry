@@ -4,6 +4,7 @@
   "exclude": ["dist"],
   "moduleResolution": "node",
   "compilerOptions": {
+    "esModuleInterop": true,
     "baseUrl": ".",
     "plugins": [
       {
