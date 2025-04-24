@@ -28,4 +28,5 @@ applications:
       APP_ENV: ((env))
       SITE: ((site))
       PAYLOAD_API_KEY: ((api_key))
+      ASTRO_TELEMETRY_DISABLED: 1
     health-check-type: process

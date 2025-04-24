@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "oauth": "node oauth/index.js"
+    "oauth": "node oauth/index.js",
+    "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.2",
@@ -22,7 +23,8 @@
     "http-proxy": "^1.18.1",
     "jose": "^5.9.6",
     "pino-http": "^10.4.0",
-    "sanitize-html": "^2.16.0"
+    "sanitize-html": "^2.16.0",
+    "sharp": "^0.34.1"
   },
   "author": "",
   "license": "ISC",

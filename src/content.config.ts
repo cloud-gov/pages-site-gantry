@@ -6,6 +6,7 @@ function collectionLoader (apiPath: string) {
   return async () => {
     const response = await payloadFetch(`${apiPath}?draft=true`)
     const data = await response.json();
+    console.log(data)
     if (apiPath.includes('globals')) {
         return [{...data, id: 'main' }]
     } else {
@@ -64,12 +65,14 @@ const news = defineCollection({
 });
 
 // Single pages are represented as globals in the API
+// they will return as a single, potentially empty object
+// so these properties are also potentially undefined
 const aboutUs = defineCollection({
     loader: collectionLoader('globals/about-us'),
     schema: makeAllKeysNullable(z.object({
       subtitle: z.string(),
       content: z.any(), // content is a lexical object
-    }))
+    }).partial())
 });
 
 export const collections = { events, news, aboutUs };
