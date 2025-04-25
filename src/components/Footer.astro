@@ -1,5 +1,5 @@
 ---
-
+import Link from "./Link.astro";
 ---
 
 <footer class="usa-footer site-footer" role="contentinfo">
@@ -10,13 +10,13 @@
     >
       <div class="usa-identifier__container">
         <div class="usa-identifier__logos">
-          <a href="https://www.gsa.gov">
+          <Link href="https://www.gsa.gov">
             <img
               src="_img/gsa-logo.svg"
               class="usa-identifier__logo"
               alt="GSA logo identifier"
             />
-          </a>
+          </Link>
         </div>
         <div class="usa-identifier__identity" aria-label="Agency description">
           <p class="usa-identifier__identity-domain">cloud.gov</p>
@@ -102,7 +102,9 @@
         <div class="usa-identifier__usagov-description">
           Looking for U.S. government information and services?
         </div>
-        <a href="https://www.usa.gov/" class="external_link">Visit USA.gov</a>
+        <Link href="https://www.usa.gov/" className="external_link"
+          >Visit USA.gov</Link
+        >
       </div>
     </section>
   </div>

@@ -1,7 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import "../../index.scss";
-import Layout from "../../layouts/Layout.astro";
+import Layout from "@/layouts/Layout.astro";
+import Link from "@/components/Link.astro";
 
 const events = await getCollection("events");
 ---
@@ -13,7 +14,7 @@ const events = await getCollection("events");
       {
         events.map((event) => (
           <li>
-            <a href={`/events/${event.data.slug}`}>{event.data.title}</a>
+            <Link href={`/events/${event.data.slug}`}>{event.data.title}</Link>
           </li>
         ))
       }

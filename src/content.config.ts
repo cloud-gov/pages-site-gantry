@@ -6,7 +6,7 @@ function collectionLoader (apiPath: string) {
   return async () => {
     const response = await payloadFetch(`${apiPath}?draft=true`)
     const data = await response.json();
-    console.log(data)
+
     if (apiPath.includes('globals')) {
         return [{...data, id: 'main' }]
     } else {

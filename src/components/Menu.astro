@@ -3,6 +3,7 @@
 // - add logo
 // - do we need deeper navigation elements?
 import Search from "./Search.astro";
+import Link from "./Link.astro";
 
 const navigationElements = [
   { name: "Home", url: "/" },
@@ -18,7 +19,7 @@ const currentPath = Astro.url.pathname;
   <div class="usa-navbar">
     <div class="usa-logo">
       <em class="usa-logo__text"
-        ><a href="/" title="Agency Name">Agency Name</a></em
+        ><Link href="/" title="Agency Name">Agency Name</Link></em
       >
     </div>
     <button class="usa-menu-btn">Menu</button>
@@ -40,12 +41,12 @@ const currentPath = Astro.url.pathname;
         {
           navigationElements.map((nav) => (
             <li class="usa-nav__primary-item">
-              <a
-                class={`usa-nav__link${nav.url === currentPath ? " usa-current" : ""}`}
+              <Link
+                className={`usa-nav__link${nav.url === currentPath ? " usa-current" : ""}`}
                 href={nav.url}
               >
                 <span set:html={nav.name} />
-              </a>
+              </Link>
             </li>
           ))
         }
