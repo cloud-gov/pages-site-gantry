@@ -1,5 +1,9 @@
 ---
-import Header from '../components/Header.astro'
+import GovIdentifier from "../components/GovIdentifier.astro";
+import Menu from "../components/Menu.astro";
+import Footer from "../components/Footer.astro";
+
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -8,13 +12,13 @@ import Header from '../components/Header.astro'
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Agency Homepage</title>
+    <title>{title ?? "Agency Homepage"}</title>
   </head>
   <body>
-    <Header />
-    <div class="grid-container">
-      <slot />
-    </div>
+    <GovIdentifier />
+    <Menu />
+    <slot />
+    <Footer />
   </body>
 
   <style>
@@ -25,4 +29,7 @@ import Header from '../components/Header.astro'
       height: 100%;
     }
   </style>
+  <script>
+    import "@uswds/uswds";
+  </script>
 </html>

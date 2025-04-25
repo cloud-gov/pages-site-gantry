@@ -1,0 +1,35 @@
+---
+// This will redirect the results to /search template which will handle the js loading
+// TODO: implements inline only
+import { Image } from "astro:assets";
+import search from "@uswds-images/usa-icons-bg/search--white.svg";
+
+const affliate = "FILL IN VIA GLOBAL";
+---
+
+<form
+  id="search_form"
+  class="usa-search usa-search--small"
+  action="/search"
+  accept-charset="UTF-8"
+  method="get"
+>
+  <input name="utf8" type="hidden" value="✓" />
+  <input name="affiliate" type="hidden" value={affliate} />
+
+  <div role="search">
+    <label class="usa-sr-only" for="extended-search-field-small"
+      >Search small</label
+    >
+    <input
+      class="usa-input usagov-search-autocomplete"
+      id="extended-search-field-small"
+      type="search"
+      name="query"
+      autocomplete="off"
+    />
+    <button class="usa-button" type="submit">
+      <Image src={search} class="usa-search__submit-icon" alt="Search" />
+    </button>
+  </div>
+</form>

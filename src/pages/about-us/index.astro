@@ -1,0 +1,19 @@
+---
+import { getEntry } from "astro:content";
+
+import "../../index.scss";
+import Layout from "../../layouts/Layout.astro";
+import RichText from "@/components/RichText.astro";
+
+const {
+  data: { subtitle, content },
+} = await getEntry("aboutUs", "main");
+---
+
+<Layout>
+  <div class="grid-container">
+    <h1>About us</h1>
+    {subtitle && <h2 set:text={subtitle} />}
+    <RichText content={content} />
+  </div>
+</Layout>

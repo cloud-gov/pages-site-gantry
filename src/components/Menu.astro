@@ -1,0 +1,67 @@
+---
+// TODO:
+// - add logo
+// - do we need deeper navigation elements?
+import Search from "./Search.astro";
+import Link from "./Link.astro";
+import { Image } from "astro:assets";
+import close from "@uswds-images/usa-icons/close.svg";
+
+const navigationElements = [
+  { name: "Home", url: "/" },
+  { name: "Events", url: "/events" },
+  { name: "News", url: "/news" },
+  { name: "About Us", url: "/about-us" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="usa-header usa-header--extended" role="banner">
+  <div class="usa-navbar">
+    <div class="usa-logo">
+      <em class="usa-logo__text"
+        ><Link href="/" title="Agency Name">Agency Name</Link></em
+      >
+    </div>
+    <button class="usa-menu-btn">Menu</button>
+  </div>
+  <nav
+    id="menu-navigation"
+    aria-label="Menu navigation"
+    role="navigation"
+    class="usa-nav"
+  >
+    <div class="usa-nav__inner">
+      <button class="usa-nav__close">
+        <Image src={close} alt="close" />
+      </button>
+      <ul class="usa-nav__primary usa-accordion">
+        {
+          navigationElements.map((nav) => (
+            <li class="usa-nav__primary-item">
+              <Link
+                className={`usa-nav__link${nav.url === currentPath ? " usa-current" : ""}`}
+                href={nav.url}
+              >
+                <span set:html={nav.name} />
+              </Link>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="usa-nav__secondary">
+        <ul class="usa-nav__secondary-links">
+          <!-- {% for nav_item in secondary_navigation %}
+          <li class="usa-nav__secondary-item">
+            <a href="{{ nav_item.url | url }}"
+              >{{ nav_item.name | escape }}</a
+            >
+          </li>
+          {% endfor %} -->
+        </ul>
+        <Search />
+      </div>
+    </div>
+  </nav>
+</header>

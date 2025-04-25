@@ -1,0 +1,27 @@
+---
+import { getEntry, type CollectionEntry } from "astro:content";
+import "../../index.scss";
+import Layout from "../../layouts/Layout.astro";
+import { createGetStaticPath } from "@/utilities/staticPath";
+import RichText from "@/components/RichText.astro";
+
+const { slug } = Astro.params;
+let data: CollectionEntry<"news">["data"];
+
+if (!Astro.isPrerendered) {
+  const n = await getEntry("news", slug);
+  if (!n) return Astro.redirect("/404");
+  ({ data } = n);
+} else {
+  ({ data } = Astro.props);
+}
+
+export const getStaticPaths = createGetStaticPath("news");
+---
+
+<Layout title={data.title}>
+  <article class="grid-container">
+    <h1 set:text={data.title} />
+    <RichText content={data.content} />
+  </article>
+</Layout>

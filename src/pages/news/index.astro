@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+import "../../index.scss";
+import Layout from "@/layouts/Layout.astro";
+import Link from "@/components/Link.astro";
+const news = await getCollection("news");
+---
+
+<Layout>
+  <div class="grid-container">
+    <h1>News Page</h1>
+    <ul>
+      {
+        news.map((n) => (
+          <li>
+            <Link href={`/news/${n.data.slug}`}>{n.data.title}</Link>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Layout>
