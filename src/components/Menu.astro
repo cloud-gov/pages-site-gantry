@@ -4,6 +4,8 @@
 // - do we need deeper navigation elements?
 import Search from "./Search.astro";
 import Link from "./Link.astro";
+import { Image } from "astro:assets";
+import close from "@uswds-images/usa-icons/close.svg";
 
 const navigationElements = [
   { name: "Home", url: "/" },
@@ -32,10 +34,7 @@ const currentPath = Astro.url.pathname;
   >
     <div class="usa-nav__inner">
       <button class="usa-nav__close">
-        <img
-          src="./node_modules/@uswds/uswds/dist/img/usa-icons/close.svg"
-          alt="close"
-        />
+        <Image src={close} alt="close" />
       </button>
       <ul class="usa-nav__primary usa-accordion">
         {

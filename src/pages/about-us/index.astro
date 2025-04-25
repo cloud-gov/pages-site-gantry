@@ -1,10 +1,9 @@
 ---
 import { getEntry } from "astro:content";
-import sanitizeHtml from "sanitize-html";
 
 import "../../index.scss";
 import Layout from "../../layouts/Layout.astro";
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import RichText from "@/components/RichText.astro";
 
 const {
   data: { subtitle, content },
@@ -15,9 +14,6 @@ const {
   <div class="grid-container">
     <h1>About us</h1>
     {subtitle && <h2 set:text={subtitle} />}
-    <div
-      class="usa-prose"
-      set:html={sanitizeHtml(convertLexicalToHTML({ data: content }))}
-    />
+    <RichText content={content} />
   </div>
 </Layout>

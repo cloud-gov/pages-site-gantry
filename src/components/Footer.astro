@@ -1,5 +1,7 @@
 ---
 import Link from "./Link.astro";
+import { Image } from "astro:assets";
+import gsaLogo from "@/assets/gsa-logo.svg";
 ---
 
 <footer class="usa-footer site-footer" role="contentinfo">
@@ -11,8 +13,8 @@ import Link from "./Link.astro";
       <div class="usa-identifier__container">
         <div class="usa-identifier__logos">
           <Link href="https://www.gsa.gov">
-            <img
-              src="_img/gsa-logo.svg"
+            <Image
+              src={gsaLogo}
               class="usa-identifier__logo"
               alt="GSA logo identifier"
             />

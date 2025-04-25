@@ -1,6 +1,9 @@
 ---
 // This will redirect the results to /search template which will handle the js loading
 // TODO: implements inline only
+import { Image } from "astro:assets";
+import search from "@uswds-images/usa-icons-bg/search--white.svg";
+
 const affliate = "FILL IN VIA GLOBAL";
 ---
 
@@ -26,11 +29,7 @@ const affliate = "FILL IN VIA GLOBAL";
       autocomplete="off"
     />
     <button class="usa-button" type="submit">
-      <img
-        src="./node_modules/@uswds/uswds/dist/img/usa-icons-bg/search--white.svg"
-        class="usa-search__submit-icon"
-        alt="Search"
-      />
+      <Image src={search} class="usa-search__submit-icon" alt="Search" />
     </button>
   </div>
 </form>

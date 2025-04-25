@@ -1,0 +1,11 @@
+---
+import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import sanitizeHtml from "sanitize-html";
+
+const { content } = Astro.props;
+---
+
+<section
+  class="usa-prose"
+  set:html={sanitizeHtml(convertLexicalToHTML({ data: content }))}
+/>
