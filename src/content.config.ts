@@ -1,10 +1,15 @@
 import { defineCollection, z } from 'astro:content';
-import payloadFetch from './payload-fetch';
+import payloadFetch from './utilities/payload-fetch';
 import type { ZodObject, ZodRawShape } from 'astro:schema';
 
 function collectionLoader (apiPath: string) {
   return async () => {
-    const response = await payloadFetch(`${apiPath}?draft=true`)
+    // fetch drafts for the previewer, not on build
+    const fetchDrafts = process.env.RENDER_MODE === 'static'
+    ? ''
+    : '?draft=true'
+
+    const response = await payloadFetch(`${apiPath}${fetchDrafts}`)
     const data = await response.json();
 
     if (apiPath.includes('globals')) {
