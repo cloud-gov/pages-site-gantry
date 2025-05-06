@@ -3,7 +3,20 @@ import { getCollection } from "astro:content";
 import "../../index.scss";
 import Layout from "@/layouts/Layout.astro";
 import Link from "@/components/Link.astro";
-const news = await getCollection("news");
+import type { CollectionEntry } from "astro:content";
+import payloadFetch from "@/utilities/payload-fetch";
+
+const collectionName = "news";
+let news: CollectionEntry<typeof collectionName>["data"][];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(`${collectionName}?draft=true`);
+  const newsData = await response.json();
+  news = newsData.docs;
+} else {
+  const newsCollection = await getCollection(collectionName);
+  news = newsCollection.map((n) => n.data);
+}
 ---
 
 <Layout>
@@ -13,7 +26,7 @@ const news = await getCollection("news");
       {
         news.map((n) => (
           <li>
-            <Link href={`/news/${n.data.slug}`}>{n.data.title}</Link>
+            <Link href={`/news/${n.slug}`}>{n.title}</Link>
           </li>
         ))
       }

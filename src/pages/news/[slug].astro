@@ -1,17 +1,22 @@
 ---
-import { getEntry, type CollectionEntry } from "astro:content";
+import { type CollectionEntry } from "astro:content";
 import "../../index.scss";
 import Layout from "../../layouts/Layout.astro";
 import { createGetStaticPath } from "@/utilities/staticPath";
 import RichText from "@/components/RichText.astro";
+import payloadFetch from "@/utilities/payload-fetch";
 
 const { slug } = Astro.params;
-let data: CollectionEntry<"news">["data"];
+const collectionName = "news";
+let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  const n = await getEntry("news", slug);
-  if (!n) return Astro.redirect("/404");
-  ({ data } = n);
+  const response = await payloadFetch(
+    `${collectionName}?where[slug][equals]=${slug}&draft=true`
+  );
+  const n = await response.json();
+  if (n.docs.length === 0) return Astro.redirect("/404");
+  data = n.docs[0];
 } else {
   ({ data } = Astro.props);
 }
