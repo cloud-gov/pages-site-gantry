@@ -3,8 +3,20 @@ import { getCollection } from "astro:content";
 import "../../index.scss";
 import Layout from "@/layouts/Layout.astro";
 import Link from "@/components/Link.astro";
+import payloadFetch from "@/utilities/payload-fetch";
+import type { CollectionEntry } from "astro:content";
 
-const events = await getCollection("events");
+const collectionName = "events";
+let events: CollectionEntry<typeof collectionName>["data"][];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(`${collectionName}?draft=true`);
+  const eventsData = await response.json();
+  events = eventsData.docs;
+} else {
+  const eventCollection = await getCollection(collectionName);
+  events = eventCollection.map((event) => event.data);
+}
 ---
 
 <Layout>
@@ -14,7 +26,7 @@ const events = await getCollection("events");
       {
         events.map((event) => (
           <li>
-            <Link href={`/events/${event.data.slug}`}>{event.data.title}</Link>
+            <Link href={`/events/${event.slug}`}>{event.title}</Link>
           </li>
         ))
       }

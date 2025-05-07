@@ -1,6 +1,7 @@
 ---
-import { getEntry, type CollectionEntry } from "astro:content";
+import { type CollectionEntry } from "astro:content";
 import { createGetStaticPath } from "@/utilities/staticPath";
+import payloadFetch from "@/utilities/payload-fetch";
 import "../../index.scss";
 import Layout from "../../layouts/Layout.astro";
 
@@ -13,12 +14,15 @@ const { slug } = Astro.params;
 // to this file
 // 3. data needs to be a top-level variable here
 const collectionName = "events";
-let data: CollectionEntry<"events">["data"];
+let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  const event = await getEntry(collectionName, slug);
-  if (!event) return Astro.redirect("/404");
-  ({ data } = event);
+  const response = await payloadFetch(
+    `${collectionName}?where[slug][equals]=${slug}&draft=true`
+  );
+  const events = await response.json();
+  if (events.docs.length === 0) return Astro.redirect("/404");
+  data = events.docs[0];
 } else {
   // @ts-expect-error
   ({ data } = Astro.props);
@@ -32,7 +36,7 @@ export const getStaticPaths = createGetStaticPath("events");
     <h1 set:text={data.title} />
     <p set:text={data.format} />
     <p set:text={data.location} />
-    <p set:text={data.registrationUrl} />
+    <a class="usa-button" href={data.registrationUrl}> Register </a>
     <p set:text={data.startDate} />
     <p set:text={data.endDate} />
     <section class="usa-prose" set:text={data.description} />
