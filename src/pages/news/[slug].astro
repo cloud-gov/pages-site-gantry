@@ -18,6 +18,7 @@ if (!Astro.isPrerendered) {
   if (n.docs.length === 0) return Astro.redirect("/404");
   data = n.docs[0];
 } else {
+  // @ts-expect-error
   ({ data } = Astro.props);
 }
 

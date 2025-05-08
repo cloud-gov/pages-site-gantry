@@ -22,7 +22,8 @@ export default defineConfig({
         scss: {
           loadPaths: [
               './node_modules/@uswds/uswds/packages/'
-          ]
+          ],
+          quietDeps: true
         }
       }
     },

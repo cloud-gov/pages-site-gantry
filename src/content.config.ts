@@ -80,4 +80,12 @@ const aboutUs = defineCollection({
     }).partial())
 });
 
-export const collections = { events, news, aboutUs };
+const siteConfig = defineCollection({
+  loader: collectionLoader('globals/site-config'),
+  schema: makeAllKeysNullable(z.object({
+    font: z.string(),
+    agencyName: z.string(),
+  }).partial())
+});
+
+export const collections = { events, news, aboutUs, siteConfig };
