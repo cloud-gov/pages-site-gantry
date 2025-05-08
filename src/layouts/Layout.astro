@@ -2,6 +2,7 @@
 import GovIdentifier from "../components/GovIdentifier.astro";
 import Menu from "../components/Menu.astro";
 import Footer from "../components/Footer.astro";
+import Config from "@/config.astro";
 
 const { title } = Astro.props;
 ---
@@ -15,8 +16,9 @@ const { title } = Astro.props;
     <title>{title ?? "Agency Homepage"}</title>
   </head>
   <body>
+    <Config />
     <GovIdentifier />
-    <Menu />
+    <Menu title={title} />
     <slot />
     <Footer />
   </body>
