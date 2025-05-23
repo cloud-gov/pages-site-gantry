@@ -12,6 +12,7 @@ This site itself will prioritize standardization and consistency above deep cust
 Both portion of the application can be run locally. They require a number of environment variables to be set, shown in `.env.example`. If those are availble, the site runs in preview mode:
 
 ```sh
+npm run install
 npm run dev
 ```
 
