@@ -31,6 +31,7 @@ jobs:
       - get: src
         params:
           depth: 1
+        passed: [set-pipeline]
       - get: s3
         trigger: true
       - get: general-task
@@ -75,6 +76,7 @@ resources:
     source:
       access_key_id: ((editor-site-data-access-key-id-((deploy-env))))
       secret_access_key: ((editor-site-data-secret-access-key-((deploy-env))))
+      path: _sites/
       bucket: ((editor-site-data-bucket-((deploy-env))))
       region: us-gov-west-1
 
