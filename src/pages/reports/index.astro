@@ -5,27 +5,27 @@ import Link from "@/components/Link.astro";
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "@/utilities/payload-fetch";
 
-const collectionName = "news";
-let news: CollectionEntry<typeof collectionName>["data"][];
+const collectionName = "reports";
+let reports: CollectionEntry<typeof collectionName>["data"][];
 
 if (!Astro.isPrerendered) {
   const response = await payloadFetch(`${collectionName}?draft=true`);
-  const newsData = await response.json();
-  news = newsData.docs;
+  const reportsData = await response.json();
+  reports = reportsData.docs;
 } else {
-  const newsCollection = await getCollection(collectionName);
-  news = newsCollection.map((n) => n.data);
+  const reportsCollection = await getCollection(collectionName);
+  reports = reportsCollection.map((n) => n.data);
 }
 ---
 
 <Layout>
   <div class="grid-container">
-    <h1>News Page</h1>
+    <h1>Reports Page</h1>
     <ul>
       {
-        news.map((n) => (
+        reports.map((n) => (
           <li>
-            <Link href={`/news/${n.slug}`}>{n.title}</Link>
+            <Link href={`/reports/${n.slug}`}>{n.title}</Link>
           </li>
         ))
       }

@@ -5,16 +5,26 @@ import type { ZodObject, ZodRawShape } from 'astro:schema';
 function collectionLoader (apiPath: string) {
   return async () => {
     // fetch drafts for the previewer, not on build
-    const fetchDrafts = process.env.RENDER_MODE === 'static'
+    const fetchDrafts = import.meta.env.RENDER_MODE === 'static'
     ? ''
     : '?draft=true'
 
     const response = await payloadFetch(`${apiPath}${fetchDrafts}`)
+
+    if (!response.ok) {
+      console.error(`API call failed for ${apiPath}:`, response.status, response.statusText);
+      return [];
+    }
+
     const data = await response.json();
 
     if (apiPath.includes('globals')) {
         return [{...data, id: 'main' }]
     } else {
+        if (!data.docs) {
+          console.error(`No docs property in response for ${apiPath}:`, data);
+          return [];
+        }
         return data.docs
           .filter(doc => doc.slug) // we have issues without a slug
           .map(doc => {
@@ -69,17 +79,6 @@ const news = defineCollection({
     }))
 });
 
-// Single pages are represented as globals in the API
-// they will return as a single, potentially empty object
-// so these properties are also potentially undefined
-const aboutUs = defineCollection({
-    loader: collectionLoader('globals/about-us'),
-    schema: makeAllKeysNullable(z.object({
-      subtitle: z.string(),
-      content: z.any(), // content is a lexical object
-    }).partial())
-});
-
 const siteConfig = defineCollection({
   loader: collectionLoader('globals/site-config'),
   schema: makeAllKeysNullable(z.object({
@@ -88,4 +87,26 @@ const siteConfig = defineCollection({
   }).partial())
 });
 
-export const collections = { events, news, aboutUs, siteConfig };
+const reports = defineCollection({
+  loader: collectionLoader('reports'),
+  schema: makeAllKeysNullable(z.object({
+    title: z.string(),
+    excerpt: z.string(),
+    image: z.any(), // relation to media, can be any
+    reportFiles: z.array(z.object({
+      file: z.any(), // relation to media, can be any
+    })),
+    slug: z.string(),
+    reportDate: z.string().datetime(),
+    categories: z.any(), // categoriesField, can be any
+    site: z.any(), // siteField, can be any
+    content: z.any(), // richText, can be any
+    reviewReady: z.boolean(),
+    publishedAt: z.string().datetime(),
+    _status: z.enum(["draft", "published"]).optional(),
+    createdAt: z.string().datetime().optional(),
+    updatedAt: z.string().datetime().optional(),
+  }))
+});
+
+export const collections = { events, news, siteConfig, reports };
