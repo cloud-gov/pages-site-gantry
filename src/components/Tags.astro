@@ -1,0 +1,38 @@
+---
+import Link from "@/components/Link.astro";
+
+export interface Tag {
+  label: string;
+  color: string;
+  url?: string;
+}
+interface Props {
+  tags: Tag[];
+}
+
+const { tags } = Astro.props;
+---
+
+<div class="tags usa-dark-background bg-transparent">
+  {
+    tags.map((tag) => {
+      if (tag.url) {
+        return (
+          <Link href={tag.url} className="usa-tag usa-link">
+            {tag.label}
+          </Link>
+        );
+      }
+
+      return <span class="usa-tag">{tag.label}</span>;
+    })
+  }
+</div>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+</style>

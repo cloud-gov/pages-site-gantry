@@ -1,0 +1,8 @@
+// USWDS tags do not have link styles, so we will create them here:
+
+.usa-tag.usa-link {
+  text-decoration: none;
+  &:hover {
+    filter:brightness(.9);
+  }
+}

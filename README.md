@@ -21,6 +21,10 @@ and the proxy runs with:
 node oauth/index.js
 ```
 
+## Tests
+
+This project uses Vitest and Astro Container for testing Astro components. See [docs/TESTING.md](docs/TESTING.md) for detailed information on writing and running tests.
+
 ## CI
 
 This repository contains the defintion for a single Concourse pipeline. This pipeline is responsible for reading from a specific S3 bucket and deploying one application per JSON file found there. Those JSON files correspond to sites created by `pages-editor` and contain at least the following properties:

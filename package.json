@@ -9,7 +9,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "oauth": "node oauth/index.js",
-    "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build"
+    "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.2",
@@ -35,7 +38,8 @@
   "devDependencies": {
     "@types/node": "^22.13.4",
     "@types/sanitize-html": "^2.15.0",
-    "sass-embedded": "^1.85.0"
+    "sass-embedded": "^1.85.0",
+    "vitest": "^3.2.4"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.40.0",

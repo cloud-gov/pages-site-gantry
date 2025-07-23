@@ -1,8 +1,29 @@
 ---
-import GovIdentifier from "../components/GovIdentifier.astro";
-import Menu from "../components/Menu.astro";
-import Footer from "../components/Footer.astro";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import GovIdentifier from "@/components/GovIdentifier.astro";
+import Menu from "@/components/Menu.astro";
+import Footer from "@/components/Footer.astro";
 import Config from "@/config.astro";
+import payloadFetch from "@/utilities/payload-fetch";
+import "../styles/index.scss";
+
+const collectionName = "siteConfig";
+const endpoint = "globals/site-config";
+let collection: CollectionEntry<typeof collectionName>["data"];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(`${endpoint}?draft=true`);
+  const responseData = await response.json();
+  collection = responseData;
+} else {
+  const responseData = await getCollection(collectionName);
+
+  collection = {
+    agencyName: responseData[0].data.agencyName,
+    font: responseData[0].data.font,
+  };
+}
 
 const { title } = Astro.props;
 ---
@@ -13,12 +34,12 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title ?? "Agency Homepage"}</title>
+    <title>{`${title} | ${collection.agencyName || "Agency Homepage"}`}</title>
   </head>
   <body>
     <Config />
     <GovIdentifier />
-    <Menu title={title} />
+    <Menu title={collection.agencyName} />
     <slot />
     <Footer />
   </body>

@@ -5,7 +5,7 @@ interface Props {
   className?: string;
   title?: string;
 }
-const { href, className, title } = Astro.props;
+const { href, className = "usa-link", title } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
