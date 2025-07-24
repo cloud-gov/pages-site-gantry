@@ -6,7 +6,7 @@ import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 
 const { slug } = Astro.params;
-const collectionName = "news";
+const collectionName = "reports";
 let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
@@ -21,7 +21,7 @@ if (!Astro.isPrerendered) {
   ({ data } = Astro.props);
 }
 
-export const getStaticPaths = createGetStaticPath("news");
+export const getStaticPaths = createGetStaticPath("reports");
 ---
 
 <Layout title={data.title}>

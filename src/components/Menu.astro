@@ -7,23 +7,23 @@ import Link from "./Link.astro";
 import { Image } from "astro:assets";
 import close from "@uswds-images/usa-icons/close.svg";
 
-import { data } from "@/config.astro";
-
 const navigationElements = [
   { name: "Home", url: "/" },
   { name: "Events", url: "/events" },
   { name: "News", url: "/news" },
-  { name: "About Us", url: "/about-us" },
+  { name: "Reports", url: "/reports" },
 ];
 
 const currentPath = Astro.url.pathname;
+
+const { title } = Astro.props
 ---
 
 <header class="usa-header usa-header--extended" role="banner">
   <div class="usa-navbar">
     <div class="usa-logo">
       <em class="usa-logo__text"
-        ><Link href="/" title={data?.agencyName}>{data?.agencyName}</Link></em
+        ><Link href="/" title={title}>{title}</Link></em
       >
     </div>
     <button class="usa-menu-btn">Menu</button>
