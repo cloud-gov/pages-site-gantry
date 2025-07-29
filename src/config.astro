@@ -2,18 +2,42 @@
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "./utilities/payload-fetch";
 import { getEntry } from "astro:content";
+
 // This component renders an empty fragment but is really used for
 // exporting configuration. Note that the empty render (and import into
 // other modules) does seem to be necessary for this to refresh correctly
 const collectionName = "siteConfig";
-export let { data }: CollectionEntry<typeof collectionName> = await getEntry(
-  "siteConfig", // variable kept throwing 'collectionName is not defined' ???
-  "main"
-);
 
+// Try to get the entry, but provide a fallback if it doesn't exist
+let entry: CollectionEntry<typeof collectionName> | undefined;
+try {
+  entry = await getEntry("siteConfig", "main");
+} catch (error) {
+  console.warn("Could not get siteConfig entry:", error);
+}
+
+// Initialize data with default values
+let data: { font?: string; agencyName?: string } = {
+  font: "",
+  agencyName: "",
+};
+
+// If we have an entry, use its data
+if (entry) {
+  data = entry.data;
+}
+
+// If not prerendered, try to fetch fresh data from the API
 if (!Astro.isPrerendered) {
-  const response = await payloadFetch("globals/site-config");
-  data = await response.json();
+  try {
+    const response = await payloadFetch("globals/site-config");
+    if (response.ok) {
+      const apiData = await response.json();
+      data = { ...data, ...apiData };
+    }
+  } catch (error) {
+    console.warn("Could not fetch site config from API:", error);
+  }
 }
 ---
 

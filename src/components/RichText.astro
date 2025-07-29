@@ -7,5 +7,7 @@ const { content } = Astro.props;
 
 <section
   class="usa-prose"
-  set:html={sanitizeHtml(convertLexicalToHTML({ data: content }))}
+  set:html={sanitizeHtml(convertLexicalToHTML({ data: content }), {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+  })}
 />

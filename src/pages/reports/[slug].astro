@@ -4,9 +4,12 @@ import Layout from "../../layouts/Layout.astro";
 import { createGetStaticPath } from "@/utilities/staticPath";
 import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
+import PagesSection from "@/components/PagesSection.astro";
+import Tags, { type Tag } from "@/components/Tags.astro";
+import { reportMapper } from "@/utilities/collections";
 
 const { slug } = Astro.params;
-const collectionName = "news";
+const collectionName = "reports";
 let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
@@ -21,12 +24,18 @@ if (!Astro.isPrerendered) {
   ({ data } = Astro.props);
 }
 
-export const getStaticPaths = createGetStaticPath("news");
+export const getStaticPaths = createGetStaticPath("reports");
+
+const report = reportMapper(data);
 ---
 
-<Layout title={data.title}>
-  <article class="grid-container">
-    <h1 set:text={data.title} />
-    <RichText content={data.content} />
-  </article>
+<Layout title={report.title}>
+  <PagesSection>
+    <div class="flex-column padding-bottom-8">
+      <h1 set:text={report.title} />
+      <p class="font-sans-sm text-italic" set:text={report.date} />
+      <Tags tags={report.tags} />
+    </div>
+    <RichText content={report.content} />
+  </PagesSection>
 </Layout>

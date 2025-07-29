@@ -32,6 +32,10 @@ export default defineConfig({
         {
           find: '@uswds-images',
           replacement: '/node_modules/@uswds/uswds/dist/img'
+        },
+        {
+          find: '@',
+          replacement: '/src'
         }
       ]
     },

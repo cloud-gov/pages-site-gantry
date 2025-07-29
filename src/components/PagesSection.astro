@@ -1,0 +1,52 @@
+---
+interface Button {
+  label: string;
+  url: string;
+  variant?: string;
+}
+
+interface Props {
+  heading?: string;
+  classes?: string;
+  id?: string;
+  color?: string;
+  align?: "center" | "left";
+}
+
+const { heading = false, color = "white", align = "left", classes = "", id = false } = Astro.props;
+---
+
+<section {...id && { id }} class={`usa-section section section--${color} align-${align} ${classes}`}>
+  <div class="grid-container">
+    <div class="section__container">
+      <div class="section__intro">
+        {heading && <h2 class="font-sans-xl margin-bottom-2">{heading}</h2>}
+      </div>
+      <div class="section__slot">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  &.align-left .section__container {
+    text-align: left;
+    justify-items: start;
+  }
+
+  &.align-center .section__container {
+    .section__intro,
+    .section__content,
+    .section__slot,
+    .section__outro {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      justify-items: center;
+    }
+  }
+  .section__slot {
+    padding: 1rem 0;
+  }
+</style>

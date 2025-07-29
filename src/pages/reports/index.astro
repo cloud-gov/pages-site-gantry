@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import ContentItems from "@/components/ContentItems.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import type { CollectionEntry } from "astro:content";
+import payloadFetch from "@/utilities/payload-fetch";
+import { reportMapper } from "@/utilities/collections";
+
+const collectionName = "reports";
+let reports: CollectionEntry<typeof collectionName>["data"][];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(`${collectionName}?draft=true`);
+  const reportsData = await response.json();
+  reports = reportsData.docs;
+} else {
+  const reportsCollection = await getCollection(collectionName);
+  reports = reportsCollection.map((n) => n.data);
+}
+
+const items = reports.map(reportMapper);
+---
+
+<Layout title="Reports">
+  <PagesSection heading="Reports" color="gray-10">
+    <ContentItems items={items} />
+  </PagesSection>
+</Layout>
