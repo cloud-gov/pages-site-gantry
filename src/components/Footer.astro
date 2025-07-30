@@ -1,113 +1,175 @@
 ---
 import Link from "./Link.astro";
 import { Image } from "astro:assets";
-import gsaLogo from "@/assets/gsa-logo.svg";
+import identifierLogoImg from "@/assets/gsa-logo.svg"; // get this from site data
+
+type Link = { text: string; url: string };
+
+interface Props {
+  footerLinks?: Link[];
+  identifierLinks: Link[];
+  identifierName: string;
+  identifierUrl: string;
+  siteDomain: string;
+  contactTelephone?: string;
+  contactEmail?: string;
+}
+
+const {
+  siteDomain = "Site Domain",
+  contactTelephone = "1-800-555-GOVT",
+  contactEmail = "contact@agency.gov",
+  footerLinks = [
+    {
+      text: "First link text",
+      url: "#url",
+    },
+    {
+      text: "Second link text",
+      url: "#url",
+    },
+    {
+      text: "Third link text",
+      url: "#url",
+    },
+    {
+      text: "Fourth link text",
+      url: "#url",
+    },
+    // no more than 4 links here, trim if necessary
+  ],
+  identifierLinks = [
+    {
+      text: "About GSA",
+      url: "https://www.gsa.gov/about-us",
+    },
+    {
+      text: "Accessibility statement",
+      url: "https://www.gsa.gov/website-information/accessibility-aids",
+    },
+    {
+      text: "FOIA requests",
+      url: "https://www.gsa.gov/reference/freedom-of-information-act-foia",
+    },
+    {
+      text: "No FEAR Act data",
+      url: "https://www.gsa.gov/reference/civil-rights-programs/notification-and-federal-employee-antidiscrimination-and-retaliation-act-of-2002",
+    },
+    {
+      text: "Office of the Inspector General",
+      url: "https://www.gsaig.gov/",
+    },
+    {
+      text: "Performance reports",
+      url: "https://www.gsa.gov/reference/reports/budget-performance",
+    },
+    {
+      text: "Privacy policy",
+      url: "https://www.gsa.gov/website-information/website-policies",
+    },
+  ],
+  identifierName = "U.S. General Services Administration",
+  identifierUrl = "https://gsa.gov",
+} = Astro.props;
 ---
 
-<footer class="usa-footer site-footer" role="contentinfo">
-  <div class="usa-identifier site-identifier">
-    <section
-      class="usa-identifier__section usa-identifier__section--masthead"
-      aria-label="Agency identifier"
-    >
-      <div class="usa-identifier__container">
-        <div class="usa-identifier__logos">
-          <Link href="https://www.gsa.gov">
-            <Image
-              src={gsaLogo}
-              class="usa-identifier__logo"
-              alt="GSA logo identifier"
-            />
-          </Link>
-        </div>
-        <div class="usa-identifier__identity" aria-label="Agency description">
-          <p class="usa-identifier__identity-domain">cloud.gov</p>
-          <p class="usa-identifier__identity-disclaimer">
-            An official website of the <a
-              class="external_link"
-              href="https://gsa.gov">General Services Administration</a
-            >
-          </p>
-        </div>
+<footer class="usa-footer usa-footer--slim">
+  <div class="grid-container usa-footer__return-to-top">
+    <a href="#">Return to top</a>
+  </div>
+
+  <div class="usa-footer__primary-section">
+    <div class="usa-footer__primary-container grid-row">
+      <div class="mobile-lg:grid-col-8">
+        <nav class="usa-footer__nav" aria-label="Footer navigation,">
+          {
+            footerLinks && (
+              <ul class="grid-row grid-gap">
+                {footerLinks.map((link) => (
+                  <li class="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
+                    <Link className="usa-footer__primary-link" href={link.url}>
+                      {link.text}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </nav>
       </div>
-    </section>
-    <nav
-      class="usa-identifier__section usa-identifier__section--required-links"
-      aria-label="Important links"
-    >
+      <div class="mobile-lg:grid-col-4">
+        {
+          (contactEmail || contactTelephone) && (
+            <address class="usa-footer__address">
+              <div class="grid-row grid-gap flex-justify-end">
+                {contactTelephone && (
+                  <div class="grid-col-auto mobile-lg:grid-col-12 desktop:grid-col-auto">
+                    <div class="usa-footer__contact-info">
+                      <a href={`tel:${contactTelephone}`}>{contactTelephone}</a>
+                    </div>
+                  </div>
+                )}
+                {contactEmail && (
+                  <div class="grid-col-auto mobile-lg:grid-col-12 desktop:grid-col-auto">
+                    <div class="usa-footer__contact-info">
+                      <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </address>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="usa-identifier">
+  <section class="usa-identifier__section usa-identifier__section--masthead" aria-label="Agency identifier">
+    <div class="usa-identifier__container">
+      <div class="usa-identifier__logos">
+        <a href={identifierUrl} class="usa-identifier__logo">
+          <Image
+            src={identifierLogoImg}
+            class="usa-identifier__logo-img"
+            alt={siteDomain}
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+      </div>
+      <section class="usa-identifier__identity" aria-label="Agency description">
+        <p class="usa-identifier__identity-domain">{siteDomain}</p>
+        <p class="usa-identifier__identity-disclaimer">
+          An official website of the
+          <a href={identifierUrl}> {identifierName}</a>
+        </p>
+      </section>
+    </div>
+    <nav class="usa-identifier__section usa-identifier__section--required-links" aria-label="Important links">
       <div class="usa-identifier__container">
         <ul class="usa-identifier__required-links-list">
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsa.gov/about-us"
-              class="usa-identifier__required-link usa-link"
-            >
-              About GSA
-            </a>
-          </li>
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsa.gov/website-information/accessibility-aids"
-              class="usa-identifier__required-link usa-link"
-            >
-              Accessibility support
-            </a>
-          </li>
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsa.gov/reference/freedom-of-information-act-foia"
-              class="usa-identifier__required-link usa-link"
-            >
-              FOIA requests
-            </a>
-          </li>
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsa.gov/reference/civil-rights-programs/notification-and-federal-employee-antidiscrimination-and-retaliation-act-of-2002"
-              class="usa-identifier__required-link usa-link"
-            >
-              No FEAR Act data
-            </a>
-          </li>
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsaig.gov/"
-              class="usa-identifier__required-link usa-link"
-            >
-              Office of the Inspector General
-            </a>
-          </li>
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsa.gov/reference/reports/budget-performance"
-              class="usa-identifier__required-link usa-link"
-            >
-              Performance reports
-            </a>
-          </li>
-          <li class="usa-identifier__required-links-item">
-            <a
-              href="https://www.gsa.gov/website-information/website-policies"
-              class="usa-identifier__required-link usa-link"
-            >
-              Privacy policy
-            </a>
-          </li>
+          {
+            identifierLinks &&
+              identifierLinks.map((link) => (
+                <li class="usa-identifier__required-links-item">
+                  <a href={link.url} class="usa-identifier__required-link usa-link">
+                    {link.text}
+                  </a>
+                </li>
+              ))
+          }
         </ul>
       </div>
     </nav>
     <section
       class="usa-identifier__section usa-identifier__section--usagov"
-      aria-label="Government information and services"
-    >
+      aria-label="Government information and services">
       <div class="usa-identifier__container">
-        <div class="usa-identifier__usagov-description">
-          Looking for U.S. government information and services?
-        </div>
-        <Link href="https://www.usa.gov/" className="external_link"
-          >Visit USA.gov</Link
-        >
+        <div class="usa-identifier__usagov-description">Looking for U.S. government information and services?</div>
+        <a href="https://www.usa.gov/" class="usa-link--external">Visit USA.gov</a>
       </div>
     </section>
-  </div>
-</footer>
+  </section>
+</div>
