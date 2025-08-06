@@ -31,17 +31,19 @@ const {
       <img class="usa-collection__img" src={image} alt={imageAlt} />
     )}
     <div class="usa-collection__body">
-      <SectionHeader headingLevel="h2" class="usa-collection__heading">
+      <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
         <Link href={link}>{title}</Link>
       </SectionHeader>
-      {date && <p class="usa-collection__meta margin-bottom-2">{date}</p>}
-      <div class="usa-collection__body">
+      <ul class="usa-collection__meta" aria-label="More information">
+        <li class="usa-collection__meta-item">{date}</li>
+      </ul>
+      <div class="usa-collection__description margin-bottom-2">
         <p>{description}</p>
       </div>
       {tags && tags.length > 0 && (
-        <div class="usa-collection__footer">
+        <ul class="usa-collection__meta display-flex" aria-label="More information">
           <Tags tags={tags} />
-        </div>
+        </ul>
       )}
     </div>
   </li>
@@ -56,9 +58,6 @@ const {
     border-bottom: 1px solid; 
     padding-top: 0; 
     padding-bottom: 1rem;
-  }
-  .usa-collection__heading {
-    font-size: 1.3rem;
   }
   .usa-collection__footer {
     gap: 0.5rem;
