@@ -1,0 +1,68 @@
+---
+import Link from "@/components/Link.astro";
+import SectionHeader from "./SectionHeader.astro";
+import Tags, { type Tag } from "@/components/Tags.astro";
+
+export interface Props {
+  title: string;
+  description?: string;
+  date?: string;
+  tags?: Tag[];
+  image?: string;
+  imageAlt?: string;
+  link?: string;
+  linkText?: string;
+}
+
+const {
+  title, 
+  description, 
+  date, 
+  tags = [],
+  image, 
+  imageAlt, 
+  link,
+} = Astro.props;
+---
+
+<>
+  <li class="usa-collection__item">
+    {image && (
+      <img class="usa-collection__img" src={image} alt={imageAlt} />
+    )}
+    <div class="usa-collection__body">
+      <div class="usa-collection__header">
+        <SectionHeader headingLevel="h2" class="usa-collection__heading">
+          <Link href={link}>{title}</Link>
+        </SectionHeader>
+        {date && <p class="usa-collection__meta">{date}</p>}
+      </div>
+      <div class="usa-collection__body">
+        <p>{description}</p>
+      </div>
+      {tags && tags.length > 0 && (
+        <div class="usa-collection__footer">
+          <Tags tags={tags} />
+        </div>
+      )}
+    </div>
+  </li>
+</>
+
+<style>
+  .usa-collection {
+    flex-basis: max-content; /* otherwise collections will be 2 col */
+  }
+  .usa-collection__footer {
+    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+  .usa-collection__meta {
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+  }
+</style>
