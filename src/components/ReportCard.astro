@@ -31,12 +31,10 @@ const {
       <img class="usa-collection__img" src={image} alt={imageAlt} />
     )}
     <div class="usa-collection__body">
-      <div class="usa-collection__header">
-        <SectionHeader headingLevel="h2" class="usa-collection__heading">
-          <Link href={link}>{title}</Link>
-        </SectionHeader>
-        {date && <p class="usa-collection__meta">{date}</p>}
-      </div>
+      <SectionHeader headingLevel="h2" class="usa-collection__heading">
+        <Link href={link}>{title}</Link>
+      </SectionHeader>
+      {date && <p class="usa-collection__meta margin-bottom-2">{date}</p>}
       <div class="usa-collection__body">
         <p>{description}</p>
       </div>
@@ -49,9 +47,18 @@ const {
   </li>
 </>
 
-<style>
+<style is:global>
   .usa-collection {
     flex-basis: max-content; /* otherwise collections will be 2 col */
+  }
+  .usa-collection__item {
+    border-top: 0; 
+    border-bottom: 1px solid; 
+    padding-top: 0; 
+    padding-bottom: 1rem;
+  }
+  .usa-collection__heading {
+    font-size: 1.3rem;
   }
   .usa-collection__footer {
     gap: 0.5rem;

@@ -1,6 +1,5 @@
 ---
 import ReportCard from "@/components/ReportCard.astro";
-// import type { Reportcollection } from "@/components/Reportcollection.astro";
 
 const { items = [] } = Astro.props;
 ---
@@ -25,17 +24,5 @@ const { items = [] } = Astro.props;
   .usa-collection-group {
     padding: 0; 
     margin: 0; 
-  }
-  .usa-collection__footer {
-    gap: 0.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: 0.5rem;
-  }
-  .usa-collection__meta {
-    font-size: 0.9rem;
-    margin-top: 0.4rem;
   }
 </style>

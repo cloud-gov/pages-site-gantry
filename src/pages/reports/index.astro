@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import ContentItems from "@/components/ContentItems.astro";
 import ReportsList from "@/components/ReportsList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import type { CollectionEntry } from "astro:content";
@@ -25,7 +24,6 @@ const items = reports.map(reportMapper);
 
 <Layout title="Reports">
   <PagesSection heading="Reports" color="gray-10">
-    <ContentItems items={items} />
     <ReportsList items={items}/>
   </PagesSection>
 </Layout>
