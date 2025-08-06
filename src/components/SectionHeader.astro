@@ -1,0 +1,18 @@
+---
+export interface Props {
+  headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  class?: string;
+}
+
+const {
+  headingLevel = 'h2',
+  class: customClass = '',
+} = Astro.props;
+
+const ValidHeadingLevels = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+const Header = ValidHeadingLevels.includes(headingLevel) ? headingLevel : 'h2';
+---
+
+<Header class={customClass}>
+  <slot />
+</Header>

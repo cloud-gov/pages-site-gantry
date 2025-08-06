@@ -1,0 +1,70 @@
+---
+import Link from "@/components/Link.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Tags, { type Tag } from "@/components/Tags.astro";
+
+export interface Props {
+  title: string;
+  description?: string;
+  date?: string;
+  tags?: Tag[];
+  image?: string;
+  imageAlt?: string;
+  link?: string;
+  linkText?: string;
+}
+
+const {
+  title = "", 
+  description = "", 
+  date = "", 
+  tags = [],
+  image = "", 
+  imageAlt = "", 
+  link = "",
+} = Astro.props;
+
+const hasTags = tags?.length > 0; 
+const hasDescription = !!description?.trim(); 
+---
+
+<>
+  <li class="usa-collection__item">
+    {image && (
+      <img class="usa-collection__img" src={image} alt={imageAlt} />
+    )}
+    <div class="usa-collection__body">
+      <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
+        <Link href={link}>{title}</Link>
+      </SectionHeader>
+      <ul class="usa-collection__meta" aria-label="More information">
+        <li class="usa-collection__meta-item">{date}</li>
+      </ul>
+      {hasDescription && (
+        <div class="usa-collection__description">
+          <p>{description}</p>
+        </div>
+      )}
+      {hasTags && (
+        <ul class="usa-collection__meta display-flex margin-top-2" aria-label="More information">
+          <Tags tags={tags} />
+        </ul>
+      )}
+    </div>
+  </li>
+</>
+
+<style is:global>
+  .usa-collection__footer {
+    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+  .usa-collection__meta {
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+  }
+</style>
