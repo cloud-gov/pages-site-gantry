@@ -26,7 +26,7 @@ const {
 ---
 
 <>
-  <li class="usa-collection__item border-top-0">
+  <li class="usa-collection__item">
     {image && (
       <img class="usa-collection__img" src={image} alt={imageAlt} />
     )}
@@ -52,11 +52,6 @@ const {
 <style is:global>
   .usa-collection {
     flex-basis: max-content; /* otherwise collections will be 2 col */
-  }
-  .usa-collection__item {
-    border-bottom: 1px solid; 
-    padding-top: 0; 
-    padding-bottom: 1rem;
   }
   .usa-collection__footer {
     gap: 0.5rem;
