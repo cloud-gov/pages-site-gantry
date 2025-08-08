@@ -1,0 +1,28 @@
+---
+import ReportCard from "@/components/ReportCard.astro";
+
+const { items = [] } = Astro.props;
+---
+
+<>
+  {items.length === 0 && <p>No items found</p>}
+  {
+    items.length > 0 && (
+      <ol class="usa-collection-group measure-6">
+        {items.map((n) => (
+         <ReportCard {...n} /> 
+        ))}
+      </ol>
+    )
+  }
+</>
+
+<style>
+  .usa-collection {
+    flex-basis: max-content; /* otherwise collections will be 2 col */
+  }
+  .usa-collection-group {
+    padding: 0; 
+    margin: 0; 
+  }
+</style>

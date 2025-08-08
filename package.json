@@ -22,6 +22,7 @@
     "astro": "^5.2.5",
     "body-parser": "^2.1.0",
     "cookie-parser": "^1.4.7",
+    "esbuild": "^0.23.1",
     "express": "^5.0.1",
     "http-proxy": "^1.18.1",
     "jose": "^5.9.6",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@types/node": "^22.13.4",
     "@types/sanitize-html": "^2.15.0",
+    "happy-dom": "^18.0.1",
     "sass-embedded": "^1.85.0",
     "vitest": "^3.2.4"
   },

@@ -31,10 +31,12 @@ const report = reportMapper(data);
 
 <Layout title={report.title}>
   <PagesSection>
-    <div class="flex-column padding-bottom-8">
+    <div class="flex-column margin-bottom-5">
       <h1 set:text={report.title} />
       <p class="font-sans-sm text-italic" set:text={report.date} />
-      <Tags tags={report.tags} />
+      <ul class="usa-collection__meta display-flex" aria-label="More information">
+        <Tags tags={report.tags} />
+      </ul>
     </div>
     <RichText content={report.content} />
   </PagesSection>
