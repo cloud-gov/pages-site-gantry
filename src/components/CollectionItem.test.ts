@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import ReportCard from './ReportCard.astro';
+import CollectionItem from './CollectionItem.astro';
 
-describe('ReportCard', () => {
+describe('CollectionItem', () => {
   let container;
 
   beforeEach(async () => {
@@ -10,7 +10,7 @@ describe('ReportCard', () => {
   });
 
   it('renders with minimal props', async () => {
-    const result = await container.renderToString(ReportCard, {
+    const result = await container.renderToString(CollectionItem, {
       props: {
         title: 'Test Report',
         link: '/test',
@@ -24,7 +24,7 @@ describe('ReportCard', () => {
   });
 
   it('renders a date when provided', async () => {
-    const result = await container.renderToString(ReportCard, {
+    const result = await container.renderToString(CollectionItem, {
       props: {
         title: 'Test Report',
         link: '/test',
@@ -36,7 +36,7 @@ describe('ReportCard', () => {
   });
 
   it('does not render date when omitted', async () => {
-    const result = await container.renderToString(ReportCard, {
+    const result = await container.renderToString(CollectionItem, {
       props: {
         title: 'Test Report',
         link: '/test',
@@ -48,7 +48,7 @@ describe('ReportCard', () => {
   }); 
 
   it('renders image with a src and alt', async () => {
-     const result = await container.renderToString(ReportCard, {
+     const result = await container.renderToString(CollectionItem, {
       props: {
         title: 'Test Report',
         link: '/test',
@@ -63,7 +63,7 @@ describe('ReportCard', () => {
   });
 
   it('does not render image if none is provided', async () => {
-    const result = await container.renderToString(ReportCard, {
+    const result = await container.renderToString(CollectionItem, {
       props: {
         title: 'Test Report',
         link: '/test',
@@ -74,7 +74,7 @@ describe('ReportCard', () => {
   }); 
 
   it('renders with bare minimum', async () => {
-     const result = await container.renderToString(ReportCard, {
+     const result = await container.renderToString(CollectionItem, {
       props: {
         title: 'Bare minimum',
         link: '/bare',

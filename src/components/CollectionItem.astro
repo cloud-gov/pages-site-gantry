@@ -34,12 +34,12 @@ const {
       <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
         <Link href={link}>{title}</Link>
       </SectionHeader>
-      <ul class="usa-collection__meta" aria-label="More information">
-        <li class="usa-collection__meta-item">{date}</li>
-      </ul>
       <div class="usa-collection__description">
         <p>{description}</p>
       </div>
+      <ul class="usa-collection__meta" aria-label="More information">
+        <li class="usa-collection__meta-item">{date}</li>
+      </ul>
       {tags && tags.length > 0 && (
         <ul class="usa-collection__meta display-flex margin-top-2" aria-label="More information">
           <Tags tags={tags} />

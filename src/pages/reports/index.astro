@@ -1,11 +1,11 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import ReportsList from "@/components/ReportsList.astro";
+import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "@/utilities/payload-fetch";
-import { reportMapper } from "@/utilities/collections";
+import { reportMapper } from "@/utilities/reportMapper";
 
 const collectionName = "reports";
 let reports: CollectionEntry<typeof collectionName>["data"][];
@@ -24,6 +24,6 @@ const items = reports.map(reportMapper);
 
 <Layout title="Reports">
   <PagesSection heading="Reports" color="gray-10">
-    <ReportsList items={items}/>
+    <CollectionItemList items={items}/>
   </PagesSection>
 </Layout>
