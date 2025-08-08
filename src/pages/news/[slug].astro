@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import { createGetStaticPath } from "@/utilities/staticPath";
 import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
+import PagesSection from "@/components/PagesSection.astro";
 
 const { slug } = Astro.params;
 const collectionName = "news";
@@ -25,8 +26,10 @@ export const getStaticPaths = createGetStaticPath("news");
 ---
 
 <Layout title={data.title}>
-  <article class="grid-container">
-    <h1 set:text={data.title} />
+  <PagesSection>
+    <div class="flex-column margin-bottom-5">
+      <h1 set:text={data.title} />
+    </div>
     <RichText content={data.content} />
-  </article>
+  </PagesSection>
 </Layout>
