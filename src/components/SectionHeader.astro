@@ -10,9 +10,9 @@ const {
 } = Astro.props;
 
 const ValidHeadingLevels = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-const Tag = ValidHeadingLevels.includes(headingLevel) ? headingLevel : 'h2';
+const Header = ValidHeadingLevels.includes(headingLevel) ? headingLevel : 'h2';
 ---
 
-<Tag class={customClass}>
+<Header class={customClass}>
   <slot />
-</Tag>
+</Header>

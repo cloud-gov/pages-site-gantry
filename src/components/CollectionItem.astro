@@ -15,14 +15,17 @@ export interface Props {
 }
 
 const {
-  title, 
-  description, 
-  date, 
+  title = "", 
+  description = "", 
+  date = "", 
   tags = [],
-  image, 
-  imageAlt, 
-  link,
+  image = "", 
+  imageAlt = "", 
+  link = "",
 } = Astro.props;
+
+const hasTags = tags?.length > 0; 
+const hasDescription = !!description?.trim(); 
 ---
 
 <>
@@ -34,13 +37,12 @@ const {
       <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
         <Link href={link}>{title}</Link>
       </SectionHeader>
-      <div class="usa-collection__description">
-        <p>{description}</p>
-      </div>
-      <ul class="usa-collection__meta" aria-label="More information">
-        <li class="usa-collection__meta-item">{date}</li>
-      </ul>
-      {tags && tags.length > 0 && (
+      {hasDescription && (
+        <div class="usa-collection__description">
+          <p>{description}</p>
+        </div>
+      )}
+      {hasTags && (
         <ul class="usa-collection__meta display-flex margin-top-2" aria-label="More information">
           <Tags tags={tags} />
         </ul>
@@ -50,9 +52,6 @@ const {
 </>
 
 <style is:global>
-  .usa-collection {
-    flex-basis: max-content; /* otherwise collections will be 2 col */
-  }
   .usa-collection__footer {
     gap: 0.5rem;
     display: flex;
