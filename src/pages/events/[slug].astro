@@ -2,7 +2,9 @@
 import { type CollectionEntry } from "astro:content";
 import { createGetStaticPath } from "@/utilities/staticPath";
 import payloadFetch from "@/utilities/payload-fetch";
-import Layout from "../../layouts/Layout.astro";
+import { tryParseDateParts } from "@/utilities/dates";
+import PagesSection from "@/components/PagesSection.astro";
+import Layout from "@/layouts/Layout.astro";
 
 const { slug } = Astro.params;
 
@@ -27,17 +29,42 @@ if (!Astro.isPrerendered) {
   ({ data } = Astro.props);
 }
 
+const start = tryParseDateParts(data.startDate);
+const end = tryParseDateParts(data.endDate);
+
 export const getStaticPaths = createGetStaticPath("events");
 ---
 
-<Layout title={data.title}>
-  <article class="grid-container">
-    <h1 set:text={data.title} />
-    <p set:text={data.format} />
-    <p set:text={data.location} />
-    <a class="usa-button" href={data.registrationUrl}> Register </a>
-    <p set:text={data.startDate} />
-    <p set:text={data.endDate} />
-    <section class="usa-prose" set:text={data.description} />
-  </article>
+<Layout title="events">
+  <PagesSection heading={data.title}>
+    <div
+      class="usa-summary-box margin-bottom-2"
+      role="region"
+      aria-labelledby={`event-details-${slug}`}
+    >
+    <div class="usa-summary-box__body">
+      <h2 class="usa-summary-box__heading" id={`event-details-${slug}`}>
+        Event details
+      </h2>
+      <div class="usa-summary-box__text">
+        <ul class="usa-list">
+          <li><b>Format:</b> {data.format}</li>
+          <li><b>Location:</b> {data.location}</li>
+          <li>
+            <b>Date and time:</b> {start.full}
+            {end && (
+              <span>until {end!.full}</span>
+            )}
+          </li>
+        </ul>
+      </div>
+    </div>
+    </div>
+    <section>
+      {data.description && 
+        <p class="margin-bottom-2">{data.description}</p>
+      }
+      <a class="usa-button" href={data.registrationUrl}>Register</a>
+    </section>
+  </PagesSection>
 </Layout>

@@ -1,9 +1,11 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import Link from "@/components/Link.astro";
-import payloadFetch from "@/utilities/payload-fetch";
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import PagesSection from "@/components/PagesSection.astro";
 import type { CollectionEntry } from "astro:content";
+import payloadFetch from "@/utilities/payload-fetch";
+import { eventsMapper } from "@/utilities/eventsMapper";
 
 const collectionName = "events";
 let events: CollectionEntry<typeof collectionName>["data"][];
@@ -13,22 +15,15 @@ if (!Astro.isPrerendered) {
   const eventsData = await response.json();
   events = eventsData.docs;
 } else {
-  const eventCollection = await getCollection(collectionName);
-  events = eventCollection.map((event) => event.data);
+  const eventsCollection = await getCollection(collectionName);
+  events = eventsCollection.map((n) => n.data);
 }
+
+const items = events.map(eventsMapper);
 ---
 
-<Layout>
-  <div class="grid-container">
-    <h1>Events Page</h1>
-    <ul>
-      {
-        events.map((event) => (
-          <li>
-            <Link href={`/events/${event.slug}`}>{event.title}</Link>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+<Layout title="events">
+  <PagesSection heading="Events">
+    <CollectionItemList showEvent hideDate={true} items={items}/>
+  </PagesSection>
 </Layout>
