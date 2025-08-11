@@ -23,6 +23,9 @@ const {
   imageAlt, 
   link,
 } = Astro.props;
+
+const hasTags = tags?.length > 0; 
+const hasDescription = !!description?.trim(); 
 ---
 
 <>
@@ -37,10 +40,12 @@ const {
       <ul class="usa-collection__meta" aria-label="More information">
         <li class="usa-collection__meta-item">{date}</li>
       </ul>
-      <div class="usa-collection__description">
-        <p>{description}</p>
-      </div>
-      {tags && tags.length > 0 && (
+      {hasDescription && (
+        <div class="usa-collection__description">
+          <p>{description}</p>
+        </div>
+      )}
+      {hasTags && (
         <ul class="usa-collection__meta display-flex margin-top-2" aria-label="More information">
           <Tags tags={tags} />
         </ul>
