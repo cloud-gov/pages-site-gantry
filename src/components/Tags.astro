@@ -13,26 +13,24 @@ interface Props {
 const { tags } = Astro.props;
 ---
 
-<div class="tags usa-dark-background bg-transparent">
-  {
-    tags.map((tag) => {
-      if (tag.url) {
-        return (
-          <Link href={tag.url} className="usa-tag usa-link">
-            {tag.label}
+{
+  tags.map((tag) => {
+    if (tag.url) {
+      return (
+        <li class="usa-collection__meta-item">
+          <Link href={tag.url} className="usa-link">
+            <span class="usa-tag">{tag.label}</span>
           </Link>
-        );
-      }
+        </li>
+      );
+    }
 
-      return <span class="usa-tag">{tag.label}</span>;
-    })
-  }
-</div>
+    return <span class="usa-tag">{tag.label}</span>;
+  })
+}
 
 <style>
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .usa-link {
+    text-decoration: none;
   }
 </style>
