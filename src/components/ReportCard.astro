@@ -15,13 +15,13 @@ export interface Props {
 }
 
 const {
-  title, 
-  description, 
-  date, 
+  title = "", 
+  description = "", 
+  date = "", 
   tags = [],
-  image, 
-  imageAlt, 
-  link,
+  image = "", 
+  imageAlt = "", 
+  link = "",
 } = Astro.props;
 
 const hasTags = tags?.length > 0; 
@@ -55,9 +55,6 @@ const hasDescription = !!description?.trim();
 </>
 
 <style is:global>
-  .usa-collection {
-    flex-basis: max-content; /* otherwise collections will be 2 col */
-  }
   .usa-collection__footer {
     gap: 0.5rem;
     display: flex;
