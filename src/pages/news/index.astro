@@ -16,11 +16,9 @@ if (!Astro.isPrerendered) {
   const response = await payloadFetch(`${collectionName}?draft=true`);
   const newsData = await response.json();
   news = newsData.docs;
-  console.log(news);
 } else {
   const newsCollection = await getCollection(collectionName);
   news = newsCollection.map((n) => n.data);
-  console.log(news);
 }
 
 const items = news.map(newsMapper);
