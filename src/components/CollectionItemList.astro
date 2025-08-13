@@ -1,5 +1,5 @@
 ---
-import ReportCard from "@/components/ReportCard.astro";
+import CollectionItem from "@/components/CollectionItem.astro";
 
 const { items = [] } = Astro.props;
 ---
@@ -10,7 +10,7 @@ const { items = [] } = Astro.props;
     items.length > 0 && (
       <ol class="usa-collection-group measure-6">
         {items.map((n) => (
-         <ReportCard {...n} /> 
+         <CollectionItem {...n} /> 
         ))}
       </ol>
     )

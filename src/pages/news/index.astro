@@ -4,6 +4,10 @@ import Layout from "@/layouts/Layout.astro";
 import Link from "@/components/Link.astro";
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "@/utilities/payload-fetch";
+import PagesSection from "@/components/PagesSection.astro";
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import { newsMapper } from "@/utilities/newsMapper";
+
 
 const collectionName = "news";
 let news: CollectionEntry<typeof collectionName>["data"][];
@@ -16,19 +20,12 @@ if (!Astro.isPrerendered) {
   const newsCollection = await getCollection(collectionName);
   news = newsCollection.map((n) => n.data);
 }
+
+const items = news.map(newsMapper);
 ---
 
-<Layout>
-  <div class="grid-container">
-    <h1>News Page</h1>
-    <ul>
-      {
-        news.map((n) => (
-          <li>
-            <Link href={`/news/${n.slug}`}>{n.title}</Link>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+<Layout title="News">
+  <PagesSection heading="News" color="gray-10">
+    <CollectionItemList items={items}/>
+  </PagesSection>
 </Layout>

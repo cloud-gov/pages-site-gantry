@@ -37,9 +37,6 @@ const hasDescription = !!description?.trim();
       <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
         <Link href={link}>{title}</Link>
       </SectionHeader>
-      <ul class="usa-collection__meta" aria-label="More information">
-        <li class="usa-collection__meta-item">{date}</li>
-      </ul>
       {hasDescription && (
         <div class="usa-collection__description">
           <p>{description}</p>
