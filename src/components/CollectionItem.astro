@@ -2,36 +2,61 @@
 import Link from "@/components/Link.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
+import { parseDateParts, type DateParts } from "@/utilities/dates";
 
 export interface Props {
   title: string;
   description?: string;
-  date?: string;
+  date?: string | DateParts;
+  startDate?: string | DateParts;
+  endDate?: string | DateParts;
   tags?: Tag[];
   image?: string;
   imageAlt?: string;
   link?: string;
   linkText?: string;
+  showEvent?: boolean;
 }
 
 const {
   title = "", 
   description = "", 
-  date = "", 
+  date = "",
+  startDate = "",
   tags = [],
   image = "", 
   imageAlt = "", 
   link = "",
+  showEvent = false,
 } = Astro.props;
 
+function normalizeDate(input?: string | DateParts): DateParts | null {
+  return input
+    ? (typeof input === 'string' ? parseDateParts(input) : input)
+    : null; 
+}
+
+const dateParts = normalizeDate(date);
+const startParts = normalizeDate(startDate);
+
 const hasTags = tags?.length > 0; 
-const hasDescription = !!description?.trim(); 
+const hasDescription = !!description?.trim();
+
+const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dateParts.raw.getTime()));
 ---
 
 <>
   <li class="usa-collection__item">
     {image && (
       <img class="usa-collection__img" src={image} alt={imageAlt} />
+    )}
+    {showEvent && startParts?.raw && (
+      <div class="usa-collection__calendar-date">
+      <time datetime={startParts.raw.toISOString()}>
+        <span class="usa-collection__calendar-date-month">{startParts.abbrMonth}</span>
+        <span class="usa-collection__calendar-date-day">{startParts.day}</span>
+      </time>
+    </div>
     )}
     <div class="usa-collection__body">
       <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
@@ -42,8 +67,15 @@ const hasDescription = !!description?.trim();
           <p>{description}</p>
         </div>
       )}
+      {hasValidDate && !showEvent &&(
+        <ul class="usa-collection__meta" aria-label="More information">
+          <li class="usa-collection__meta-item">
+            <time datetime={dateParts.raw.toISOString()}>{dateParts.full}</time>
+          </li>
+        </ul>
+      )}
       {hasTags && (
-        <ul class="usa-collection__meta display-flex margin-top-2" aria-label="More information">
+        <ul class="usa-collection__meta display-flex margin-top-2" aria-label="Tag links">
           <Tags tags={tags} />
         </ul>
       )}

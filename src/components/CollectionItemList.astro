@@ -1,7 +1,7 @@
 ---
 import CollectionItem from "@/components/CollectionItem.astro";
 
-const { items = [] } = Astro.props;
+const { items = [], showEvent = false } = Astro.props;
 ---
 
 <>
@@ -10,7 +10,7 @@ const { items = [] } = Astro.props;
     items.length > 0 && (
       <ol class="usa-collection-group measure-6">
         {items.map((n) => (
-         <CollectionItem {...n} /> 
+         <CollectionItem {...n} showEvent={showEvent}/> 
         ))}
       </ol>
     )

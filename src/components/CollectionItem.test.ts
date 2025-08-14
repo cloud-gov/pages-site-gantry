@@ -76,7 +76,7 @@ describe('CollectionItem', () => {
     });
 
     expect(html).toContain('usa-collection__meta');
-    expect(html).toContain('More information'); // aria-label text
+    expect(html).toContain('Tag links'); // aria-label text
     expect(html).toContain('News');
     expect(html).toContain('UX');
   });
@@ -101,4 +101,30 @@ describe('CollectionItem', () => {
     expect(html).toContain('href="/bare"');
     expect(html).not.toContain('<img');
   });
+
+  it('renders event date when showEvent and startDate are provided', async () => {
+    const html = await renderHTML({
+      title: 'Event test',
+      link: '/event',
+      showEvent: true,
+      startDate: '2024-12-25',
+    });
+
+    expect(html).toContain('Event test');
+    expect(html).toContain('href="/event"');
+    expect(html).toContain('Dec');
+  });
+
+  it('does not render event date when startDate is missing', async () => {
+    const html = await renderHTML({
+      title: 'Event without Start',
+      link: '/event-no-date',
+      showEvent: true,
+    });
+
+    expect(html).not.toContain('usa-collection__calendar-date');
+    expect(html).not.toContain('<time');
+  });
+
+
 });
