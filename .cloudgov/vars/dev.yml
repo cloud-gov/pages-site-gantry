@@ -2,3 +2,4 @@ instances: 1
 env: dev
 log_level: verbose
 node_env: development
+preview_mode: true

@@ -27,14 +27,80 @@ This project uses Vitest and Astro Container for testing Astro components. See [
 
 ## CI
 
-This repository contains the defintion for a single Concourse pipeline. This pipeline is responsible for reading from a specific S3 bucket and deploying one application per JSON file found there. Those JSON files correspond to sites created by `pages-editor` and contain at least the following properties:
+The CI pipeline is used to deploy the sites to allow `pages-editor` users to preview their content updates in the same layout, configuration, and theme as their production site. This repository contains the defintion for a single Concourse pipeline. This pipeline is responsible for reading from a specific S3 bucket and deploying one application per JSON file found there. Those JSON files correspond to sites created by `pages-editor` and contain at least the following properties:
 
 - `name`: The name of the site
 - `apiKey`: The API key corresponding to a "bot" user for the site. This key has read-only access to the site's contents
 
-## Docker
+The deployment process is orchestrated through a **Concourse CI pipeline** that automatically deploys multiple sites from a centralized S3 bucket. Here's the complete flow:
 
-TBD
+**1. Pipeline Setup (`set-pipeline` job)**
+- The pipeline first boots up and sets itself using environment-specific configuration
+- It uses the `deploy-env` variable to determine which environment to deploy to (likely staging/production)
+
+**2. Site Discovery (`new-deploys` job)**
+- The pipeline monitors an S3 bucket for changes to site configurations
+- It runs the `ls-sites` task which scans the S3 bucket for JSON files in the `_sites/` directory
+- Each JSON file represents a site created by the `pages-editor`
+- Combines all site configurations into a single `sites.json` file
+
+**3. Parallel Site Deployment**
+- For each site discovered, the pipeline runs a `deploy-site-gantry` task
+- **Up to 20 sites can deploy simultaneously** (`max_in_flight: 20`)
+- Each site gets its own Cloud Foundry application named `{site-name}-site-gantry`
+
+**4. Site Configuration Requirements**
+Each site JSON file must contain:
+- `name`: The site identifier
+- `apiKey`: A read-only API key for accessing site content
+
+**5. Infrastructure Details**
+- **Cloud Provider**: Cloud.gov (Cloud Foundry)
+- **Deployment Strategy**: Rolling deployment for zero-downtime updates
+- **Configuration**: Environment-specific variables and manifests stored in `.cloudgov/` directory
+- **Authentication**: Uses GPG keys and GitHub SSH keys for secure access
+
+**6. Triggering Deployments**
+- Deployments are automatically triggered when:
+  - New site configurations are added to the S3 bucket
+  - Existing site configurations are updated
+  - The source code repository changes
+
+### Environment Variables
+
+The deployment uses the following environment variables, configured via the Cloud Foundry manifest and vars files:
+
+**Core Application Settings:**
+- `NODE_ENV`: Node.js environment (development, staging, production)
+- `LOG_LEVEL`: Logging verbosity level
+- `NPM_CONFIG_PRODUCTION`: Set to `false` for development dependencies
+- `NODE_MODULES_CACHE`: Set to `false` to disable module caching
+- `OPTIMIZE_MEMORY`: Set to `true` for memory optimization
+
+**Site Configuration:**
+- `SITE`: The site identifier/name
+- `APP_ENV`: The deployment environment (staging, production)
+- `PREVIEW_MODE`: (Set to `true`) Tells the site it is running in preview mode
+
+**External Service URLs:**
+- `EDITOR_APP_URL`: URL to the pages-editor application (e.g., `https://pages-editor-staging.app.cloud.gov`)
+- `ASTRO_ENDPOINT`: Local Astro development server endpoint (`http://localhost:4321`)
+
+**Authentication & API:**
+- `PAYLOAD_API_KEY`: API key for accessing the site's content via Payload CMS
+
+**Build & Performance:**
+- `ASTRO_TELEMETRY_DISABLED`: Set to `1` to disable Astro telemetry collection
+
+**Cloud Foundry Configuration:**
+- `CF_APP_NAME`: Application name in format `{site-name}-site-gantry`
+- `CF_MANIFEST`: Path to the Cloud Foundry manifest file
+- `CF_VARS_FILE`: Environment-specific variables file
+- `CF_PATH`: Source code path for deployment
+- `CF_API`: Cloud Foundry API endpoint
+- `CF_ORG`: Target Cloud Foundry organization
+- `CF_SPACE`: Target Cloud Foundry space
+- `CF_STACK`: Cloud Foundry stack (e.g., cflinuxfs4)
 
 ## Rendering Patterns
 

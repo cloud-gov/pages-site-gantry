@@ -1,0 +1,35 @@
+---
+import { type CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { createGetStaticPath } from "@/utilities/staticPath";
+import RichText from "@/components/RichText.astro";
+import payloadFetch from "@/utilities/payload-fetch";
+import PagesSection from "@/components/PagesSection.astro";
+
+const { slug } = Astro.params;
+const collectionName = "posts";
+let data: CollectionEntry<typeof collectionName>["data"];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(
+    `${collectionName}?where[slug][equals]=${slug}&draft=true`
+  );
+  const n = await response.json();
+  if (n.docs.length === 0) return Astro.redirect("/404");
+  data = n.docs[0];
+} else {
+  // @ts-expect-error
+  ({ data } = Astro.props);
+}
+
+export const getStaticPaths = createGetStaticPath("posts");
+---
+
+<Layout title={data.title}>
+  <PagesSection>
+    <div class="flex-column margin-bottom-5">
+      <h1 set:text={data.title} />
+    </div>
+    <RichText content={data.content} />
+  </PagesSection>
+</Layout>
