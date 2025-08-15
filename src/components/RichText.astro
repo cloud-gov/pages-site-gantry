@@ -1,13 +1,58 @@
 ---
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import {
+  convertLexicalToHTML,
+  type HTMLConvertersFunction,
+} from "@payloadcms/richtext-lexical/html";
+import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
 import sanitizeHtml from "sanitize-html";
+import upload from "./RichTextConverers/upload";
 
 const { content } = Astro.props;
+
+type NodeTypes = DefaultNodeTypes;
+
+const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
+  defaultConverters,
+}) => {
+  return {
+    ...defaultConverters,
+    upload: ({ node }) => upload({ node }),
+  };
+};
 ---
 
 <section
   class="usa-prose"
-  set:html={sanitizeHtml(convertLexicalToHTML({ data: content }), {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-  })}
+  set:html={sanitizeHtml(
+    convertLexicalToHTML({ data: content, converters: htmlConverters }),
+    {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+        "img",
+        "svg",
+        "use",
+      ]),
+      allowedClasses: {
+        a: false,
+        div: false,
+        h1: false,
+        h2: false,
+        h3: false,
+        h4: false,
+        h5: false,
+        h6: false,
+        img: false,
+        li: false,
+        ol: false,
+        p: false,
+        span: false,
+        ul: false,
+      },
+      allowedAttributes: {
+        a: ["href", "name", "target", "download"],
+        img: ["src", "alt"],
+        use: ["href"],
+        svg: ["class", "aria-hidden", "focusable", "role", "img"],
+      },
+    }
+  )}
 />
