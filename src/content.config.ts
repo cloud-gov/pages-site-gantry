@@ -65,6 +65,7 @@ const events = defineCollection({
       format: z.enum(["inperson", "virtual"]),
       registrationUrl: z.string(),
       description: z.string(),
+      content: z.any(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -142,4 +143,18 @@ const reports = defineCollection({
   ),
 });
 
-export const collections = { events, news, siteConfig, reports };
+const posts = defineCollection({
+  loader: collectionLoader("posts"),
+  schema: makeAllKeysNullable(
+    z.object({
+      title: z.string(),
+      slug: z.string(),
+      content: z.any(), // content is a lexical object
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    })
+  ),
+});
+
+export const collections = { events, news, siteConfig, reports, posts};
