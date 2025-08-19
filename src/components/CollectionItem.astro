@@ -67,7 +67,7 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
           <p>{description}</p>
         </div>
       )}
-      {hasValidDate && !showEvent &&(
+      {hasValidDate && !showEvent && (
         <ul class="usa-collection__meta" aria-label="More information">
           <li class="usa-collection__meta-item">
             <time datetime={dateParts.raw.toISOString()}>{dateParts.full}</time>
