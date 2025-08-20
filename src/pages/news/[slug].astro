@@ -28,7 +28,7 @@ export const getStaticPaths = createGetStaticPath("news");
 <Layout title={data.title}>
   <PagesSection>
     <div class="flex-column margin-bottom-5">
-      <h1 set:text={data.title} />
+      <h1 set:text={data.title} class="font-body-xl" />
     </div>
     <RichText content={data.content} />
   </PagesSection>
