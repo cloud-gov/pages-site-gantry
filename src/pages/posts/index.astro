@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import type { CollectionEntry } from "astro:content";
+import payloadFetch from "@/utilities/payload-fetch";
+import { postsMapper } from "@/utilities/postsMapper";
+
+const collectionName = "posts";
+let posts: CollectionEntry<typeof collectionName>["data"][];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(`${collectionName}?draft=true`);
+  const postsData = await response.json();
+  posts = postsData.docs;
+} else {
+  const postsCollection = await getCollection(collectionName);
+  posts = postsCollection.map((n) => n.data);
+}
+
+const items = posts.map(postsMapper);
+---
+
+<Layout title="posts">
+  <PagesSection heading="Posts">
+    <CollectionItemList items={items}/>
+  </PagesSection>
+</Layout>
