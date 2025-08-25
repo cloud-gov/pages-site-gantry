@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { createGetStaticPath } from "@/utilities/staticPath";
+import payloadFetch from "@/utilities/payload-fetch";
+import PagesSection from "@/components/PagesSection.astro";
+import RichText from "@/components/RichText.astro";
+
+const { slug } = Astro.params;
+
+const collectionName = "pages";
+
+let data: any;
+
+const pageQuery = `${collectionName}?where[slug][equals]=${slug}&depth=1`;
+const res = await payloadFetch(pageQuery);
+const { docs: pageDocs } = await res.json();
+const page = pageDocs[0];
+
+if (!page) {
+  return Astro.redirect("/404");
+}
+
+const pageContent = page.content;
+const pageTitle = page.title;
+
+export async function getStaticPaths() {
+  const query = "pages";
+  const res = await payloadFetch(query);
+  const { docs: pages } = await res.json();
+
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+  }));
+}
+
+---
+
+<Layout title={pageTitle}>
+  <PagesSection>
+    <h1>{pageTitle}</h1>
+    <RichText content={pageContent} />
+  </PagesSection>
+</Layout>
