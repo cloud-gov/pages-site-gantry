@@ -16,6 +16,8 @@ export interface Props {
   link?: string;
   linkText?: string;
   showEvent?: boolean;
+  jobTitle?: string;
+  isLeadership?: boolean;
 }
 
 const {
@@ -28,6 +30,8 @@ const {
   imageAlt = "", 
   link = "",
   showEvent = false,
+  jobTitle = "",
+  isLeadership = false,
 } = Astro.props;
 
 function normalizeDate(input?: string | DateParts): DateParts | null {
@@ -46,7 +50,7 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
 ---
 
 <>
-  <li class="usa-collection__item">
+  <li class="usa-collection__item maxw-tablet">
     {image && (
       <img class="usa-collection__img" src={image} alt={imageAlt} />
     )}
@@ -62,9 +66,15 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
       <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
         <Link href={link}>{title}</Link>
       </SectionHeader>
-      {hasDescription && (
+      {isLeadership && jobTitle && (
         <div class="usa-collection__description">
-          <p>{description}</p>
+          <h3 class="usa-collection__job-title font-body-md">{jobTitle}</h3>
+          {description && <p>{description}</p>}
+        </div>
+      )}
+      {hasDescription && !isLeadership && (
+        <div class="usa-collection__description">
+          <p set:html={description.replace(/\n/g, '<br>')} />
         </div>
       )}
       {hasValidDate && !showEvent && (
@@ -85,15 +95,22 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
 
 <style is:global>
   .usa-collection__footer {
-    gap: 0.5rem;
+    gap: var(--spacing-2);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-2);
   }
   .usa-collection__meta {
-    font-size: 0.9rem;
-    margin-top: 0.4rem;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-2);
+  }
+  
+  .usa-collection__item:has(.usa-collection__job-title) .usa-collection__img {
+    width: var(--spacing-40);
+    height: var(--spacing-40);
+    margin-right: var(--spacing-6); 
+    object-fit: cover;
   }
 </style>

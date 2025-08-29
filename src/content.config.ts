@@ -157,4 +157,22 @@ const posts = defineCollection({
   ),
 });
 
-export const collections = { events, news, siteConfig, reports, posts};
+const leadership = defineCollection({
+  loader: collectionLoader("leadership"),
+  schema: makeAllKeysNullable(
+    z.object({
+      title: z.string(),
+      slug: z.string(),
+      jobTitle: z.string(),
+      description: z.string(),
+      image: z.any(),
+      imageAlt: z.string(),
+      content: z.any(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    })
+  ),
+});
+
+export const collections = { events, news, siteConfig, reports, posts, leadership};

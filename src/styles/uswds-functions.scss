@@ -1,0 +1,26 @@
+/* USWDS SCSS Functions */
+
+// Spacing function
+@function units($multiplier) {
+  @return $multiplier * 0.25rem;
+}
+
+// Usage: units(4) = 1rem, units(6) = 1.5rem, units(10) = 2.5rem
+
+// Color function
+@function color($name, $variant: 'base') {
+  $colors: (
+    'primary': (
+      'base': #005ea2,
+      'dark': #1a4480,
+      'darker': #162e51,
+      'light': #73b3e7,
+      'lighter': #d9e8f6,
+      'lightest': #f0f8ff
+    )
+  );
+  
+  @return map-get(map-get($colors, $name), $variant);
+}
+
+// Usage: color('primary') = #005ea2, color('primary', 'dark') = #1a4480
