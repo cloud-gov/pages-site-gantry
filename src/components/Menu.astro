@@ -1,35 +1,42 @@
 ---
-// TODO:
-// - add logo
-// - do we need deeper navigation elements?
 import Search from "./Search.astro";
 import Link from "./Link.astro";
 import { Image } from "astro:assets";
 import close from "@uswds-images/usa-icons/close.svg";
-
-const navigationElements = [
-  { name: "Home", url: "/" },
-  { name: "Posts", url: "/posts" },
-  { name: "Events", url: "/events" },
-  { name: "News", url: "/news" },
-  { name: "Reports", url: "/reports" },
-  { name: "About", url: "/about" },
-  { name: "History", url: "/history" },
-  { name: "Careers", url: "/careers" },
-  { name: "Contact", url: "/contact" },
-];
+import payloadFetch from "@/utilities/payload-fetch";
 
 const currentPath = Astro.url.pathname;
+const { title } = Astro.props;
 
-const { title } = Astro.props
+// Fetch the menu data from Payload CMS
+const query = "globals/menu?depth=1";
+let navigationElements: any[] = [];
+try {
+  const res = await payloadFetch(query);
+  const data = await res.json();
+  console.log("Menu API response:", JSON.stringify(data, null, 2));
+  
+  // Try different possible data structures
+  if (data.items) {
+    navigationElements = data.items;
+  } else if (data.menu) {
+    navigationElements = data.menu;
+  } else if (Array.isArray(data)) {
+    navigationElements = data;
+  } else {
+    console.log("No recognizable menu structure found in:", data);
+  }
+} catch (error) {
+  console.error("Failed to fetch navigation data:", error);
+}
 ---
 
 <header class="usa-header usa-header--extended" role="banner">
   <div class="usa-navbar">
     <div class="usa-logo">
-      <em class="usa-logo__text"
-        ><Link href="/" title={title}>{title}</Link></em
-      >
+      <em class="usa-logo__text">
+        <Link href="/" title={title}>{title}</Link>
+      </em>
     </div>
     <button class="usa-menu-btn">Menu</button>
   </div>
@@ -45,28 +52,45 @@ const { title } = Astro.props
       </button>
       <ul class="usa-nav__primary usa-accordion">
         {
-          navigationElements.map((nav) => (
-            <li class="usa-nav__primary-item">
-              <Link
-                className={`usa-nav__link${nav.url === currentPath ? " usa-current" : ""}`}
-                href={nav.url}
-              >
-                <span set:html={nav.name} />
-              </Link>
-            </li>
-          ))
+          navigationElements.map((item) => {
+            console.log("Processing menu item:", item);
+            let href = "#";
+            let label = "";
+
+            if (item.blockType === "navItem") {
+              href = `/${item.page.slug}`;
+              label = item.label;
+            } else if (item.blockType === "externalLink") {
+              href = item.url;
+              label = item.label;
+            } else if (item.blockType === "pageLink") {
+              href = `/${item.page.slug}`;
+              label = item.label;
+            } else if (item.blockType === "collectionLink") {
+              href = `/${item.page.slug}`;
+              label = item.label;
+            }
+
+            const isActive =
+              href !== "#" &&
+              (currentPath === href || currentPath.startsWith(href + "/"));
+
+            return (
+              <li class="usa-nav__primary-item">
+                <Link
+                  className={`usa-nav__link${isActive ? " usa-current" : ""}`}
+                  href={href}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  <span set:html={label} />
+                </Link>
+              </li>
+            );
+          })
         }
       </ul>
       <div class="usa-nav__secondary">
-        <ul class="usa-nav__secondary-links">
-          <!-- {% for nav_item in secondary_navigation %}
-          <li class="usa-nav__secondary-item">
-            <a href="{{ nav_item.url | url }}"
-              >{{ nav_item.name | escape }}</a
-            >
-          </li>
-          {% endfor %} -->
-        </ul>
+        <ul class="usa-nav__secondary-links"></ul>
         <Search />
       </div>
     </div>
