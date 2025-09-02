@@ -14,7 +14,6 @@ let navigationElements: any[] = [];
 try {
   const res = await payloadFetch(query);
   const data = await res.json();
-  console.log("Menu API response:", JSON.stringify(data, null, 2));
   
   // Try different possible data structures
   if (data.items) {
@@ -53,7 +52,6 @@ try {
       <ul class="usa-nav__primary usa-accordion">
         {
           navigationElements.map((item) => {
-            console.log("Processing menu item:", item);
             let href = "#";
             let label = "";
 

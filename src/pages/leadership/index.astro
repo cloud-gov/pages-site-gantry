@@ -1,0 +1,30 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import payloadFetch from "@/utilities/payload-fetch";
+import { leadershipMapper } from "@/utilities/leadershipMapper";
+
+const collectionName = "leadership";
+let people: CollectionEntry<typeof collectionName>["data"][];
+
+if (!Astro.isPrerendered) {
+  const response = await payloadFetch(`${collectionName}?draft=true`);
+  const responseData = await response.json();
+  people = responseData.docs;
+} else {
+  const collection = await getCollection(collectionName);
+  people = collection.map((e) => e.data);
+}
+
+const items = people.map(leadershipMapper);
+---
+
+<Layout title="Leadership">
+  <PagesSection heading="Leadership" color="gray-10">
+    <CollectionItemList items={items} />
+  </PagesSection>
+</Layout>
+
+
