@@ -52,6 +52,41 @@ try {
       <ul class="usa-nav__primary usa-accordion">
         {
           navigationElements.map((item) => {
+            if (item.blockType === "dropdown") {
+              return (
+                <li class="usa-nav__primary-item">
+                  <button 
+                    class="usa-accordion__button usa-nav__link" 
+                    aria-expanded="false"
+                    aria-controls={`nav-${item.id || Math.random().toString(36).substr(2, 9)}`}
+                  >
+                    <span set:html={item.label} />
+                  </button>
+                  <ul 
+                    id={`nav-${item.id || Math.random().toString(36).slice(2, 11)}`}
+                    class="usa-accordion__content usa-nav__submenu"
+                  >
+                    {item.subItems?.map((subItem) => {
+                      const subHref = `/${subItem.page.slug}`;
+                      const isSubActive = currentPath === subHref || currentPath.startsWith(subHref + "/");
+                      
+                      return (
+                        <li class="usa-nav__submenu-item">
+                          <Link
+                            className={`usa-nav__link${isSubActive ? " usa-current" : ""}`}
+                            href={subHref}
+                            aria-current={isSubActive ? "page" : undefined}
+                          >
+                            <span set:html={subItem.label} />
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            }
+
             let href = "#";
             let label = "";
 
