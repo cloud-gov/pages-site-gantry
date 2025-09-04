@@ -41,7 +41,7 @@ const { title, items } = Astro.props;
                   <button
                     class="usa-accordion__button usa-nav__link"
                     aria-expanded="false"
-                    aria-controls={`nav-${item.id || Math.random().toString(36).substr(2, 9)}`}
+                    aria-controls={`nav-${item.id || Math.random().toString(36).slice(2, 11)}`}
                   >
                     <span set:html={item.label} />
                   </button>
