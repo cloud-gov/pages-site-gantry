@@ -1,16 +1,33 @@
 ---
-import { Image } from "astro:assets";
-import type { CollectionEntry } from "astro:content";
 import Search from "./Search.astro";
 import Link from "./Link.astro";
+import { Image } from "astro:assets";
 import close from "@uswds-images/usa-icons/close.svg";
-interface Props {
-  title: string;
-  items: CollectionEntry<'menu'>['data']['items']
-}
+import payloadFetch from "@/utilities/payload-fetch";
 
 const currentPath = Astro.url.pathname;
-const { title, items } = Astro.props;
+const { title } = Astro.props;
+
+// Fetch the menu data from Payload CMS
+const query = "globals/menu?depth=1";
+let navigationElements: any[] = [];
+try {
+  const res = await payloadFetch(query);
+  const data = await res.json();
+  
+  // Try different possible data structures
+  if (data.items) {
+    navigationElements = data.items;
+  } else if (data.menu) {
+    navigationElements = data.menu;
+  } else if (Array.isArray(data)) {
+    navigationElements = data;
+  } else {
+    console.log("No recognizable menu structure found in:", data);
+  }
+} catch (error) {
+  console.error("Failed to fetch navigation data:", error);
+}
 ---
 
 <header class="usa-header usa-header--extended" role="banner">
@@ -34,34 +51,35 @@ const { title, items } = Astro.props;
       </button>
       <ul class="usa-nav__primary usa-accordion">
         {
-          items.map((item) => {
+          navigationElements.map((item) => {
+            // Handle dropdown navigation
             if (item.blockType === "dropdown") {
+              const dropdownId = `nav-${item.id || Math.random().toString(36).slice(2, 11)}`;
               return (
                 <li class="usa-nav__primary-item">
                   <button
                     class="usa-accordion__button usa-nav__link"
                     aria-expanded="false"
-                    aria-controls={`nav-${item.id || Math.random().toString(36).slice(2, 11)}`}
+                    aria-controls={dropdownId}
                   >
                     <span set:html={item.label} />
                   </button>
                   <ul
-                    id={`nav-${item.id || Math.random().toString(36).slice(2, 11)}`}
+                    id={dropdownId}
                     class="usa-accordion__content usa-nav__submenu"
                   >
-                    {item.subitems?.map((subitem) => {
+                    {item.subitems?.map((subItem) => {
                       let subHref = "#";
-
-                      if (subitem.blockType === "pageLink") {
-                        subHref = `/${subitem.page.slug}`;
-                      } else if (subitem.blockType === "collectionLink") {
-                        subHref = `/${subitem.page}`;
+                    
+                      
+                      if (subItem.blockType === "pageLink") {
+                        subHref = `/${subItem.page.slug}`;
+                      } else if (subItem.blockType === "collectionLink") {
+                        subHref = `/${subItem.page}`;
                       }
-
-                      const isSubActive =
-                        currentPath === subHref ||
-                        currentPath.startsWith(subHref + "/");
-
+                      
+                      const isSubActive = currentPath === subHref || currentPath.startsWith(subHref + "/");
+                      
                       return (
                         <li class="usa-nav__submenu-item">
                           <Link
@@ -69,7 +87,7 @@ const { title, items } = Astro.props;
                             href={subHref}
                             aria-current={isSubActive ? "page" : undefined}
                           >
-                            <span set:html={subitem.label} />
+                            <span set:html={subItem.label} />
                           </Link>
                         </li>
                       );
@@ -79,6 +97,7 @@ const { title, items } = Astro.props;
               );
             }
 
+            // Handle regular navigation items
             let href = "#";
             let label = "";
 
