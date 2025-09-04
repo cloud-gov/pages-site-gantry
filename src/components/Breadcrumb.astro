@@ -1,0 +1,90 @@
+---
+import Link from "./Link.astro";
+import payloadFetch from "@/utilities/payload-fetch";
+
+const currentPath = Astro.url.pathname;
+
+// Build breadcrumb trail based on current path
+const buildBreadcrumbs = async () => {
+  const breadcrumbs = [
+    { text: "Home", url: "/", isCurrent: currentPath === "/" }
+  ];
+
+  // Skip if we're on home page
+  if (currentPath === "/") {
+    return breadcrumbs;
+  }
+
+  // Split path into segments
+  const pathSegments = currentPath.split("/").filter(Boolean);
+  
+  // Build breadcrumb trail
+  let currentUrl = "";
+  for (let i = 0; i < pathSegments.length; i++) {
+    const segment = pathSegments[i];
+    currentUrl += `/${segment}`;
+    
+    // Try to get the page title from Payload
+    let pageTitle = segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    
+    try {
+      // Check if it's a collection page first
+      if (["reports", "news", "events", "posts", "leadership"].includes(segment)) {
+        // This is a collection landing page
+        const collectionTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
+        breadcrumbs.push({
+          text: collectionTitle,
+          url: currentUrl,
+          isCurrent: i === pathSegments.length - 1
+        });
+        continue;
+      }
+      
+      // Try to get page data from Payload
+      const response = await payloadFetch(`pages?where[slug][equals]=${segment}&limit=1`);
+      const pageData = await response.json();
+      
+      if (pageData.docs && pageData.docs.length > 0) {
+        pageTitle = pageData.docs[0].title;
+      }
+    } catch (error) {
+      console.warn(`Could not fetch page data for segment: ${segment}`);
+    }
+    
+    breadcrumbs.push({
+      text: pageTitle,
+      url: currentUrl,
+      isCurrent: i === pathSegments.length - 1
+    });
+  }
+  
+  return breadcrumbs;
+};
+
+const breadcrumbs = await buildBreadcrumbs();
+
+// Don't show breadcrumbs on home page
+if (currentPath === "/") {
+  return null;
+}
+---
+
+<div class="grid-container">
+  <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+    <ol class="usa-breadcrumb__list">
+      {breadcrumbs.map((crumb, index) => (
+        <li class="usa-breadcrumb__list-item">
+          {crumb.isCurrent ? (
+            <span class="usa-breadcrumb__current" aria-current="page">
+              {crumb.text}
+            </span>
+          ) : (
+            <Link href={crumb.url} className="usa-breadcrumb__link">
+              <span>{crumb.text}</span>
+            </Link>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+</div>
