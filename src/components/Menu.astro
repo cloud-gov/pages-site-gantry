@@ -1,33 +1,16 @@
 ---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
 import Search from "./Search.astro";
 import Link from "./Link.astro";
-import { Image } from "astro:assets";
 import close from "@uswds-images/usa-icons/close.svg";
-import payloadFetch from "@/utilities/payload-fetch";
+interface Props {
+  title: string;
+  items: CollectionEntry<'menu'>['data']['items']
+}
 
 const currentPath = Astro.url.pathname;
-const { title } = Astro.props;
-
-// Fetch the menu data from Payload CMS
-const query = "globals/menu?depth=1";
-let navigationElements: any[] = [];
-try {
-  const res = await payloadFetch(query);
-  const data = await res.json();
-  
-  // Try different possible data structures
-  if (data.items) {
-    navigationElements = data.items;
-  } else if (data.menu) {
-    navigationElements = data.menu;
-  } else if (Array.isArray(data)) {
-    navigationElements = data;
-  } else {
-    console.log("No recognizable menu structure found in:", data);
-  }
-} catch (error) {
-  console.error("Failed to fetch navigation data:", error);
-}
+const { title, items } = Astro.props;
 ---
 
 <header class="usa-header usa-header--extended" role="banner">
@@ -51,25 +34,34 @@ try {
       </button>
       <ul class="usa-nav__primary usa-accordion">
         {
-          navigationElements.map((item) => {
+          items.map((item) => {
             if (item.blockType === "dropdown") {
               return (
                 <li class="usa-nav__primary-item">
-                  <button 
-                    class="usa-accordion__button usa-nav__link" 
+                  <button
+                    class="usa-accordion__button usa-nav__link"
                     aria-expanded="false"
                     aria-controls={`nav-${item.id || Math.random().toString(36).substr(2, 9)}`}
                   >
                     <span set:html={item.label} />
                   </button>
-                  <ul 
+                  <ul
                     id={`nav-${item.id || Math.random().toString(36).slice(2, 11)}`}
                     class="usa-accordion__content usa-nav__submenu"
                   >
-                    {item.subItems?.map((subItem) => {
-                      const subHref = `/${subItem.page.slug}`;
-                      const isSubActive = currentPath === subHref || currentPath.startsWith(subHref + "/");
-                      
+                    {item.subitems?.map((subitem) => {
+                      let subHref = "#";
+
+                      if (subitem.blockType === "pageLink") {
+                        subHref = `/${subitem.page.slug}`;
+                      } else if (subitem.blockType === "collectionLink") {
+                        subHref = `/${subitem.page}`;
+                      }
+
+                      const isSubActive =
+                        currentPath === subHref ||
+                        currentPath.startsWith(subHref + "/");
+
                       return (
                         <li class="usa-nav__submenu-item">
                           <Link
@@ -77,7 +69,7 @@ try {
                             href={subHref}
                             aria-current={isSubActive ? "page" : undefined}
                           >
-                            <span set:html={subItem.label} />
+                            <span set:html={subitem.label} />
                           </Link>
                         </li>
                       );
@@ -100,7 +92,7 @@ try {
               href = `/${item.page.slug}`;
               label = item.label;
             } else if (item.blockType === "collectionLink") {
-              href = `/${item.page.slug}`;
+              href = `/${item.page}`;
               label = item.label;
             }
 
