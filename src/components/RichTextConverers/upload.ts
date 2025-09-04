@@ -1,6 +1,6 @@
 import type { SerializedUploadNode } from "@payloadcms/richtext-lexical";
 import filePresent from "@uswds-images/usa-icons/file_present.svg";
-import { getMediaUrl } from "@/utilities/media";
+import { getUploadUrl } from "@/utilities/media";
 
 export interface UploadValueProps {
   id: number;
@@ -80,7 +80,7 @@ const formatBytes = (bytes: number): string => {
 const upload = ({ node }: { node: SerializedUploadNode }): string => {
   const value = node.value as UploadValueProps;
 
-  const url = getMediaUrl({
+  const url = getUploadUrl({
     url: value.url,
     filename: value.filename,
     bucket: value.site.bucket,
