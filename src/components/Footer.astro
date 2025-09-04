@@ -5,15 +5,17 @@ import identifierLogoImg from "@/assets/gsa-logo.svg"; // get this from site dat
 
 type Link = { text: string; url: string };
 
-interface Props {
-  footerLinks?: Link[];
-  identifierLinks: Link[];
-  identifierName: string;
-  identifierUrl: string;
-  siteDomain: string;
-  contactTelephone?: string;
-  contactEmail?: string;
-}
+// Comment out the Props interface since they are hard coded hear for now
+
+// interface Props {
+//   footerLinks?: Link[];
+//   identifierLinks: Link[];
+//   identifierName: string;
+//   identifierUrl: string;
+//   siteDomain: string;
+//   contactTelephone?: string;
+//   contactEmail?: string;
+// }
 
 const {
   siteDomain = "Site Domain",
