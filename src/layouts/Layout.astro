@@ -9,24 +9,42 @@ import Config from "@/config.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import "../styles/index.scss";
 
-const collectionName = "siteConfig";
-const endpoint = "globals/site-config";
-let collection: CollectionEntry<typeof collectionName>["data"];
+const siteConfigCollectionName = "siteConfig";
+const siteConfigEndpoint = "globals/site-config";
+const menuCollectionName = "menu";
+const menuEndpoint = "globals/menu";
+
+let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
+let menu: CollectionEntry<typeof menuCollectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${endpoint}?draft=true`);
-  const responseData = await response.json();
-  collection = responseData;
-} else {
-  const responseData = await getCollection(collectionName);
+  const siteConfigResponse = await payloadFetch(
+    `${siteConfigEndpoint}?draft=true`
+  );
+  const siteConfigResponseData = await siteConfigResponse.json();
+  siteConfig = siteConfigResponseData;
 
-  collection = {
-    agencyName: responseData[0].data.agencyName,
-    font: responseData[0].data.font,
+  const menuResponse = await payloadFetch(`${menuEndpoint}?draft=true`);
+  const menuResponseData = await menuResponse.json();
+  menu = menuResponseData;
+} else {
+  const siteConfigResponseData = await getCollection(siteConfigCollectionName);
+  const menuResponseData = await getCollection(menuCollectionName);
+
+  siteConfig = {
+    agencyName: siteConfigResponseData[0].data.agencyName,
+    font: siteConfigResponseData[0].data.font,
+  };
+
+  menu = {
+    items: menuResponseData[0].data.items,
   };
 }
 
 const { title } = Astro.props;
+const metaTitle = title
+  ? `${title} | ${siteConfig.agencyName || "Agency Homepage"}`
+  : siteConfig.agencyName || "Agency Homepage";
 ---
 
 <!doctype html>
@@ -35,12 +53,12 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{`${title} | ${collection.agencyName || "Agency Homepage"}`}</title>
+    <title>{metaTitle}</title>
   </head>
   <body>
     <Config />
     <GovIdentifier />
-    <Menu title={collection.agencyName} />
+    <Menu title={siteConfig.agencyName} items={menu.items} />
     <Breadcrumb />
     <slot />
     <Footer />

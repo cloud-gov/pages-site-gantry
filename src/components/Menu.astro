@@ -52,6 +52,52 @@ try {
       <ul class="usa-nav__primary usa-accordion">
         {
           navigationElements.map((item) => {
+            // Handle dropdown navigation
+            if (item.blockType === "dropdown") {
+              const dropdownId = `nav-${item.id || Math.random().toString(36).slice(2, 11)}`;
+              return (
+                <li class="usa-nav__primary-item">
+                  <button
+                    class="usa-accordion__button usa-nav__link"
+                    aria-expanded="false"
+                    aria-controls={dropdownId}
+                  >
+                    <span set:html={item.label} />
+                  </button>
+                  <ul
+                    id={dropdownId}
+                    class="usa-accordion__content usa-nav__submenu"
+                  >
+                    {item.subitems?.map((subItem) => {
+                      let subHref = "#";
+                    
+                      
+                      if (subItem.blockType === "pageLink") {
+                        subHref = `/${subItem.page.slug}`;
+                      } else if (subItem.blockType === "collectionLink") {
+                        subHref = `/${subItem.page}`;
+                      }
+                      
+                      const isSubActive = currentPath === subHref || currentPath.startsWith(subHref + "/");
+                      
+                      return (
+                        <li class="usa-nav__submenu-item">
+                          <Link
+                            className={`usa-nav__link${isSubActive ? " usa-current" : ""}`}
+                            href={subHref}
+                            aria-current={isSubActive ? "page" : undefined}
+                          >
+                            <span set:html={subItem.label} />
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            }
+
+            // Handle regular navigation items
             let href = "#";
             let label = "";
 
@@ -65,7 +111,7 @@ try {
               href = `/${item.page.slug}`;
               label = item.label;
             } else if (item.blockType === "collectionLink") {
-              href = `/${item.page.slug}`;
+              href = `/${item.page}`;
               label = item.label;
             }
 

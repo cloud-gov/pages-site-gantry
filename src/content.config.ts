@@ -53,6 +53,8 @@ export function makeAllKeysNullable<T extends ZodRawShape>(
   return z.object(nullableShape);
 }
 
+// Site Collections
+
 const events = defineCollection({
   loader: collectionLoader("events"),
   schema: makeAllKeysNullable(
@@ -65,6 +67,24 @@ const events = defineCollection({
       format: z.enum(["inperson", "virtual"]),
       registrationUrl: z.string(),
       description: z.string(),
+      content: z.any(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    })
+  ),
+});
+
+const leadership = defineCollection({
+  loader: collectionLoader("leadership"),
+  schema: makeAllKeysNullable(
+    z.object({
+      title: z.string(),
+      slug: z.string(),
+      jobTitle: z.string(),
+      description: z.string(),
+      image: z.any(),
+      imageAlt: z.string(),
       content: z.any(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
@@ -87,15 +107,17 @@ const news = defineCollection({
   ),
 });
 
-const siteConfig = defineCollection({
-  loader: collectionLoader("globals/site-config"),
+const posts = defineCollection({
+  loader: collectionLoader("posts"),
   schema: makeAllKeysNullable(
-    z
-      .object({
-        font: z.string(),
-        agencyName: z.string(),
-      })
-      .partial()
+    z.object({
+      title: z.string(),
+      slug: z.string(),
+      content: z.any(), // content is a lexical object
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    })
   ),
 });
 
@@ -143,36 +165,67 @@ const reports = defineCollection({
   ),
 });
 
-const posts = defineCollection({
-  loader: collectionLoader("posts"),
+// Site Globals
+
+const menu = defineCollection({
+  loader: collectionLoader("globals/menu"),
   schema: makeAllKeysNullable(
-    z.object({
-      title: z.string(),
-      slug: z.string(),
-      content: z.any(), // content is a lexical object
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
-      _status: z.enum(["draft", "published"]),
-    })
+    z
+      .object({
+        items: z
+          .array(
+            z
+              .object({
+                label: z.string(),
+                page: z.any(), // relation to page, can be any
+                id: z.string(),
+                blockName: z.string().nullable(),
+                blockType: z.string(),
+                url: z.string().optional(),
+                subitems: z
+                  .array(
+                    z.object({
+                      label: z.string(),
+                      page: z.any(), // relation to page, can be any
+                      id: z.string(),
+                      blockName: z.string().nullable(),
+                      blockType: z.string(),
+                    })
+                  )
+                  .optional(),
+              })
+              .optional()
+          )
+          .optional(),
+        _status: z.enum(["draft", "published"]),
+        updatedAt: z.string().datetime(),
+        createdAt: z.string().datetime(),
+        globalType: z.string(),
+      })
+      .partial()
   ),
 });
 
-const leadership = defineCollection({
-  loader: collectionLoader("leadership"),
+const siteConfig = defineCollection({
+  loader: collectionLoader("globals/site-config"),
   schema: makeAllKeysNullable(
-    z.object({
-      title: z.string(),
-      slug: z.string(),
-      jobTitle: z.string(),
-      description: z.string(),
-      image: z.any(),
-      imageAlt: z.string(),
-      content: z.any(),
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
-      _status: z.enum(["draft", "published"]),
-    })
+    z
+      .object({
+        font: z.string(),
+        agencyName: z.string(),
+      })
+      .partial()
   ),
 });
 
-export const collections = { events, news, siteConfig, reports, posts, leadership};
+export const collections = {
+  // site collections
+  events,
+  news,
+  leadership,
+  posts,
+  reports,
+  // site globals
+  menu,
+  siteConfig,
+};
