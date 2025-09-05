@@ -1,11 +1,9 @@
 ---
 import Link from "./Link.astro";
-import payloadFetch from "@/utilities/payload-fetch";
 
 const currentPath = Astro.url.pathname;
 
-// Build breadcrumb trail based on current path
-const buildBreadcrumbs = async () => {
+const buildBreadcrumbs = () => {
   const breadcrumbs = [
     { text: "Home", url: "/", isCurrent: currentPath === "/" }
   ];
@@ -15,8 +13,24 @@ const buildBreadcrumbs = async () => {
     return breadcrumbs;
   }
 
+  // Handle preview environments - remove preview path segments
+  let cleanPath = currentPath;
+  const baseUrl = import.meta.env.BASE_URL || "";
+  const branch = import.meta.env.BRANCH;
+  
+  // Remove base URL if it's not just "/"
+  if (baseUrl && baseUrl !== "/") {
+    cleanPath = currentPath.replace(baseUrl, "");
+  }
+  
+  // Remove preview/branch segments if they exist
+  if (branch) {
+    cleanPath = cleanPath.replace(`/preview/${branch}`, "");
+  }
+  cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "");
+
   // Split path into segments
-  const pathSegments = currentPath.split("/").filter(Boolean);
+  const pathSegments = cleanPath.split("/").filter(Boolean);
   
   // Build breadcrumb trail
   let currentUrl = "";
@@ -24,31 +38,18 @@ const buildBreadcrumbs = async () => {
     const segment = pathSegments[i];
     currentUrl += `/${segment}`;
     
-    // Try to get the page title from Payload
+    // Generate page title from URL segment
     let pageTitle = segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
     
-    try {
-      // Check if it's a collection page first
-      if (["reports", "news", "events", "posts", "leadership"].includes(segment)) {
-        // This is a collection landing page
-        const collectionTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
-        breadcrumbs.push({
-          text: collectionTitle,
-          url: currentUrl,
-          isCurrent: i === pathSegments.length - 1
-        });
-        continue;
-      }
-      
-      // Try to get page data from Payload
-      const response = await payloadFetch(`pages?where[slug][equals]=${segment}&limit=1`);
-      const pageData = await response.json();
-      
-      if (pageData.docs && pageData.docs.length > 0) {
-        pageTitle = pageData.docs[0].title;
-      }
-    } catch (error) {
-      console.warn(`Could not fetch page data for segment: ${segment}`);
+    // Handle known collection pages
+    if (["reports", "news", "events", "posts", "leadership"].includes(segment)) {
+      const collectionTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
+      breadcrumbs.push({
+        text: collectionTitle,
+        url: currentUrl,
+        isCurrent: i === pathSegments.length - 1
+      });
+      continue;
     }
     
     breadcrumbs.push({
@@ -61,7 +62,7 @@ const buildBreadcrumbs = async () => {
   return breadcrumbs;
 };
 
-const breadcrumbs = await buildBreadcrumbs();
+const breadcrumbs = buildBreadcrumbs();
 
 // Don't show breadcrumbs on home page
 if (currentPath === "/") {
