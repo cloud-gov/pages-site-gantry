@@ -2,35 +2,35 @@
 import Link from "./Link.astro";
 
 const currentPath = Astro.url.pathname;
+let cleanPath = currentPath;
+
+const baseUrl = import.meta.env.BASE_URL || "";
+const branch = import.meta.env.BRANCH;
+
+// Remove base URL if it's not just "/"
+if (baseUrl && baseUrl !== "/") {
+  cleanPath = currentPath.replace(baseUrl, "");
+}
+
+// Remove preview/branch segments if they exist
+if (branch) {
+  cleanPath = cleanPath.replace(`/preview/${branch}`, "");
+}
+cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "");
+
+// Split path into segments
+const pathSegments = cleanPath.split("/").filter(Boolean);
 
 const buildBreadcrumbs = () => {
+
   const breadcrumbs = [
-    { text: "Home", url: "/", isCurrent: currentPath === "/" }
+    { text: "Home", url: "/", isCurrent: currentPath === "/" || cleanPath === "" }
   ];
 
   // Skip if we're on home page
-  if (currentPath === "/") {
+  if (currentPath === "/" || cleanPath === "") {
     return breadcrumbs;
   }
-
-  // Handle preview environments - remove preview path segments
-  let cleanPath = currentPath;
-  const baseUrl = import.meta.env.BASE_URL || "";
-  const branch = import.meta.env.BRANCH;
-  
-  // Remove base URL if it's not just "/"
-  if (baseUrl && baseUrl !== "/") {
-    cleanPath = currentPath.replace(baseUrl, "");
-  }
-  
-  // Remove preview/branch segments if they exist
-  if (branch) {
-    cleanPath = cleanPath.replace(`/preview/${branch}`, "");
-  }
-  cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "");
-
-  // Split path into segments
-  const pathSegments = cleanPath.split("/").filter(Boolean);
   
   // Build breadcrumb trail
   let currentUrl = "";
@@ -65,7 +65,7 @@ const buildBreadcrumbs = () => {
 const breadcrumbs = buildBreadcrumbs();
 
 // Don't show breadcrumbs on home page
-if (currentPath === "/") {
+if (currentPath === "/" || cleanPath === "" || cleanPath === "/") {
   return null;
 }
 ---
