@@ -32,7 +32,7 @@
   $theme-show-notifications: false,
   $theme-show-compile-warnings: false,
   $theme-font-path: '../node_modules/@uswds/uswds/dist/fonts',
-  $theme-image-path: '../node_modules/@uswds/uswds/dist/img',
+  $theme-image-path: '/img',
   
   $theme-global-link-styles: true,
   $theme-global-paragraph-styles: true,

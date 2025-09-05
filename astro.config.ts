@@ -31,7 +31,7 @@ export default defineConfig({
       alias: [
         {
           find: '@uswds-images',
-          replacement: '/node_modules/@uswds/uswds/dist/img'
+          replacement: '/public/img'
         },
         {
           find: '@',
