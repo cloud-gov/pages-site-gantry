@@ -31,8 +31,8 @@
   $theme-header-logo-text-width: 70%,
   $theme-show-notifications: false,
   $theme-show-compile-warnings: false,
-  $theme-font-path: '../node_modules/@uswds/uswds/dist/fonts',
-  $theme-image-path: '../node_modules/@uswds/uswds/dist/img',
+  $theme-font-path: '/fonts',
+  $theme-image-path: '/img',
   
   $theme-global-link-styles: true,
   $theme-global-paragraph-styles: true,
@@ -64,8 +64,6 @@
   $theme-text-color: "base-darkest",
   $theme-link-reverse-color: "white",
   
-
-
   $theme-card-gap: 2,
   $theme-card-margin-bottom: 2,
 
