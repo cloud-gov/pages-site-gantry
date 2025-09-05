@@ -60,7 +60,9 @@ const metaTitle = title
     <GovIdentifier />
     <Menu title={siteConfig.agencyName} items={menu.items} />
     <Breadcrumb />
-    <slot />
+    <main id="main-content">
+      <slot />
+    </main>
     <Footer />
   </body>
 
