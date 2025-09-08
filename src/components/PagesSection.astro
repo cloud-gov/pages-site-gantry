@@ -27,18 +27,30 @@ const {
   class={`usa-section section section--${color} align-${align} ${classes}`}
 >
   <div class="grid-container">
-    <div class="section__container">
-      <div class="section__intro">
-        {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+    <div class="grid-row">
+      <div class="grid-col-8">
+        <div class="section__container">
+          <div class="section__intro">
+            {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+          </div>
+          <div class="section__slot">
+            <slot />
+          </div>
+        </div>
       </div>
-      <div class="section__slot">
-        <slot />
+      <div class="grid-col-4">
+        <slot name="sidebar" />
       </div>
     </div>
   </div>
 </section>
 
 <style>
+  /* Remove top padding from usa-section */
+  section {
+    padding-top: 2rem;
+  }
+
   &.align-left .section__container {
     text-align: left;
     justify-items: start;

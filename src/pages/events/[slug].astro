@@ -1,10 +1,15 @@
 ---
-import { createGetStaticPath, fetchSlug } from "@/utilities/fetch";
+import {
+  createGetStaticPath,
+  fetchSlug,
+  eventsMapper,
+} from "@/utilities/fetch";
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import RichText from "@/components/RichText.astro";
 import Tags from "@/components/Tags.astro";
+import InPageNavigation from "@/components/InPageNavigation.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 import type { CollectionEntry } from "astro:content";
 
@@ -28,6 +33,7 @@ if (!Astro.isPrerendered) {
   ({ data } = Astro.props);
 }
 
+const event = eventsMapper(data);
 const start = tryParseDateParts(data.startDate);
 const end = tryParseDateParts(data.endDate);
 
@@ -36,7 +42,14 @@ export const getStaticPaths = createGetStaticPath("events");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title="events">
+<Layout title={event.title} useInPageNav={event.showInPageNav}>
+  {
+    event.showInPageNav && (
+      <Fragment slot="in-page-nav">
+        <InPageNavigation />
+      </Fragment>
+    )
+  }
   <PagesSection heading={data.title}>
     {
       data.categories && data.categories.length > 0 && (

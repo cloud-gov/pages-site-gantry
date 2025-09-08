@@ -9,6 +9,7 @@ import {
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
+import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 
 const { slug } = Astro.params;
@@ -30,7 +31,14 @@ const resource = resourceMapper(data);
 export const prerender = true;
 ---
 
-<Layout title={resource.title}>
+<Layout title={resource.title} useInPageNav={resource.showInPageNav}>
+  {
+    resource.showInPageNav && (
+      <Fragment slot="in-page-nav">
+        <InPageNavigation />
+      </Fragment>
+    )
+  }
   <PagesSection>
     <div class="flex-column margin-bottom-5">
       <h1 set:text={resource.title} />

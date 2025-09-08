@@ -1,9 +1,10 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { createGetStaticPath, fetchSlug } from "@/utilities/fetch";
+import { createGetStaticPath, fetchSlug, postsMapper } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
+import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 
@@ -21,16 +22,25 @@ if (!Astro.isPrerendered) {
 
 export const getStaticPaths = createGetStaticPath("posts");
 
+const post = postsMapper(data);
+
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={data.title}>
+<Layout title={post.title} useInPageNav={post.showInPageNav}>
+  {
+    post.showInPageNav && (
+      <Fragment slot="in-page-nav">
+        <InPageNavigation />
+      </Fragment>
+    )
+  }
   <PagesSection>
     <div class="flex-column margin-bottom-5">
-      <h1 set:text={data.title} />
+      <h1 set:text={post.title} />
     </div>
     {data.image && <Media media={data.image} />}
-    <RichText content={data.content} />
+    <RichText content={post.content} />
   </PagesSection>
 </Layout>
 
