@@ -1,0 +1,91 @@
+---
+import Link from "./Link.astro";
+
+const currentPath = Astro.url.pathname;
+let cleanPath = currentPath;
+
+const baseUrl = import.meta.env.BASEURL || "";
+const branch = import.meta.env.BRANCH;
+
+// Remove base URL if it's not just "/"
+if (baseUrl && baseUrl !== "/") {
+  cleanPath = currentPath.replace(baseUrl, "");
+}
+
+// Remove preview/branch segments if they exist
+if (branch) {
+  cleanPath = cleanPath.replace(`/preview/${branch}`, "");
+}
+cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "");
+
+// Split path into segments
+const pathSegments = cleanPath.split("/").filter(Boolean);
+
+const buildBreadcrumbs = () => {
+
+  const breadcrumbs = [
+    { text: "Home", url: "/", isCurrent: currentPath === "/" || cleanPath === "" }
+  ];
+
+  // Skip if we're on home page
+  if (currentPath === "/" || cleanPath === "") {
+    return breadcrumbs;
+  }
+  
+  // Build breadcrumb trail
+  let currentUrl = "";
+  for (let i = 0; i < pathSegments.length; i++) {
+    const segment = pathSegments[i];
+    currentUrl += `/${segment}`;
+    
+    // Generate page title from URL segment
+    let pageTitle = segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    
+    // Handle known collection pages
+    if (["reports", "news", "events", "posts", "leadership"].includes(segment)) {
+      const collectionTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
+      breadcrumbs.push({
+        text: collectionTitle,
+        url: currentUrl,
+        isCurrent: i === pathSegments.length - 1
+      });
+      continue;
+    }
+    
+    breadcrumbs.push({
+      text: pageTitle,
+      url: currentUrl,
+      isCurrent: i === pathSegments.length - 1
+    });
+  }
+  
+  return breadcrumbs;
+};
+
+const breadcrumbs = buildBreadcrumbs();
+
+// Don't show breadcrumbs on home page
+if (currentPath === "/" || cleanPath === "" || cleanPath === "/") {
+  return null;
+}
+---
+
+<div class="grid-container">
+  <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+    <ol class="usa-breadcrumb__list">
+      {breadcrumbs.map((crumb, index) => (
+        <li class="usa-breadcrumb__list-item">
+          {crumb.isCurrent ? (
+            <span class="usa-breadcrumb__current" aria-current="page">
+              {crumb.text}
+            </span>
+          ) : (
+            <Link href={crumb.url} className="usa-breadcrumb__link">
+              <span>{crumb.text}</span>
+            </Link>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+</div>
