@@ -4,7 +4,7 @@ import Link from "./Link.astro";
 const currentPath = Astro.url.pathname;
 let cleanPath = currentPath;
 
-const baseUrl = import.meta.env.BASE_URL || "";
+const baseUrl = import.meta.env.BASEURL || "";
 const branch = import.meta.env.BRANCH;
 
 // Remove base URL if it's not just "/"
