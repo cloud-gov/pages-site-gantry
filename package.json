@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && cp -r public/* _site/",
     "preview": "astro preview",
     "astro": "astro",
     "oauth": "node oauth/index.js",
