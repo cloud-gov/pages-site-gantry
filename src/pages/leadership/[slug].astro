@@ -5,6 +5,7 @@ import { createGetStaticPath } from "@/utilities/staticPath";
 import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import PagesSection from "@/components/PagesSection.astro";
+import Media from "@/components/Media.astro";
 
 const { slug } = Astro.params;
 const collectionName = "leadership";
@@ -33,6 +34,7 @@ export const getStaticPaths = createGetStaticPath("leadership");
         <p class="usa-intro margin-top-0" set:text={data.jobTitle} />
       )}
     </div>
+    {data.image && (<Media media={data.image} />)}
     {data.content && <RichText content={data.content} />}
   </PagesSection>
 </Layout>

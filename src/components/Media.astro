@@ -1,8 +1,8 @@
-import type { SerializedUploadNode } from "@payloadcms/richtext-lexical";
+---
 import filePresent from "@uswds-images/usa-icons/file_present.svg";
-import { getUploadUrl } from "@/utilities/media";
+import { getMediaUrl } from "@/utilities/media";
 
-export interface UploadValueProps {
+export interface MediaValueProps {
   id: number;
   altText: string;
   caption: string | null;
@@ -77,49 +77,51 @@ const formatBytes = (bytes: number): string => {
   return tag(`${bytes} Bytes`);
 };
 
-const upload = ({ node }: { node: SerializedUploadNode }): string => {
-  const value = node.value as UploadValueProps;
+interface Props {
+  src?: string;
+  alt?: string;
+  className?: string;
+  media?: MediaValueProps;
+}
 
-  const url = getUploadUrl({
-    url: value.url,
-    filename: value.filename,
-    bucket: value.site.bucket,
-  });
+const { src, className, alt, media } = Astro.props;
+---
 
-  const fileIcon = `
-    <img src="${filePresent.src}" width="${filePresent.width}" height="${filePresent.height}" alt="download file" />
-  `;
+{src && !media && (
+  <img src={src} alt={alt} class={className} data-handle="handle" />
+)}
 
-  const container = (slot) => `
-    <div class="maxw-tablet">
-      ${slot}
-    </div>
-  `;
-
-  if (imageMimeTypes.includes(value.mimeType)) {
-    const component = container(`<img src="${url}" alt="${value.altText}" />`);
-    return component;
+{
+  () => {
+    if(media && imageMimeTypes?.includes(media.mimeType)) {
+      return(
+        <div class="maxw-tablet">
+          <img src={getMediaUrl(media)} alt={media.altText} />
+        </div>
+      )
+    } else if(media) {
+      return(
+        <div class="usa-alert usa-alert--info usa-alert--slim usa-alert--no-icon">
+          <div class="usa-alert__body">
+            <h4 class="usa-alert__heading display-flex flex-row flex-align-center">
+              <img src={filePresent.src} width={filePresent.width} height={filePresent.height} alt="download file" /> Download File
+            </h4>
+            <p class="usa-alert__text">
+              <a class="usa-link" href={getMediaUrl(media)} download="true">
+                {media?.altText || media?.filename}
+              </a>
+            </p>
+            <div class="usa-alert__text display-flex flex-column flex-align-end maxw-full">
+              <p class="usa-alert__text">
+                {media?.mimeType && (
+                  <Fragment set:html={formatMimeType(media.mimeType)} />
+                  <Fragment set:html={formatBytes(media.filesize)} />
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    }
   }
-
-  return container(`
-    <div class="usa-alert usa-alert--info usa-alert--slim usa-alert--no-icon">
-    <div class="usa-alert__body">
-      <h4 class="usa-alert__heading display-flex flex-row flex-align-center">
-        ${fileIcon} Download File
-      </h4>
-      <p class="usa-alert__text">
-        <a class="usa-link" href="${url}" download="true">
-          ${value.altText || value.filename}
-        </a>
-      </p>
-      <div class="usa-alert__text display-flex flex-column flex-align-end maxw-full">
-        <p class="usa-alert__text">
-          ${formatMimeType(value.mimeType)}
-          ${formatBytes(value.filesize)}
-        </p>
-      </div>
-    </div>
-  </div>`);
-};
-
-export default upload;
+}
