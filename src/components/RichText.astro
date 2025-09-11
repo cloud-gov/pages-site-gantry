@@ -6,6 +6,7 @@ import {
 import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
 import sanitizeHtml from "sanitize-html";
 import upload from "./RichTextConverers/upload";
+
 const { content } = Astro.props;
 
 type NodeTypes = DefaultNodeTypes;
@@ -18,7 +19,6 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
     upload: ({ node }) => upload({ node }),
   };
 };
-
 ---
 
 <section
