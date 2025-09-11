@@ -6,7 +6,7 @@ import Link from "./Link.astro";
 import close from "@uswds-images/usa-icons/close.svg";
 interface Props {
   title: string;
-  items: CollectionEntry<'menu'>['data']['items']
+  items: CollectionEntry<"menu">["data"]["items"];
 }
 
 const currentPath = Astro.url.pathname;
