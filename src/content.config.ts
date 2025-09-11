@@ -115,6 +115,7 @@ const posts = defineCollection({
       title: z.string(),
       slug: z.string(),
       content: z.any(), // content is a lexical object
+      image: z.any(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),

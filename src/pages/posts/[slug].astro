@@ -5,6 +5,7 @@ import { createGetStaticPath } from "@/utilities/staticPath";
 import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import PagesSection from "@/components/PagesSection.astro";
+import Media from "@/components/Media.astro";
 
 const { slug } = Astro.params;
 const collectionName = "posts";
@@ -30,6 +31,7 @@ export const getStaticPaths = createGetStaticPath("posts");
     <div class="flex-column margin-bottom-5">
       <h1 set:text={data.title} />
     </div>
+    {data.image && (<Media media={data.image} />)}
     <RichText content={data.content} />
   </PagesSection>
 </Layout>
