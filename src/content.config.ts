@@ -213,8 +213,13 @@ const siteConfig = defineCollection({
   schema: makeAllKeysNullable(
     z
       .object({
-        font: z.string(),
         agencyName: z.string(),
+        tagline: z.string().optional(),
+        primaryColor: z.string().optional(),
+        secondaryColor: z.string().optional(),
+        primaryFont: z.string().optional(),
+        favicon: z.any().optional(),
+        logo: z.any().optional(),
       })
       .partial()
   ),
