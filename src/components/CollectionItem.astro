@@ -2,6 +2,7 @@
 import Link from "@/components/Link.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
+import Media from "@/components/Media.astro";
 import { parseDateParts, type DateParts } from "@/utilities/dates";
 
 export interface Props {
@@ -52,7 +53,7 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
 <>
   <li class="usa-collection__item maxw-tablet">
     {image && (
-      <img class="usa-collection__img" src={image} alt={imageAlt} />
+      <Media className="usa-collection__img" src={image} alt={imageAlt} />
     )}
     {showEvent && startParts?.raw && (
       <div class="usa-collection__calendar-date">

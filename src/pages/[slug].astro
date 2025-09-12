@@ -4,6 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import RichText from "@/components/RichText.astro";
+import Media from "@/components/Media.astro";
 
 const { slug } = Astro.params;
 
@@ -30,6 +31,7 @@ export async function getStaticPaths() {
 
 <Layout title={page.title}>
   <PagesSection heading={page.title}>
+    {page.image && (<Media media={page.image} />)}
     <RichText content={page.content} />
   </PagesSection>
 </Layout>

@@ -1,81 +1,7 @@
 import type { SerializedUploadNode } from "@payloadcms/richtext-lexical";
 import filePresent from "@uswds-images/usa-icons/file_present.svg";
-import { getUploadUrl } from "@/utilities/media";
-
-export interface UploadValueProps {
-  id: number;
-  alt: string;
-  caption: string | null;
-  _status: "published";
-  reviewReady: boolean;
-  prefix: string;
-  updatedAt: string;
-  createdAt: string;
-  url: string;
-  thumbnailURL: string;
-  filename: string;
-  mimeType: string;
-  filesize: number;
-  width: number;
-  height: number;
-  focalX: number;
-  focalY: number;
-  site: {
-    bucket: string;
-  };
-  sizes: {
-    thumbnail: Record<string, any>;
-    square: Record<string, any>;
-    small: Record<string, any>;
-    medium: Record<string, any>;
-    large: Record<string, any>;
-    xlarge: Record<string, any>;
-    og: Record<string, any>;
-  };
-}
-
-const imageMimeTypes = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "image/svg+xml",
-  "image/avif",
-  "image/tiff",
-  "image/bmp",
-  "image/x-icon",
-  "image/heic",
-  "image/heif",
-  "image/heif-sequence",
-  "image/heic-sequence",
-];
-
-const tag = (value: string) => `<span class="usa-tag">${value}</span>`;
-
-const formatMimeType = (type: string): string => {
-  const parts = type.split("/");
-  return tag(parts[parts.length - 1].toLowerCase());
-};
-
-const formatBytes = (bytes: number): string => {
-  if (bytes <= 0) return tag("O Bytes");
-
-  const units = [
-    { name: "GB", divisor: 1024 * 1024 * 1024 },
-    { name: "MB", divisor: 1024 * 1024 },
-    { name: "KB", divisor: 1024 },
-  ];
-
-  for (const unit of units) {
-    if (bytes >= unit.divisor) {
-      // Round to 1 decimal places and return with unit
-      return tag(`${(bytes / unit.divisor).toFixed(1)} ${unit.name}`);
-    }
-  }
-
-  // If less than 1 KB, return in bytes
-  return tag(`${bytes} Bytes`);
-};
+import { getUploadUrl, imageMimeTypes, tag, formatMimeType, formatBytes } from "@/utilities/media";
+import type { MediaValueProps as UploadValueProps } from "@/env";
 
 const upload = ({ node }: { node: SerializedUploadNode }): string => {
   const value = node.value as UploadValueProps;
@@ -97,7 +23,7 @@ const upload = ({ node }: { node: SerializedUploadNode }): string => {
   `;
 
   if (imageMimeTypes.includes(value.mimeType)) {
-    const component = container(`<img src="${url}" alt="${value.alt}" />`);
+    const component = container(`<img src="${url}" alt="${value.altText}" />`);
     return component;
   }
 
@@ -109,7 +35,7 @@ const upload = ({ node }: { node: SerializedUploadNode }): string => {
       </h4>
       <p class="usa-alert__text">
         <a class="usa-link" href="${url}" download="true">
-          ${value.alt || value.filename}
+          ${value.altText || value.filename}
         </a>
       </p>
       <div class="usa-alert__text display-flex flex-column flex-align-end maxw-full">

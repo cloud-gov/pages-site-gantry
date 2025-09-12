@@ -60,3 +60,46 @@ export const getUploadUrl = ({
 
   return assetPath;
 };
+
+export const imageMimeTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/svg+xml",
+  "image/avif",
+  "image/tiff",
+  "image/bmp",
+  "image/x-icon",
+  "image/heic",
+  "image/heif",
+  "image/heif-sequence",
+  "image/heic-sequence",
+];
+
+export const tag = (value: string) => `<span class="usa-tag">${value}</span>`;
+
+export const formatMimeType = (type: string): string => {
+  const parts = type.split("/");
+  return tag(parts[parts.length - 1].toLowerCase());
+};
+
+export const formatBytes = (bytes: number): string => {
+  if (bytes <= 0) return tag("O Bytes");
+
+  const units = [
+    { name: "GB", divisor: 1024 * 1024 * 1024 },
+    { name: "MB", divisor: 1024 * 1024 },
+    { name: "KB", divisor: 1024 },
+  ];
+
+  for (const unit of units) {
+    if (bytes >= unit.divisor) {
+      // Round to 1 decimal places and return with unit
+      return tag(`${(bytes / unit.divisor).toFixed(1)} ${unit.name}`);
+    }
+  }
+
+  // If less than 1 KB, return in bytes
+  return tag(`${bytes} Bytes`);
+};
