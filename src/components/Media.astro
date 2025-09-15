@@ -4,25 +4,19 @@ import { getMediaUrl, imageMimeTypes, tag, formatMimeType, formatBytes } from "@
 import type { MediaValueProps } from "@/env";
 
 interface Props {
-  src?: string;
-  alt?: string;
   className?: string;
   media?: MediaValueProps;
 }
 
-const { src, className, alt, media } = Astro.props;
+const { className, media } = Astro.props;
 ---
-
-{src && !media && (
-  <img src={src} alt={alt} class={className} data-handle="handle" />
-)}
 
 {
   () => {
     if(media && imageMimeTypes?.includes(media.mimeType)) {
       return(
         <div class="maxw-tablet">
-          <img src={getMediaUrl(media)} alt={media.altText} />
+          <img src={getMediaUrl(media)} alt={media.altText} class={className} />
         </div>
       )
     } else if(media) {

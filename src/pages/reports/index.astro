@@ -5,7 +5,7 @@ import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "@/utilities/payload-fetch";
-import { reportMapper } from "@/utilities/contentMapper"
+import { reportMapper } from "@/utilities/contentMapper";
 
 const collectionName = "reports";
 let reports: CollectionEntry<typeof collectionName>["data"][];
@@ -20,7 +20,6 @@ if (!Astro.isPrerendered) {
 }
 
 const items = reports.map(reportMapper);
-console.log(reports)
 ---
 
 <Layout title="Reports">

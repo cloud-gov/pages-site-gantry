@@ -43,15 +43,25 @@ describe('CollectionItem', () => {
   });
 
   it('renders image with src and alt when provided', async () => {
+    const featureImage = {
+      mimeType: "image/jpeg",
+      site: {
+        bucket: "bucket1",
+      },
+      url: "/img.jpg",
+      filename: "img.jpg",
+      thumbnailURL: "img-sm.jpg",
+      altText: "Image description",
+      filesize: 9999,
+    }
     const html = await renderHTML({
+      className: "usa-collection__img",
+      media: featureImage,
       title: 'With Image',
-      link: '/img',
-      image: '/img.jpg',
-      imageAlt: 'Image description',
     });
 
     expect(html).toContain('class="usa-collection__img"');
-    expect(html).toContain('src="/img.jpg"');
+    expect(html).toContain('src="/~assets/img.jpg"');
     expect(html).toContain('alt="Image description"');
   });
 

@@ -132,7 +132,12 @@ const reports = defineCollection({
       title: z.string(),
       excerpt: z.string(),
       image: z.custom<MediaValueProps>(), // relation to media, https://zod.dev/api#custom
-      reportFiles: z.custom<MediaValueProps>(),
+      reportFiles: z.array(
+        z.object({
+          id: z.string(),
+          file: z.custom<MediaValueProps>(),
+        })
+      ),
       slug: z.string(),
       reportDate: z.string().datetime(),
       categories: z.any(), // categoriesField, can be any

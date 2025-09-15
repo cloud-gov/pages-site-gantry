@@ -1,6 +1,5 @@
 import type { CollectionEntry } from "astro:content";
 import { formatDate } from "./formatting";
-import { getMediaUrl } from "./media";
 import { parseDateParts, type DateParts } from "./dates";
 
 type Category = {
@@ -52,7 +51,7 @@ export function contentMapper(
     startDate: safeParse(data.startDate || ''),
     endDate: safeParse(endSrc),
     description: data.excerpt,
-    image: getMediaUrl(data.image),
+    media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `${baseUrl}/${data.slug}`,
     tags: (data.categories ?? []).map((c) => ({
@@ -71,14 +70,13 @@ export function eventsMapper(data: CollectionEntry<"events">["data"]) {
 }
 
 export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {
-  const image = getMediaUrl(data.image);
 
   return {
     title: data.title,
     description: data.description,
     jobTitle: data.jobTitle,
     isLeadership: true,
-    image,
+    media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `/leadership/${data.slug}`,
   };
@@ -108,7 +106,7 @@ export function reportMapper(data: CollectionEntry<"reports">["data"]) {
       ? formatDate(data.reportDate)
       : formatDate(data.publishedAt),
     description: data.excerpt,
-    image: getMediaUrl(data.image),
+    media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `/reports/${data.slug}`,
     tags: data.categories.map((c) => ({

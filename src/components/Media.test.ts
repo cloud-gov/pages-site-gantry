@@ -9,18 +9,6 @@ describe("Media", () => {
     container = await AstroContainer.create();
   });
 
-  it("renders an img tag when directly referencing src and alt attributes", async () => {
-    const imageAttributes = {
-      src: "/assets/images/image.jpg",
-      alt: "an image",
-    }
-    const result = await container.renderToString(Media, { props: imageAttributes });
-
-    expect(result).toContain("img");
-    expect(result).toContain("an image");
-    expect(result).not.toContain("usa-alert__text");
-  });
-
   it("renders an image tag when receiving a media prop", async () => {
     const mediaValues = {
       media: {
