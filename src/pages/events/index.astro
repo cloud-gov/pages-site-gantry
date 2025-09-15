@@ -5,7 +5,7 @@ import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "@/utilities/payload-fetch";
-import { eventsMapper } from "@/utilities/eventsMapper";
+import { eventsMapper } from "@/utilities/contentMapper";
 
 const collectionName = "events";
 let events: CollectionEntry<typeof collectionName>["data"][];

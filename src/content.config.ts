@@ -1,6 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import payloadFetch from "./utilities/payload-fetch";
 import type { ZodObject, ZodRawShape } from "astro:schema";
+import type { MediaValueProps } from "@/env";
 
 function collectionLoader(apiPath: string) {
   return async () => {
@@ -62,6 +63,7 @@ const events = defineCollection({
       title: z.string(),
       slug: z.string(),
       startDate: z.string().datetime(),
+      image: z.custom<MediaValueProps>(),
       endDate: z.string().datetime(),
       location: z.string(),
       format: z.enum(["inperson", "virtual"]),
@@ -83,7 +85,7 @@ const leadership = defineCollection({
       slug: z.string(),
       jobTitle: z.string(),
       description: z.string(),
-      image: z.any(),
+      image: z.custom<MediaValueProps>(),
       imageAlt: z.string(),
       content: z.any(),
       updatedAt: z.string().datetime(),
@@ -100,7 +102,7 @@ const news = defineCollection({
       title: z.string(),
       slug: z.string(),
       content: z.any(), // content is a lexical object
-      image: z.any(),
+      image: z.custom<MediaValueProps>(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -115,7 +117,7 @@ const posts = defineCollection({
       title: z.string(),
       slug: z.string(),
       content: z.any(), // content is a lexical object
-      image: z.any(),
+      image: z.custom<MediaValueProps>(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -129,30 +131,8 @@ const reports = defineCollection({
     z.object({
       title: z.string(),
       excerpt: z.string(),
-      image: z.any(), // relation to media, can be any
-      reportFiles: z.array(
-        z.object({
-          id: z.string(),
-          file: z.object({
-            id: z.string(),
-            alt: z.string(),
-            caption: z.any(),
-            prefix: z.string(),
-            updatedAt: z.string().datetime(),
-            createdAt: z.string().datetime(),
-            url: z.string(),
-            thumbnailURL: z.string(),
-            filename: z.string(),
-            mimeType: z.string(),
-            filesize: z.number(),
-            width: z.number(),
-            height: z.number(),
-            focalX: z.number(),
-            focalY: z.number(),
-            sizes: z.array(z.any()),
-          }), // relation to media, can be any
-        })
-      ),
+      image: z.custom<MediaValueProps>(), // relation to media, https://zod.dev/api#custom
+      reportFiles: z.custom<MediaValueProps>(),
       slug: z.string(),
       reportDate: z.string().datetime(),
       categories: z.any(), // categoriesField, can be any

@@ -1,3 +1,8 @@
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "./formatting";
+import { getMediaUrl } from "./media";
+import { parseDateParts, type DateParts } from "./dates";
+
 type Category = {
   title: string;
   slug: string;
@@ -26,8 +31,6 @@ type MapperConfig = {
   fileField?: string;
 };
 
-import { parseDateParts, type DateParts } from "./dates";
-
 function safeParse(input? : string | number | Date): DateParts | null {
   if (!input) return null; 
   const parts = parseDateParts(input);
@@ -49,12 +52,68 @@ export function contentMapper(
     startDate: safeParse(data.startDate || ''),
     endDate: safeParse(endSrc),
     description: data.excerpt,
-    image: files?.[0]?.file?.url,
-    imageAlt: files?.[0]?.file?.alt || data.title,
+    image: getMediaUrl(data.image),
+    imageAlt: data.image?.altText || data.title,
     link: `${baseUrl}/${data.slug}`,
     tags: (data.categories ?? []).map((c) => ({
       label: c.title,
       url: `${baseUrl}?category=${c.slug}`,
+    })),
+  };
+}
+
+export function eventsMapper(data: CollectionEntry<"events">["data"]) {
+  return contentMapper(data, {
+    baseUrl: "/events",
+    dateField: "eventsDate",
+    fileField: "eventsFiles",
+  });
+}
+
+export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {
+  const image = getMediaUrl(data.image);
+
+  return {
+    title: data.title,
+    description: data.description,
+    jobTitle: data.jobTitle,
+    isLeadership: true,
+    image,
+    imageAlt: data.image?.altText || data.title,
+    link: `/leadership/${data.slug}`,
+  };
+}
+
+export function newsMapper(data: CollectionEntry<"news">["data"]) {
+  return contentMapper(data, {
+    baseUrl: "/news",
+    dateField: "newsDate",
+    fileField: "newsFiles",
+  });
+}
+
+export function postsMapper(data: CollectionEntry<"posts">["data"]) {
+  return contentMapper(data, {
+    baseUrl: "/posts",
+    dateField: "postsDate",
+    fileField: "postsFiles",
+  });
+}
+
+export function reportMapper(data: CollectionEntry<"reports">["data"]) {
+  return {
+    title: data.title,
+    content: data.content,
+    date: data.reportDate
+      ? formatDate(data.reportDate)
+      : formatDate(data.publishedAt),
+    description: data.excerpt,
+    image: getMediaUrl(data.image),
+    imageAlt: data.image?.altText || data.title,
+    link: `/reports/${data.slug}`,
+    tags: data.categories.map((c) => ({
+      label: c.title,
+      url: `/reports?category=${c.slug}`,
     })),
   };
 }
