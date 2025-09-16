@@ -1,7 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import payloadFetch from "./utilities/payload-fetch";
 import type { ZodObject, ZodRawShape } from "astro:schema";
-import type { MediaValueProps } from "@/env";
+import type { MediaValueProps, CollectionCategoryProps } from "@/env";
 
 function collectionLoader(apiPath: string) {
   return async () => {
@@ -54,6 +54,26 @@ export function makeAllKeysNullable<T extends ZodRawShape>(
   return z.object(nullableShape);
 }
 
+// Custom Zod schema for MediaValueProps
+const mvCustom = z.custom<MediaValueProps>((val) => {
+  return typeof val === "object" &&
+    val !== null &&
+    typeof (val as any).url === "string";
+  },{
+    message: "Invalid MediaValueProps: must be an object with at least a 'url' string",
+  }
+);
+
+// Custom Zod schema for CollectionCategoryProps
+const cCustom = z.custom<CollectionCategoryProps>((val) => {
+  return typeof val === "object" &&
+    val !== null &&
+    typeof (val as any).title === "string";
+  },{
+    message: "Invalid CollectionCategoryProps: must be an object with at least a 'title' string",
+  }
+);
+
 // Site Collections
 
 const events = defineCollection({
@@ -63,14 +83,16 @@ const events = defineCollection({
       id: z.string(),
       title: z.string(),
       description: z.string(),
-      image: z.custom<MediaValueProps>(),
+      image: mvCustom,
       attachments: z.array(
         z.object({
           id: z.string(),
-          file: z.custom<MediaValueProps>(),
+          file: mvCustom,
         })
       ).optional(),
-      categories: z.any(),
+      categories: z.array(
+        cCustom.optional(),
+      ),
       site: z.any(),
       publishedAt: z.string().datetime(),
       slug: z.string(),
@@ -98,7 +120,7 @@ const leadership = defineCollection({
       title: z.string(),
       jobTitle: z.string(),
       description: z.string(),
-      image: z.custom<MediaValueProps>(),
+      image: mvCustom,
       imageAlt: z.string(),
       content: z.any(),
       site: z.any(),
@@ -118,8 +140,10 @@ const news = defineCollection({
       id: z.string(),
       title: z.string(),
       description: z.string(),
-      image: z.custom<MediaValueProps>(),
-      categories: z.any(),
+      image: mvCustom,
+      categories: z.array(
+        cCustom.optional(),
+      ),
       content: z.any(), // content is a lexical object
       site: z.any(),
       reviewReady: z.boolean(),
@@ -140,8 +164,10 @@ const posts = defineCollection({
       id: z.string(),
       title: z.string(),
       description: z.string(),
-      image: z.custom<MediaValueProps>(),
-      categories: z.any(),
+      image: mvCustom,
+      categories: z.array(
+        cCustom.optional(),
+      ),
       site: z.any(),
       content: z.any(), // content is a lexical object
       reviewReady: z.boolean(),
@@ -165,17 +191,19 @@ const reports = defineCollection({
       id: z.string(),
       title: z.string(),
       excerpt: z.string(),
-      image: z.custom<MediaValueProps>(), // relation to media, https://zod.dev/api#custom
+      image: mvCustom, // relation to media
       reportFiles: z.array(
         z.object({
           id: z.string(),
-          file: z.custom<MediaValueProps>(),
+          file: mvCustom,
         })
       ),
       slug: z.string(),
       slugLock: z.boolean(),
       reportDate: z.string().datetime(),
-      categories: z.any(), // categoriesField, can be any
+      categories: z.array(
+        cCustom.optional(),
+      ), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),

@@ -1,6 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { formatDate } from "./formatting";
 import { parseDateParts, type DateParts } from "./dates";
+import type { CollectionCategoryProps } from "@/env";
 
 type Category = {
   title: string;
@@ -20,7 +21,7 @@ type ContentData = {
   excerpt?: string;
   publishedAt?: string;
   slug?: string;
-  categories?: Category[];
+  categories?: CollectionCategoryProps[];
   [key: string]: any;
 };
 
