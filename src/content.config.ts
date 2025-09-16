@@ -60,16 +60,29 @@ const events = defineCollection({
   loader: collectionLoader("events"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.number(),
       title: z.string(),
-      slug: z.string(),
-      startDate: z.string().datetime(),
+      description: z.string(),
       image: z.custom<MediaValueProps>(),
+      attachments: z.array(
+        z.object({
+          id: z.string(),
+          file: z.custom<MediaValueProps>(),
+        })
+      ),
+      categories: z.any(),
+      site: z.any(),
+      publishedAt: z.string().datetime(),
+      slug: z.string(),
+      slugLock: z.boolean(),
+      startDate: z.string().datetime(),
       endDate: z.string().datetime(),
       location: z.string(),
       format: z.enum(["inperson", "virtual"]),
+      eventType: z.enum(["onetime", "series"]),
       registrationUrl: z.string(),
-      description: z.string(),
       content: z.any(),
+      reviewReady: z.boolean(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -81,13 +94,16 @@ const leadership = defineCollection({
   loader: collectionLoader("leadership"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.number(),
       title: z.string(),
-      slug: z.string(),
       jobTitle: z.string(),
       description: z.string(),
       image: z.custom<MediaValueProps>(),
       imageAlt: z.string(),
       content: z.any(),
+      site: z.any(),
+      slug: z.string(),
+      slugLock: z.boolean(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -99,10 +115,17 @@ const news = defineCollection({
   loader: collectionLoader("news"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.number(),
       title: z.string(),
-      slug: z.string(),
-      content: z.any(), // content is a lexical object
+      description: z.string(),
       image: z.custom<MediaValueProps>(),
+      categories: z.any(),
+      content: z.any(), // content is a lexical object
+      site: z.any(),
+      reviewReady: z.boolean(),
+      publishedAt: z.string().datetime(),
+      slug: z.string(),
+      slugLock: z.boolean(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -114,10 +137,20 @@ const posts = defineCollection({
   loader: collectionLoader("posts"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.number(),
       title: z.string(),
-      slug: z.string(),
-      content: z.any(), // content is a lexical object
+      description: z.string(),
       image: z.custom<MediaValueProps>(),
+      categories: z.any(),
+      site: z.any(),
+      content: z.any(), // content is a lexical object
+      reviewReady: z.boolean(),
+      authors: z.any(),
+      populatedAuthors: z.any(),
+      publishedAt: z.string().datetime(),
+      slug: z.string(),
+      slugLock: z.boolean(),
+      'Example Custom Field': z.enum(["radio", "television", "podcast", "video"]),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -129,6 +162,7 @@ const reports = defineCollection({
   loader: collectionLoader("reports"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.number(),
       title: z.string(),
       excerpt: z.string(),
       image: z.custom<MediaValueProps>(), // relation to media, https://zod.dev/api#custom
@@ -139,15 +173,16 @@ const reports = defineCollection({
         })
       ),
       slug: z.string(),
+      slugLock: z.boolean(),
       reportDate: z.string().datetime(),
       categories: z.any(), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
       publishedAt: z.string().datetime(),
-      _status: z.enum(["draft", "published"]).optional(),
-      createdAt: z.string().datetime().optional(),
       updatedAt: z.string().datetime().optional(),
+      createdAt: z.string().datetime().optional(),
+      _status: z.enum(["draft", "published"]).optional(),
     })
   ),
 });
