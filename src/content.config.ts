@@ -60,7 +60,7 @@ const events = defineCollection({
   loader: collectionLoader("events"),
   schema: makeAllKeysNullable(
     z.object({
-      id: z.number(),
+      id: z.string(),
       title: z.string(),
       description: z.string(),
       image: z.custom<MediaValueProps>(),
@@ -69,7 +69,7 @@ const events = defineCollection({
           id: z.string(),
           file: z.custom<MediaValueProps>(),
         })
-      ),
+      ).optional(),
       categories: z.any(),
       site: z.any(),
       publishedAt: z.string().datetime(),
@@ -94,7 +94,7 @@ const leadership = defineCollection({
   loader: collectionLoader("leadership"),
   schema: makeAllKeysNullable(
     z.object({
-      id: z.number(),
+      id: z.string(),
       title: z.string(),
       jobTitle: z.string(),
       description: z.string(),
@@ -115,7 +115,7 @@ const news = defineCollection({
   loader: collectionLoader("news"),
   schema: makeAllKeysNullable(
     z.object({
-      id: z.number(),
+      id: z.string(),
       title: z.string(),
       description: z.string(),
       image: z.custom<MediaValueProps>(),
@@ -137,7 +137,7 @@ const posts = defineCollection({
   loader: collectionLoader("posts"),
   schema: makeAllKeysNullable(
     z.object({
-      id: z.number(),
+      id: z.string(),
       title: z.string(),
       description: z.string(),
       image: z.custom<MediaValueProps>(),
@@ -162,7 +162,7 @@ const reports = defineCollection({
   loader: collectionLoader("reports"),
   schema: makeAllKeysNullable(
     z.object({
-      id: z.number(),
+      id: z.string(),
       title: z.string(),
       excerpt: z.string(),
       image: z.custom<MediaValueProps>(), // relation to media, https://zod.dev/api#custom
