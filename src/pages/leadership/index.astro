@@ -4,7 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import CollectionItemList from "@/components/CollectionItemList.astro";
 import payloadFetch from "@/utilities/payload-fetch";
-import { leadershipMapper } from "@/utilities/leadershipMapper";
+import { leadershipMapper } from "@/utilities/contentMapper";
 
 const collectionName = "leadership";
 let people: CollectionEntry<typeof collectionName>["data"][];

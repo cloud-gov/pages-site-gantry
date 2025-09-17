@@ -4,6 +4,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import { parseDateParts, type DateParts } from "@/utilities/dates";
+import type { MediaValueProps } from "@/env";
 
 export interface Props {
   title: string;
@@ -12,8 +13,7 @@ export interface Props {
   startDate?: string | DateParts;
   endDate?: string | DateParts;
   tags?: Tag[];
-  image?: string;
-  imageAlt?: string;
+  media?: MediaValueProps;
   link?: string;
   linkText?: string;
   showEvent?: boolean;
@@ -27,8 +27,7 @@ const {
   date = "",
   startDate = "",
   tags = [],
-  image = "", 
-  imageAlt = "", 
+  media = null, 
   link = "",
   showEvent = false,
   jobTitle = "",
@@ -52,8 +51,8 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
 
 <>
   <li class="usa-collection__item maxw-tablet">
-    {image && (
-      <Media className="usa-collection__img" src={image} alt={imageAlt} />
+    {media?.thumbnailURL && (
+      <Media className="usa-collection__img" media={media} />
     )}
     {showEvent && startParts?.raw && (
       <div class="usa-collection__calendar-date">

@@ -42,18 +42,49 @@ describe('CollectionItem', () => {
     expect(html).not.toContain('usa-collection__description');
   });
 
-  it('renders image with src and alt when provided', async () => {
+  it('renders image with src and alt when thumbnailURL provided', async () => {
+    const featureImage = {
+      mimeType: "image/jpeg",
+      site: {
+        bucket: "bucket1",
+      },
+      url: "/img.jpg",
+      filename: "img.jpg",
+      thumbnailURL: "img-sm.jpg",
+      altText: "Image description",
+      filesize: 9999,
+    }
     const html = await renderHTML({
+      className: "usa-collection__img",
+      media: featureImage,
       title: 'With Image',
-      link: '/img',
-      image: '/img.jpg',
-      imageAlt: 'Image description',
     });
 
     expect(html).toContain('class="usa-collection__img"');
-    expect(html).toContain('src="/img.jpg"');
+    expect(html).toContain('src="/~assets/img.jpg"');
     expect(html).toContain('alt="Image description"');
   });
+
+  it('does not render a pdf attachment media object', async () => {
+    const fileAttachment = {
+      mimeType: "application/pdf",
+      site: {
+        bucket: "bucket1",
+      },
+      url: "/file.pdf",
+      filename: "file.pdf",
+      thumbnailURL: null,
+      altText: "",
+      filesize: 131313,
+    }
+    const html = await renderHTML({
+      className: "usa-collection__img",
+      media: fileAttachment,
+      title: 'With PDF'
+    });
+
+    expect(html).not.toContain('src="/~assets/file.pdf"');
+  })
 
   it('does not render image if none is provided', async () => {
     const html = await renderHTML({

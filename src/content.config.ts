@@ -1,6 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import payloadFetch from "./utilities/payload-fetch";
 import type { ZodObject, ZodRawShape } from "astro:schema";
+import type { MediaValueProps, CollectionCategoryProps } from "@/env";
 
 function collectionLoader(apiPath: string) {
   return async () => {
@@ -53,21 +54,57 @@ export function makeAllKeysNullable<T extends ZodRawShape>(
   return z.object(nullableShape);
 }
 
+// Custom Zod schema for MediaValueProps
+const mvCustom = z.custom<MediaValueProps>((val) => {
+  return typeof val === "object" &&
+    val !== null &&
+    typeof (val as any).url === "string";
+  },{
+    message: "Invalid MediaValueProps: must be an object with at least a 'url' string",
+  }
+);
+
+// Custom Zod schema for CollectionCategoryProps
+const cCustom = z.custom<CollectionCategoryProps>((val) => {
+  return typeof val === "object" &&
+    val !== null &&
+    typeof (val as any).title === "string";
+  },{
+    message: "Invalid CollectionCategoryProps: must be an object with at least a 'title' string",
+  }
+);
+
 // Site Collections
 
 const events = defineCollection({
   loader: collectionLoader("events"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.string(),
       title: z.string(),
+      description: z.string(),
+      image: mvCustom,
+      attachments: z.array(
+        z.object({
+          id: z.string(),
+          file: mvCustom,
+        })
+      ).optional(),
+      categories: z.array(
+        cCustom.optional(),
+      ),
+      site: z.any(),
+      publishedAt: z.string().datetime(),
       slug: z.string(),
+      slugLock: z.boolean(),
       startDate: z.string().datetime(),
       endDate: z.string().datetime(),
       location: z.string(),
       format: z.enum(["inperson", "virtual"]),
+      eventType: z.enum(["onetime", "series"]),
       registrationUrl: z.string(),
-      description: z.string(),
       content: z.any(),
+      reviewReady: z.boolean(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -79,13 +116,16 @@ const leadership = defineCollection({
   loader: collectionLoader("leadership"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.string(),
       title: z.string(),
-      slug: z.string(),
       jobTitle: z.string(),
       description: z.string(),
-      image: z.any(),
+      image: mvCustom,
       imageAlt: z.string(),
       content: z.any(),
+      site: z.any(),
+      slug: z.string(),
+      slugLock: z.boolean(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -97,10 +137,19 @@ const news = defineCollection({
   loader: collectionLoader("news"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.string(),
       title: z.string(),
-      slug: z.string(),
+      description: z.string(),
+      image: mvCustom,
+      categories: z.array(
+        cCustom.optional(),
+      ),
       content: z.any(), // content is a lexical object
-      image: z.any(),
+      site: z.any(),
+      reviewReady: z.boolean(),
+      publishedAt: z.string().datetime(),
+      slug: z.string(),
+      slugLock: z.boolean(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -112,10 +161,22 @@ const posts = defineCollection({
   loader: collectionLoader("posts"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.string(),
       title: z.string(),
-      slug: z.string(),
+      description: z.string(),
+      image: mvCustom,
+      categories: z.array(
+        cCustom.optional(),
+      ),
+      site: z.any(),
       content: z.any(), // content is a lexical object
-      image: z.any(),
+      reviewReady: z.boolean(),
+      authors: z.any(),
+      populatedAuthors: z.any(),
+      publishedAt: z.string().datetime(),
+      slug: z.string(),
+      slugLock: z.boolean(),
+      'Example Custom Field': z.enum(["radio", "television", "podcast", "video"]),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -127,42 +188,29 @@ const reports = defineCollection({
   loader: collectionLoader("reports"),
   schema: makeAllKeysNullable(
     z.object({
+      id: z.string(),
       title: z.string(),
       excerpt: z.string(),
-      image: z.any(), // relation to media, can be any
+      image: mvCustom, // relation to media
       reportFiles: z.array(
         z.object({
           id: z.string(),
-          file: z.object({
-            id: z.string(),
-            alt: z.string(),
-            caption: z.any(),
-            prefix: z.string(),
-            updatedAt: z.string().datetime(),
-            createdAt: z.string().datetime(),
-            url: z.string(),
-            thumbnailURL: z.string(),
-            filename: z.string(),
-            mimeType: z.string(),
-            filesize: z.number(),
-            width: z.number(),
-            height: z.number(),
-            focalX: z.number(),
-            focalY: z.number(),
-            sizes: z.array(z.any()),
-          }), // relation to media, can be any
+          file: mvCustom,
         })
       ),
       slug: z.string(),
+      slugLock: z.boolean(),
       reportDate: z.string().datetime(),
-      categories: z.any(), // categoriesField, can be any
+      categories: z.array(
+        cCustom.optional(),
+      ), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
       publishedAt: z.string().datetime(),
-      _status: z.enum(["draft", "published"]).optional(),
-      createdAt: z.string().datetime().optional(),
       updatedAt: z.string().datetime().optional(),
+      createdAt: z.string().datetime().optional(),
+      _status: z.enum(["draft", "published"]).optional(),
     })
   ),
 });

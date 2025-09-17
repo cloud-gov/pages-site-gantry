@@ -29,3 +29,22 @@ export interface MediaValueProps {
     og: Record<string, any>;
   };
 }
+
+export interface CollectionCategoryProps {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean;
+  site: {
+    bucket: string;
+  };
+  parent: CollectionCategoryProps | null;
+  breadcrumbs?: {
+    doc?: CollectionCategoryProps | null;
+    url?: string | null;
+    label?: string | null;
+    id?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
