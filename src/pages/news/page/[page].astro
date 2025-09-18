@@ -9,7 +9,7 @@ import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 10; // TODO possibly create as a configuration
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -20,7 +20,6 @@ let news: CollectionEntry<typeof collectionName>["data"][];
 if (!Astro.isPrerendered) {
   const response = await payloadFetch(`${collectionName}?draft=true&limit=0`);
   const newsData = await response.json();
-  // console.log(newsData)
   news = newsData.docs;
 } else {
   const newsCollection = await getCollection(collectionName);
@@ -38,7 +37,7 @@ const { totalPages, paginatedItems } = paginate(sortedNews, currentPage, PAGE_SI
 const items = paginatedItems.map(newsMapper);
 ---
 
-<Layout title="News" canonical="/news/page/1">
+<Layout title="News">
   <PagesSection heading="News" color="gray-10">
     <CollectionItemList items={items}/>
     {news.length >= PAGE_SIZE && (

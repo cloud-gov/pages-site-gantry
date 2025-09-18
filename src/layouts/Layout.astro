@@ -40,7 +40,7 @@ if (!Astro.isPrerendered) {
   };
 }
 
-const { title } = Astro.props;
+const { title, canonical } = Astro.props;
 const metaTitle = title
   ? `${title} | ${siteConfig.agencyName || "Agency Homepage"}`
   : siteConfig.agencyName || "Agency Homepage";
@@ -53,6 +53,7 @@ const metaTitle = title
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{metaTitle}</title>
+    {canonical && <link rel="canonical" href={canonical} />}
   </head>
   <body>
     <Config />

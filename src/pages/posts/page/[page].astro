@@ -37,7 +37,7 @@ const { totalPages, paginatedItems } = paginate(sortedPosts, currentPage, PAGE_S
 const items = paginatedItems.map(postsMapper);
 ---
 
-<Layout title="posts" canonical="/posts/page/1">
+<Layout title="posts">
   <PagesSection heading="Posts">
     <CollectionItemList items={items}/>
     {posts.length >= PAGE_SIZE && (

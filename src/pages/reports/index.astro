@@ -6,6 +6,13 @@ import PagesSection from "@/components/PagesSection.astro";
 import type { CollectionEntry } from "astro:content";
 import payloadFetch from "@/utilities/payload-fetch";
 import { reportMapper } from "@/utilities/contentMapper";
+import { paginate } from "@/utilities/pagination";
+import PaginationNav from "@/components/PaginationNav.astro";
+
+const PAGE_SIZE = 10; // TODO possibly create as a configuration
+const { page } = Astro.params;
+
+const currentPage = parseInt(page) || 1;
 
 const collectionName = "reports";
 let reports: CollectionEntry<typeof collectionName>["data"][];
@@ -19,11 +26,22 @@ if (!Astro.isPrerendered) {
   reports = reportsCollection.map((n) => n.data);
 }
 
-const items = reports.map(reportMapper);
+const sortedReports = reports.sort((a, b) => {
+    const dateA = new Date(a.publishedAt);
+    const dateB = new Date(b.publishedAt);
+    return dateB.getTime() - dateA.getTime();
+})
+
+const { totalPages, paginatedItems } = paginate(sortedReports, currentPage, PAGE_SIZE);
+
+const items = paginatedItems.map(reportMapper);
 ---
 
-<Layout title="Reports">
+<Layout title="Reports" canonical="/reports/page/1">
   <PagesSection heading="Reports" color="gray-10">
     <CollectionItemList items={items} />
+    {reports.length >= PAGE_SIZE && (
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/reports/page" />
+    )}
   </PagesSection>
 </Layout>
