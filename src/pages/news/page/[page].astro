@@ -9,7 +9,7 @@ import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
 
-const PAGE_SIZE = 10; // TODO possibly create as a configuration
+const PAGE_SIZE = 10;
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;

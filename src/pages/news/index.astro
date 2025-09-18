@@ -20,7 +20,6 @@ let news: CollectionEntry<typeof collectionName>["data"][];
 if (!Astro.isPrerendered) {
   const response = await payloadFetch(`${collectionName}?draft=true&limit=0`);
   const newsData = await response.json();
-  // console.log(newsData)
   news = newsData.docs;
 } else {
   const newsCollection = await getCollection(collectionName);
