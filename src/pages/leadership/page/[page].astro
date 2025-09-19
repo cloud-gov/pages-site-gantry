@@ -34,6 +34,8 @@ const sortedLeadership = people.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedLeadership, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(leadershipMapper);
+
+export const prerender = false;
 ---
 
 <Layout title="Leadership">

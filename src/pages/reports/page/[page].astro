@@ -9,7 +9,7 @@ import { reportMapper } from "@/utilities/contentMapper";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
 
-const PAGE_SIZE = 10; // TODO possibly create as a configuration
+const PAGE_SIZE = 5; // TODO possibly create as a configuration
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -35,6 +35,8 @@ const sortedReports = reports.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedReports, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(reportMapper);
+
+export const prerender = false;
 ---
 
 <Layout title="Reports">

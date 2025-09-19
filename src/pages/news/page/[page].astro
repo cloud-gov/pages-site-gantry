@@ -11,9 +11,7 @@ import PaginationNav from "@/components/PaginationNav.astro";
 
 const PAGE_SIZE = 10;
 const { page } = Astro.params;
-
 const currentPage = parseInt(page) || 1;
-
 const collectionName = "news";
 let news: CollectionEntry<typeof collectionName>["data"][];
 
@@ -35,6 +33,8 @@ const sortedNews = news.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedNews, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(newsMapper);
+
+export const prerender = false;
 ---
 
 <Layout title="News">

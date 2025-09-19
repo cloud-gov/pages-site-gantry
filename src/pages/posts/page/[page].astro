@@ -35,6 +35,8 @@ const sortedPosts = posts.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedPosts, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(postsMapper);
+
+export const prerender = false;
 ---
 
 <Layout title="posts">

@@ -35,6 +35,8 @@ const sortedEvents = events.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedEvents, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(eventsMapper);
+
+export const prerender = false;
 ---
 
 <Layout title="events">
