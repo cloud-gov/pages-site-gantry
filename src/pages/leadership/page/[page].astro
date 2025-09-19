@@ -7,8 +7,9 @@ import payloadFetch from "@/utilities/payload-fetch";
 import { leadershipMapper } from "@/utilities/contentMapper";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { createPagingStaticPath } from "@/utilities/staticPath";
 
-const PAGE_SIZE = 10; // TODO possibly create as a configuration
+export const PAGE_SIZE = 10; // possibly add as a configuration
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -35,7 +36,8 @@ const { totalPages, paginatedItems } = paginate(sortedLeadership, currentPage, P
 
 const items = paginatedItems.map(leadershipMapper);
 
-export const prerender = false;
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "leadership");
+export const prerender = true;
 ---
 
 <Layout title="Leadership">

@@ -8,8 +8,9 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { createPagingStaticPath } from "@/utilities/staticPath";
 
-const PAGE_SIZE = 10;
+export const PAGE_SIZE = 10;
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -36,7 +37,8 @@ const { totalPages, paginatedItems } = paginate(sortedEvents, currentPage, PAGE_
 
 const items = paginatedItems.map(eventsMapper);
 
-export const prerender = false;
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "events");
+export const prerender = true;
 ---
 
 <Layout title="events">

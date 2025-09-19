@@ -8,8 +8,9 @@ import payloadFetch from "@/utilities/payload-fetch";
 import { reportMapper } from "@/utilities/contentMapper";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { createPagingStaticPath } from "@/utilities/staticPath";
 
-const PAGE_SIZE = 5; // TODO possibly create as a configuration
+export const PAGE_SIZE = 5;
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -36,7 +37,8 @@ const { totalPages, paginatedItems } = paginate(sortedReports, currentPage, PAGE
 
 const items = paginatedItems.map(reportMapper);
 
-export const prerender = false;
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "reports");
+export const prerender = true;
 ---
 
 <Layout title="Reports">
