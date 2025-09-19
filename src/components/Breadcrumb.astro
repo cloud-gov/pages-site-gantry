@@ -18,6 +18,9 @@ if (branch) {
 }
 cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "");
 
+// Remove page segment
+cleanPath = cleanPath.replace("/page/", "/");
+
 // Split path into segments
 const pathSegments = cleanPath.split("/").filter(Boolean);
 

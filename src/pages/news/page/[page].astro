@@ -8,8 +8,10 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { createPagingStaticPath } from "@/utilities/staticPath";
 
-const PAGE_SIZE = 10;
+export const PAGE_SIZE = 10;
+
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -35,9 +37,12 @@ const sortedNews = news.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedNews, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(newsMapper);
+
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "news");
+export const prerender = true;
 ---
 
-<Layout title="News" canonical="/news/page/1">
+<Layout title="News">
   <PagesSection heading="News" color="gray-10">
     <CollectionItemList items={items}/>
     {news.length >= PAGE_SIZE && (
