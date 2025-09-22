@@ -10,7 +10,6 @@ import PaginationNav from "@/components/PaginationNav.astro";
 import { createPagingStaticPath } from "@/utilities/staticPath";
 
 export const PAGE_SIZE = 10;
-const siteUrl = import.meta.env.BASEURL || "";
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -40,7 +39,7 @@ export const prerender = true;
   <PagesSection heading="Leadership" color="gray-10">
     <CollectionItemList items={items} />
     {people.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}leadership/page`} />
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/leadership/page" />
     )}
   </PagesSection>
 </Layout>

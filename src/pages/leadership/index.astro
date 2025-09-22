@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import CollectionItemList from "@/components/CollectionItemList.astro";
@@ -7,24 +7,19 @@ import payloadFetch from "@/utilities/payload-fetch";
 import { leadershipMapper } from "@/utilities/contentMapper";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { createPagingStaticPath } from "@/utilities/staticPath";
 
-const PAGE_SIZE = 10;
+export const PAGE_SIZE = 10;
 const { page } = Astro.params;
-const siteUrl = import.meta.env.BASEURL || "";
 
 const currentPage = parseInt(page) || 1;
 
 const collectionName = "leadership";
 let people: CollectionEntry<typeof collectionName>["data"][];
 
-if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${collectionName}?draft=true`);
-  const responseData = await response.json();
-  people = responseData.docs;
-} else {
-  const collection = await getCollection(collectionName);
-  people = collection.map((e) => e.data);
-}
+const response = await payloadFetch(`${collectionName}?draft=true`);
+const responseData = await response.json();
+people = responseData.docs;
 
 const sortedLeadership = people.sort((a, b) => {
   const dateA = new Date(a.createdAt);
@@ -35,13 +30,16 @@ const sortedLeadership = people.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedLeadership, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(leadershipMapper);
+
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "leadership");
+export const prerender = true;
 ---
 
-<Layout title="Leadership" canonical="/leadership/page/1">
+<Layout title="Leadership">
   <PagesSection heading="Leadership" color="gray-10">
     <CollectionItemList items={items} />
     {people.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}leadership/page`} />
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/leadership/page" />
     )}
   </PagesSection>
 </Layout>

@@ -1,6 +1,12 @@
 ---
 const { currentPage, totalPages, basePath } = Astro.props;
 
+let siteUrl = import.meta.env.BASEURL || "";
+
+if (siteUrl === '/') {
+  siteUrl = "";
+}
+
 function getPageNumbers(current: number, total: number) {
   const delta = 1;
   const range = [];
@@ -36,7 +42,7 @@ const pages = getPageNumbers(currentPage, totalPages);
     {currentPage > 1 && (
       <li class="usa-pagination__item usa-pagination__arrow">
         <a
-          href={`${basePath}/${currentPage - 1}`}
+          href={`${siteUrl + basePath}/${currentPage - 1}`}
           class="usa-pagination__link usa-pagination__previous-page"
           aria-label="Previous page"
         >
@@ -60,7 +66,7 @@ const pages = getPageNumbers(currentPage, totalPages);
           <li class="usa-pagination__item usa-pagination__page-no">
             <a
               class={`usa-pagination__button${p === currentPage ? ' usa-current' : ''}`}
-              href={`${basePath}/${p}`}
+              href={`${siteUrl + basePath}/${p}`}
               aria-current={p === currentPage ? 'page' : undefined}
               aria-label={`Page ${p}`}
             >
@@ -76,7 +82,7 @@ const pages = getPageNumbers(currentPage, totalPages);
         <a
           class="usa-pagination__link usa-pagination__next-page"
           aria-label="Next page"
-          href={`${basePath}/${currentPage + 1}`}
+          href={`${siteUrl + basePath}/${currentPage + 1}`}
         ><span class="usa-pagination__link-text">Next </span>
           <svg class="usa-icon" aria-hidden="true" role="img">
           <use href="/img/sprite.svg#navigate_next"></use></svg>

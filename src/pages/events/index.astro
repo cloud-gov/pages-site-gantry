@@ -5,12 +5,11 @@ import Layout from "@/layouts/Layout.astro";
 import { eventsMapper } from "@/utilities/contentMapper";
 import payloadFetch from "@/utilities/payload-fetch";
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { createPagingStaticPath } from "@/utilities/staticPath";
 
-const PAGE_SIZE = 10;
-const siteUrl = import.meta.env.BASEURL || "";
+export const PAGE_SIZE = 10;
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -18,14 +17,9 @@ const currentPage = parseInt(page) || 1;
 const collectionName = "events";
 let events: CollectionEntry<typeof collectionName>["data"][];
 
-if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${collectionName}?draft=true`);
-  const eventsData = await response.json();
-  events = eventsData.docs;
-} else {
-  const eventsCollection = await getCollection(collectionName);
-  events = eventsCollection.map((n) => n.data);
-}
+const response = await payloadFetch(`${collectionName}?draft=true`);
+const eventsData = await response.json();
+events = eventsData.docs;
 
 const sortedEvents = events.sort((a, b) => {
   const dateA = new Date(a.publishedAt);
@@ -36,13 +30,16 @@ const sortedEvents = events.sort((a, b) => {
 const { totalPages, paginatedItems } = paginate(sortedEvents, currentPage, PAGE_SIZE);
 
 const items = paginatedItems.map(eventsMapper);
+
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "events");
+export const prerender = true;
 ---
 
-<Layout title="events" canonical="/events/page/1">
+<Layout title="events">
   <PagesSection heading="Events">
     <CollectionItemList showEvent hideDate={true} items={items}/>
     {events.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}events/page`} />
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/events/page" />
     )}
   </PagesSection>
 </Layout>
