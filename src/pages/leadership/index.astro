@@ -10,6 +10,7 @@ import PaginationNav from "@/components/PaginationNav.astro";
 
 const PAGE_SIZE = 10;
 const { page } = Astro.params;
+const siteUrl = import.meta.env.BASEURL || "";
 
 const currentPage = parseInt(page) || 1;
 
@@ -40,7 +41,7 @@ const items = paginatedItems.map(leadershipMapper);
   <PagesSection heading="Leadership" color="gray-10">
     <CollectionItemList items={items} />
     {people.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/leadership/page" />
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}/leadership/page`} />
     )}
   </PagesSection>
 </Layout>
