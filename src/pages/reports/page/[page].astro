@@ -40,7 +40,7 @@ export const prerender = true;
   <PagesSection heading="Reports" color="gray-10">
     <CollectionItemList items={items} />
     {reports.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}/reports/page`} />
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}reports/page`} />
     )}
   </PagesSection>
 </Layout>

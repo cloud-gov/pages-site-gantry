@@ -42,7 +42,7 @@ const items = paginatedItems.map(eventsMapper);
   <PagesSection heading="Events">
     <CollectionItemList showEvent hideDate={true} items={items}/>
     {events.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}/events/page`} />
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath={`${siteUrl}events/page`} />
     )}
   </PagesSection>
 </Layout>
