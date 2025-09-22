@@ -27,9 +27,9 @@ if (!Astro.isPrerendered) {
 }
 
 const sortedEvents = events.sort((a, b) => {
-    const dateA = new Date(a.publishedAt);
-    const dateB = new Date(b.publishedAt);
-    return dateB.getTime() - dateA.getTime();
+  const dateA = new Date(a.publishedAt);
+  const dateB = new Date(b.publishedAt);
+  return dateB.getTime() - dateA.getTime();
 });
 
 const { totalPages, paginatedItems } = paginate(sortedEvents, currentPage, PAGE_SIZE);

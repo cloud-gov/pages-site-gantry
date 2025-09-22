@@ -5,7 +5,6 @@ import Layout from "@/layouts/Layout.astro";
 import { newsMapper } from "@/utilities/contentMapper";
 import payloadFetch from "@/utilities/payload-fetch";
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
 import { createPagingStaticPath } from "@/utilities/staticPath";
@@ -19,19 +18,14 @@ const currentPage = parseInt(page) || 1;
 const collectionName = "news";
 let news: CollectionEntry<typeof collectionName>["data"][];
 
-if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${collectionName}?draft=true&limit=0`);
-  const newsData = await response.json();
-  news = newsData.docs;
-} else {
-  const newsCollection = await getCollection(collectionName);
-  news = newsCollection.map((n) => n.data);
-}
+const response = await payloadFetch(`${collectionName}?draft=true&limit=0`);
+const newsData = await response.json();
+news = newsData.docs;
 
 const sortedNews = news.sort((a, b) => {
-    const dateA = new Date(a.publishedAt);
-    const dateB = new Date(b.publishedAt);
-    return dateB.getTime() - dateA.getTime();
+  const dateA = new Date(a.publishedAt);
+  const dateB = new Date(b.publishedAt);
+  return dateB.getTime() - dateA.getTime();
 })
 
 const { totalPages, paginatedItems } = paginate(sortedNews, currentPage, PAGE_SIZE);

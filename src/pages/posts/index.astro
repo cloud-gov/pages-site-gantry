@@ -9,7 +9,7 @@ import { postsMapper } from "@/utilities/contentMapper";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
 
-const PAGE_SIZE = 10; // TODO possibly create as a configuration
+const PAGE_SIZE = 10;
 const { page } = Astro.params;
 
 const currentPage = parseInt(page) || 1;
@@ -27,9 +27,9 @@ if (!Astro.isPrerendered) {
 }
 
 const sortedPosts = posts.sort((a, b) => {
-    const dateA = new Date(a.publishedAt);
-    const dateB = new Date(b.publishedAt);
-    return dateB.getTime() - dateA.getTime();
+  const dateA = new Date(a.publishedAt);
+  const dateB = new Date(b.publishedAt);
+  return dateB.getTime() - dateA.getTime();
 })
 
 const { totalPages, paginatedItems } = paginate(sortedPosts, currentPage, PAGE_SIZE);

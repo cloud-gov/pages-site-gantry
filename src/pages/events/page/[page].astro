@@ -5,7 +5,6 @@ import Layout from "@/layouts/Layout.astro";
 import { eventsMapper } from "@/utilities/contentMapper";
 import payloadFetch from "@/utilities/payload-fetch";
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
 import { createPagingStaticPath } from "@/utilities/staticPath";
@@ -18,19 +17,14 @@ const currentPage = parseInt(page) || 1;
 const collectionName = "events";
 let events: CollectionEntry<typeof collectionName>["data"][];
 
-if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${collectionName}?draft=true`);
-  const eventsData = await response.json();
-  events = eventsData.docs;
-} else {
-  const eventsCollection = await getCollection(collectionName);
-  events = eventsCollection.map((n) => n.data);
-}
+const response = await payloadFetch(`${collectionName}?draft=true`);
+const eventsData = await response.json();
+events = eventsData.docs;
 
 const sortedEvents = events.sort((a, b) => {
-    const dateA = new Date(a.publishedAt);
-    const dateB = new Date(b.publishedAt);
-    return dateB.getTime() - dateA.getTime();
+  const dateA = new Date(a.publishedAt);
+  const dateB = new Date(b.publishedAt);
+  return dateB.getTime() - dateA.getTime();
 });
 
 const { totalPages, paginatedItems } = paginate(sortedEvents, currentPage, PAGE_SIZE);

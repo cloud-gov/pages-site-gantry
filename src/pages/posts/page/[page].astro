@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
@@ -18,19 +17,14 @@ const currentPage = parseInt(page) || 1;
 const collectionName = "posts";
 let posts: CollectionEntry<typeof collectionName>["data"][];
 
-if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${collectionName}?draft=true`);
-  const postsData = await response.json();
-  posts = postsData.docs;
-} else {
-  const postsCollection = await getCollection(collectionName);
-  posts = postsCollection.map((n) => n.data);
-}
+const response = await payloadFetch(`${collectionName}?draft=true`);
+const postsData = await response.json();
+posts = postsData.docs;
 
 const sortedPosts = posts.sort((a, b) => {
-    const dateA = new Date(a.publishedAt);
-    const dateB = new Date(b.publishedAt);
-    return dateB.getTime() - dateA.getTime();
+  const dateA = new Date(a.publishedAt);
+  const dateB = new Date(b.publishedAt);
+  return dateB.getTime() - dateA.getTime();
 })
 
 const { totalPages, paginatedItems } = paginate(sortedPosts, currentPage, PAGE_SIZE);

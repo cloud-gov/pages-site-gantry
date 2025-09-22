@@ -1,4 +1,5 @@
 import { getCollection, type DataEntryMap} from "astro:content";
+import payloadFetch from "./payload-fetch";
 
 export function createGetStaticPath(collectionName: keyof DataEntryMap) {
   return async function () {
@@ -13,13 +14,17 @@ export function createGetStaticPath(collectionName: keyof DataEntryMap) {
   }
  }
 
- export function createPagingStaticPath(pageSize: number, pagedCollection: keyof DataEntryMap) {
+export function createPagingStaticPath(pageSize: number, collectionName: string) {
   return async function getStaticPaths() {
-    const collection = await getCollection(pagedCollection);
-    const totalPages = Math.ceil(collection.length / pageSize);
+    const response = await payloadFetch(`${collectionName}?draft=true&limit=0`);
+    const data = await response.json();
+    const totalItems = data.totalDocs || data.docs?.length || 0;
+    const totalPages = Math.ceil(totalItems / pageSize);
 
-    return Array.from({ length: totalPages }).map((_, i) => ({
-        params: { page: String(i + 1) },
+    const paths = Array.from({ length: totalPages }).map((_, i) => ({
+      params: { page: String(i + 1) },
     }));
-  }
- }
+
+    return paths;
+  };
+}
