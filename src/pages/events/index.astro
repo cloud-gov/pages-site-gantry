@@ -2,34 +2,24 @@
 import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
-import { eventsMapper } from "@/utilities/contentMapper";
-import payloadFetch from "@/utilities/payload-fetch";
-import type { CollectionEntry } from "astro:content";
-import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
+import { eventsMapper } from "@/utilities/contentMapper";
+import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
 import { createPagingStaticPath } from "@/utilities/staticPath";
 
 export const PAGE_SIZE = 10;
 const { page } = Astro.params;
-
 const currentPage = parseInt(page) || 1;
 
 const collectionName = "events";
-let events: CollectionEntry<typeof collectionName>["data"][];
 
-const response = await payloadFetch(`${collectionName}?draft=true`);
-const eventsData = await response.json();
-events = eventsData.docs;
+const { items, totalPages, rawItems } = await getPaginatedCollectionData(
+  collectionName,
+  currentPage,
+  PAGE_SIZE,
+  eventsMapper,
+);
 
-const sortedEvents = events.sort((a, b) => {
-  const dateA = new Date(a.publishedAt);
-  const dateB = new Date(b.publishedAt);
-  return dateB.getTime() - dateA.getTime();
-});
-
-const { totalPages, paginatedItems } = paginate(sortedEvents, currentPage, PAGE_SIZE);
-
-const items = paginatedItems.map(eventsMapper);
 
 export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "events");
 export const prerender = true;
@@ -38,7 +28,7 @@ export const prerender = true;
 <Layout title="events">
   <PagesSection heading="Events">
     <CollectionItemList showEvent hideDate={true} items={items}/>
-    {events.length >= PAGE_SIZE && (
+    {rawItems.length >= PAGE_SIZE && (
       <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/events/page" />
     )}
   </PagesSection>
