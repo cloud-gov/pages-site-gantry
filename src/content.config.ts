@@ -9,7 +9,7 @@ function collectionLoader(apiPath: string) {
     const fetchDrafts =
       import.meta.env.RENDER_MODE === "static" ? "" : "?draft=true";
 
-    const response = await payloadFetch(`${apiPath}${fetchDrafts}`);
+    const response = await payloadFetch(`${apiPath}${fetchDrafts}&limit=0`);
 
     if (!response.ok) {
       console.error(
