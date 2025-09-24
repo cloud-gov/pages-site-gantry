@@ -7,7 +7,7 @@ import { newsMapper } from "@/utilities/contentMapper";
 import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
 import { createPagingStaticPath } from "@/utilities/staticPath";
 
-export const PAGE_SIZE = import.meta.env.PAGE_SIZE;
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
 const currentPage = parseInt(page) || 1;
 
