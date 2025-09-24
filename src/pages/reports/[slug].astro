@@ -14,8 +14,9 @@ const collectionName = "reports";
 let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
+  const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=true`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
   );
   const n = await response.json();
   if (n.docs.length === 0) return Astro.redirect("/404");
@@ -28,6 +29,8 @@ if (!Astro.isPrerendered) {
 export const getStaticPaths = createGetStaticPath("reports");
 
 const report = reportMapper(data);
+
+export const prerender = true;
 ---
 
 <Layout title={report.title}>

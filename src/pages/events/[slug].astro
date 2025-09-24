@@ -18,8 +18,9 @@ const collectionName = "events";
 let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
+  const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=true`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
   );
   const events = await response.json();
   if (events.docs.length === 0) return Astro.redirect("/404");
@@ -33,6 +34,8 @@ const start = tryParseDateParts(data.startDate);
 const end = tryParseDateParts(data.endDate);
 
 export const getStaticPaths = createGetStaticPath("events");
+
+export const prerender = true;
 ---
 
 <Layout title="events">

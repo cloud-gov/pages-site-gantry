@@ -7,19 +7,18 @@ import { eventsMapper } from "@/utilities/contentMapper";
 import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
 import { createPagingStaticPath } from "@/utilities/staticPath";
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE;
 const { page } = Astro.params;
 const currentPage = parseInt(page) || 1;
 
 const collectionName = "events";
 
-const { items, totalPages, rawItems } = await getPaginatedCollectionData(
+const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData(
   collectionName,
   currentPage,
   PAGE_SIZE,
   eventsMapper,
 );
-
 
 export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "events");
 export const prerender = true;
@@ -28,7 +27,7 @@ export const prerender = true;
 <Layout title="events">
   <PagesSection heading="Events">
     <CollectionItemList showEvent hideDate={true} items={items}/>
-    {rawItems.length >= PAGE_SIZE && (
+    {hasPaginationNav && (
       <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/events/page" />
     )}
   </PagesSection>

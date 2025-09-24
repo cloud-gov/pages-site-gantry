@@ -16,7 +16,8 @@ export function createGetStaticPath(collectionName: keyof DataEntryMap) {
 
 export function createPagingStaticPath(pageSize: number, collectionName: string) {
   return async function getStaticPaths() {
-    const response = await payloadFetch(`${collectionName}?draft=true&limit=0`);
+    const preview = import.meta.env.PREVIEW_MODE;
+    const response = await payloadFetch(`${collectionName}?draft=${preview}&limit=0`);
     const data = await response.json();
     const totalItems = data.totalDocs || data.docs?.length || 0;
     const totalPages = Math.ceil(totalItems / pageSize);
