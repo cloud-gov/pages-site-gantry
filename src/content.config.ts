@@ -7,9 +7,9 @@ function collectionLoader(apiPath: string) {
   return async () => {
     // fetch drafts for the previewer, not on build
     const fetchDrafts =
-      import.meta.env.RENDER_MODE === "static" ? "" : "?draft=true";
+      import.meta.env.RENDER_MODE === "static" ? "?limit=0" : "?draft=true&limit=0";
 
-    const response = await payloadFetch(`${apiPath}${fetchDrafts}&limit=0`);
+    const response = await payloadFetch(`${apiPath}${fetchDrafts}`);
 
     if (!response.ok) {
       console.error(
