@@ -12,11 +12,11 @@ if (baseUrl && baseUrl !== "/") {
   cleanPath = currentPath.replace(baseUrl, "");
 }
 
-// Remove preview/branch segments if they exist
+// Remove preview/branch segments if they exist; remove page segment
 if (branch) {
-  cleanPath = cleanPath.replace(`/preview/${branch}`, "");
+  cleanPath = cleanPath.replace(`/preview/${branch}`, "").replace("/page/", "/");
 }
-cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "");
+cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "").replace("/page/", "/");
 
 // Split path into segments
 const pathSegments = cleanPath.split("/").filter(Boolean);

@@ -1,29 +1,34 @@
 ---
-import { getCollection } from "astro:content";
-import Layout from "@/layouts/Layout.astro";
 import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
-import type { CollectionEntry } from "astro:content";
-import payloadFetch from "@/utilities/payload-fetch";
+import Layout from "@/layouts/Layout.astro";
+import PaginationNav from "@/components/PaginationNav.astro";
 import { postsMapper } from "@/utilities/contentMapper";
+import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
+import { createPagingStaticPath } from "@/utilities/staticPath";
+
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
+const { page } = Astro.params;
+const currentPage = parseInt(page) || 1;
 
 const collectionName = "posts";
-let posts: CollectionEntry<typeof collectionName>["data"][];
 
-if (!Astro.isPrerendered) {
-  const response = await payloadFetch(`${collectionName}?draft=true`);
-  const postsData = await response.json();
-  posts = postsData.docs;
-} else {
-  const postsCollection = await getCollection(collectionName);
-  posts = postsCollection.map((n) => n.data);
-}
+const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData(
+  collectionName,
+  currentPage,
+  PAGE_SIZE,
+  postsMapper,
+);
 
-const items = posts.map(postsMapper);
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "posts");
+export const prerender = true;
 ---
 
 <Layout title="posts">
   <PagesSection heading="Posts">
     <CollectionItemList items={items}/>
+    {hasPaginationNav >= PAGE_SIZE && (
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/posts/page" />
+    )}
   </PagesSection>
 </Layout>

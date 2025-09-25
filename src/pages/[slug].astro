@@ -11,7 +11,8 @@ const { slug } = Astro.params;
 let page;
 
 if (!Astro.isPrerendered) {
-  const res = await payloadFetch(`pages?where[slug][equals]=${slug}&draft=true`);
+  const preview = import.meta.env.PREVIEW_MODE;
+  const res = await payloadFetch(`pages?where[slug][equals]=${slug}&draft=${preview}`);
   const { docs } = await res.json();
   if (!docs?.length) return Astro.redirect("/404");
   page = docs[0];

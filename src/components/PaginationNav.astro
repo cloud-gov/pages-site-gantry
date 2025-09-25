@@ -1,0 +1,93 @@
+---
+const { currentPage, totalPages, basePath } = Astro.props;
+
+let siteUrl = import.meta.env.BASEURL || "";
+
+if (siteUrl === '/') {
+  siteUrl = "";
+}
+
+function getPageNumbers(current: number, total: number) {
+  const delta = 1;
+  const range = [];
+  const rangeWithDots = [];
+  let lastSeenPage: number;
+
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (let i of range) {
+    if (lastSeenPage) {
+      if (i - lastSeenPage === 2) {
+        rangeWithDots.push(lastSeenPage + 1);
+      } else if (i - lastSeenPage > 2) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(i);
+    lastSeenPage = i;
+  }
+
+  return rangeWithDots;
+}
+
+const pages = getPageNumbers(currentPage, totalPages);
+---
+
+<nav aria-label="Pagination" class="usa-pagination">
+  <ul class="usa-pagination__list">
+    {currentPage > 1 && (
+      <li class="usa-pagination__item usa-pagination__arrow">
+        <a
+          href={`${siteUrl + basePath}/${currentPage - 1}`}
+          class="usa-pagination__link usa-pagination__previous-page"
+          aria-label="Previous page"
+        >
+          <svg class="usa-icon" aria-hidden="true" role="img">
+            <use href="/img/sprite.svg#navigate_before"></use>
+          </svg>
+          <span class="usa-pagination__link-text">Previous</span>
+        </a>
+      </li>
+    )}
+    {pages.map((p) => (
+      <>
+        {p === '...' ? (
+          <li
+            class="usa-pagination__item usa-pagination__overflow"
+            aria-label="ellipsis indicating non-visible pages"
+          >
+            <span>…</span>
+          </li>
+        ) : (
+          <li class="usa-pagination__item usa-pagination__page-no">
+            <a
+              class={`usa-pagination__button${p === currentPage ? ' usa-current' : ''}`}
+              href={`${siteUrl + basePath}/${p}`}
+              aria-current={p === currentPage ? 'page' : undefined}
+              aria-label={`Page ${p}`}
+            >
+              {p}
+            </a>
+          </li>
+        )}
+      </> 
+    ))}
+
+    {currentPage < totalPages && (
+      <li class="usa-pagination__item usa-pagination__arrow">
+        <a
+          class="usa-pagination__link usa-pagination__next-page"
+          aria-label="Next page"
+          href={`${siteUrl + basePath}/${currentPage + 1}`}
+        ><span class="usa-pagination__link-text">Next </span>
+          <svg class="usa-icon" aria-hidden="true" role="img">
+          <use href="/img/sprite.svg#navigate_next"></use></svg>
+        </a>
+      </li>
+    )}
+  </ul>
+</nav>
