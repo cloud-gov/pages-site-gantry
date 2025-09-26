@@ -58,7 +58,7 @@ const metaTitle = title
   <body>
     <Config />
     <GovIdentifier />
-    <Menu title={siteConfig.agencyName} items={menu.items} />
+    <Menu title={siteConfig.agencyName} items={menu?.items || []} />
     <Breadcrumb />
     <main id="main-content">
       <slot />

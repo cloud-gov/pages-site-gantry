@@ -215,6 +215,37 @@ const reports = defineCollection({
   ),
 });
 
+const resources = defineCollection({
+  loader: collectionLoader("resources"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      excerpt: z.string(),
+      image: mvCustom, // relation to media
+      reportFiles: z.array(
+        z.object({
+          id: z.string(),
+          file: mvCustom,
+        })
+      ),
+      slug: z.string(),
+      slugLock: z.boolean(),
+      resourceDate: z.string().datetime(),
+      categories: z.array(
+        cCustom.optional(),
+      ), // categoriesField, can be any
+      site: z.any(), // siteField, can be any
+      content: z.any(), // richText, can be any
+      reviewReady: z.boolean(),
+      publishedAt: z.string().datetime(),
+      updatedAt: z.string().datetime().optional(),
+      createdAt: z.string().datetime().optional(),
+      _status: z.enum(["draft", "published"]).optional(),
+    })
+  ),
+});
+
 // Site Globals
 
 const menu = defineCollection({
@@ -280,6 +311,7 @@ export const collections = {
   leadership,
   posts,
   reports,
+  resources,
   // site globals
   menu,
   siteConfig,

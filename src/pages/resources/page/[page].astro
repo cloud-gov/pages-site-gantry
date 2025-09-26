@@ -1,0 +1,34 @@
+---
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import Layout from "@/layouts/Layout.astro";
+import PaginationNav from "@/components/PaginationNav.astro";
+import { resourceMapper } from "@/utilities/contentMapper";
+import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
+import { createPagingStaticPath } from "@/utilities/staticPath";
+
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
+const { page } = Astro.params;
+const currentPage = parseInt(page) || 1;
+
+const collectionName = "resources";
+
+const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData(
+  collectionName,
+  currentPage,
+  PAGE_SIZE,
+  resourceMapper,
+);
+
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "resources");
+export const prerender = true;
+---
+
+<Layout title="Resources">
+  <PagesSection heading="Resources" color="gray-10">
+    <CollectionItemList items={items} />
+    {hasPaginationNav && (
+      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/resources/page" />
+    )}
+  </PagesSection>
+</Layout>
