@@ -15,6 +15,17 @@ export async function getPaginatedCollectionData<T> (
   const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(`${collectionName}?draft=${preview}&limit=0`);
   const data = await response.json();
+  
+  // Handle case where collection doesn't exist or is empty
+  if (!data.docs || data.docs.length === 0) {
+    return {
+      items: [],
+      totalPages: 0,
+      rawItems: [],
+      hasPaginationNav: false,
+    };
+  }
+  
   const sorted = data.docs.sort((a: any, b: any) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
