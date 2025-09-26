@@ -3,7 +3,7 @@ import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import PaginationNav from "@/components/PaginationNav.astro";
-/import { resourceMapper } from "@/utilities/contentMapper";
+import { resourceMapper } from "@/utilities/contentMapper";
 import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
 import { createPagingStaticPath } from "@/utilities/staticPath";
 
@@ -17,7 +17,7 @@ const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData
   collectionName,
   currentPage,
   PAGE_SIZE,
-  reportMapper,
+  resourceMapper,
 );
 
 export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "resources");
