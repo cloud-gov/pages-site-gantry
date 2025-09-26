@@ -1,0 +1,48 @@
+---
+import { type CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { createGetStaticPath } from "@/utilities/staticPath";
+import RichText from "@/components/RichText.astro";
+import payloadFetch from "@/utilities/payload-fetch";
+import PagesSection from "@/components/PagesSection.astro";
+import Tags, { type Tag } from "@/components/Tags.astro";
+import { resourceMapper } from "@/utilities/contentMapper"
+import Media from "@/components/Media.astro";
+
+const { slug } = Astro.params;
+const collectionName = "resources";
+let data: CollectionEntry<typeof collectionName>["data"];
+
+if (!Astro.isPrerendered) {
+  const preview = import.meta.env.PREVIEW_MODE;
+  const response = await payloadFetch(
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
+  );
+  const n = await response.json();
+  if (n.docs.length === 0) return Astro.redirect("/404");
+  data = n.docs[0];
+} else {
+  // @ts-expect-error
+  ({ data } = Astro.props);
+}
+
+export const getStaticPaths = createGetStaticPath("resources");
+
+const resource = resourceMapper(data);
+
+export const prerender = true;
+---
+
+<Layout title={resource.title}>
+  <PagesSection>
+    <div class="flex-column margin-bottom-5">
+      <h1 set:text={resource.title} />
+      {data.image && (<Media media={data.image} />)}
+      <p class="font-sans-sm text-italic" set:text={resource.date} />
+      <ul class="usa-collection__meta display-flex" aria-label="More information">
+        <Tags tags={resource.tags} />
+      </ul>
+    </div>
+    <RichText content={resource.content} />
+  </PagesSection>
+</Layout>

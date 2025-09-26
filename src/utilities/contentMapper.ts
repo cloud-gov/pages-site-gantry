@@ -116,3 +116,21 @@ export function reportMapper(data: CollectionEntry<"reports">["data"]) {
     })),
   };
 }
+
+export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
+  return {
+    title: data.title,
+    content: data.content,
+    date: data.resourceDate
+      ? formatDate(data.resourceDate)
+      : formatDate(data.publishedAt),
+    description: data.excerpt,
+    media: data.image,
+    imageAlt: data.image?.altText || data.title,
+    link: `/resources/${data.slug}`,
+    tags: data.categories.map((c) => ({
+      label: c.title,
+      url: `/resources?category=${c.slug}`,
+    })),
+  };
+}
