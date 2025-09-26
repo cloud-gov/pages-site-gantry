@@ -231,7 +231,7 @@ const resources = defineCollection({
       ),
       slug: z.string(),
       slugLock: z.boolean(),
-      reportDate: z.string().datetime(),
+      resourceDate: z.string().datetime(),
       categories: z.array(
         cCustom.optional(),
       ), // categoriesField, can be any

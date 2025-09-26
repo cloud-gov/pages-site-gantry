@@ -121,8 +121,8 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
   return {
     title: data.title,
     content: data.content,
-    date: data.reportDate
-      ? formatDate(data.reportDate)
+    date: data.resourceDate
+      ? formatDate(data.resourceDate)
       : formatDate(data.publishedAt),
     description: data.excerpt,
     media: data.image,
