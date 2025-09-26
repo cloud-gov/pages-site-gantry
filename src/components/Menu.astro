@@ -10,7 +10,7 @@ interface Props {
 }
 
 const currentPath = Astro.url.pathname;
-const { title, items } = Astro.props;
+const { title, items = [] } = Astro.props;
 ---
 
 <header class="usa-header usa-header--extended" role="banner">

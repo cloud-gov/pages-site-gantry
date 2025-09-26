@@ -42,7 +42,7 @@ const buildBreadcrumbs = () => {
     let pageTitle = segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
     
     // Handle known collection pages
-    if (["reports", "news", "events", "posts", "leadership"].includes(segment)) {
+    if (["reports", "resources", "news", "events", "posts", "leadership"].includes(segment)) {
       const collectionTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
       breadcrumbs.push({
         text: collectionTitle,
