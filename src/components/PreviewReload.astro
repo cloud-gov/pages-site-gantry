@@ -1,0 +1,20 @@
+---
+---
+<script>
+  console.log('preview')
+  import { ready, subscribe } from '@payloadcms/live-preview'
+  const serverURL = 'http://localhost:3000';
+
+  if (window.self !== window.top) {
+    subscribe({
+      callback: () => {
+        window.location.reload();
+      },
+      depth: 1,
+      initialData: {},
+      serverURL
+    });
+
+    ready({ serverURL });
+  }
+</script>

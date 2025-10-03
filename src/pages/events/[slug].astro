@@ -5,6 +5,7 @@ import payloadFetch from "@/utilities/payload-fetch";
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
+import PreviewReload from "@/components/PreviewReload.astro";
 
 const { slug } = Astro.params;
 
@@ -35,7 +36,7 @@ const end = tryParseDateParts(data.endDate);
 
 export const getStaticPaths = createGetStaticPath("events");
 
-export const prerender = true;
+export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title="events">
@@ -71,3 +72,5 @@ export const prerender = true;
     </section>
   </PagesSection>
 </Layout>
+
+<PreviewReload />
