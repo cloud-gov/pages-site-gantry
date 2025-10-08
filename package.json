@@ -8,11 +8,13 @@
     "build": "astro build && cp -r public/* _site/",
     "preview": "astro preview",
     "astro": "astro",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,astro}\"",
     "oauth": "node oauth/index.js",
     "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test": "NODE_ENV=test vitest",
+    "test:ui": "NODE_ENV=test vitest --ui",
+    "test:run": "NODE_ENV=test vitest run"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.2",
@@ -41,6 +43,8 @@
     "@types/node": "^22.13.4",
     "@types/sanitize-html": "^2.15.0",
     "happy-dom": "^18.0.1",
+    "prettier": "3.6.2",
+    "prettier-plugin-astro": "0.14.1",
     "sass-embedded": "^1.85.0",
     "vitest": "^3.2.4"
   },
