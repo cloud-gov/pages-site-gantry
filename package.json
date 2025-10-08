@@ -4,7 +4,7 @@
   "description": "This repo contains Github templates (pull request, issue, etc) for the cloud-gov organization.",
   "main": "index.js",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --host",
     "build": "astro build && cp -r public/* _site/",
     "preview": "astro preview",
     "astro": "astro",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@astrojs/node": "^9.0.2",
     "@astrojs/ts-plugin": "^1.10.4",
+    "@payloadcms/live-preview": "^3.58.0",
     "@payloadcms/richtext-lexical": "^3.35.1",
     "@uswds/uswds": "^3.11.0",
     "astro": "^5.2.5",

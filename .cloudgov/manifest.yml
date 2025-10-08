@@ -14,7 +14,7 @@ applications:
       - name: oauth
         process_types: ["web"]
         command: npm run oauth
-        memory: 256MB
+        memory: 512MB
     services:
       - pages-editor-((env))-creds
     env:

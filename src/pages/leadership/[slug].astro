@@ -1,11 +1,12 @@
 ---
 import { type CollectionEntry } from "astro:content";
-import Layout from "../../layouts/Layout.astro";
+import Layout from "@/layouts/Layout.astro";
 import { createGetStaticPath } from "@/utilities/staticPath";
 import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import PagesSection from "@/components/PagesSection.astro";
 import Media from "@/components/Media.astro";
+import PreviewReload from "@/components/PreviewReload.astro";
 
 const { slug } = Astro.params;
 const collectionName = "leadership";
@@ -26,7 +27,7 @@ if (!Astro.isPrerendered) {
 
 export const getStaticPaths = createGetStaticPath("leadership");
 
-export const prerender = true;
+export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title={data.title}>
@@ -41,3 +42,5 @@ export const prerender = true;
     {data.content && <RichText content={data.content} />}
   </PagesSection>
 </Layout>
+
+<PreviewReload />
