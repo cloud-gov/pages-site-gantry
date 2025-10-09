@@ -16,10 +16,12 @@ describe("Media", () => {
         filesize: 9999,
         filename: "stock-photo.jpg",
         altText: "a stock photo",
-      }
-    }
+      },
+    };
 
-    const result = await container.renderToString(Media, { props: mediaValues });
+    const result = await container.renderToString(Media, {
+      props: mediaValues,
+    });
 
     expect(result).toContain("img");
     expect(result).toContain("a stock photo");
@@ -34,12 +36,14 @@ describe("Media", () => {
         filesize: 99999,
         filename: "quick-brown-fox.pdf",
         altText: "a description",
-      }
-    }
+      },
+    };
 
-    const result = await container.renderToString(Media, { props: mediaValues });
+    const result = await container.renderToString(Media, {
+      props: mediaValues,
+    });
 
-    expect(result).not.toContain("maxw-tablet")
+    expect(result).not.toContain("maxw-tablet");
     expect(result).toContain("usa-link");
     expect(result).toContain("usa-alert__text");
   });

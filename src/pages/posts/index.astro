@@ -13,22 +13,29 @@ const currentPage = parseInt(page) || 1;
 
 const collectionName = "posts";
 
-const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData(
-  collectionName,
-  currentPage,
-  PAGE_SIZE,
-  postsMapper,
-);
+const { items, totalPages, hasPaginationNav } =
+  await getPaginatedCollectionData(
+    collectionName,
+    currentPage,
+    PAGE_SIZE,
+    postsMapper,
+  );
 
-export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "posts");
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "posts");
 export const prerender = true;
 ---
 
 <Layout title="posts">
   <PagesSection heading="Posts">
-    <CollectionItemList items={items}/>
-    {hasPaginationNav >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/posts/page" />
-    )}
+    <CollectionItemList items={items} />
+    {
+      hasPaginationNav >= PAGE_SIZE && (
+        <PaginationNav
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath="/posts/page"
+        />
+      )
+    }
   </PagesSection>
 </Layout>

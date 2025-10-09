@@ -11,7 +11,7 @@ interface MediaUrlProperties {
 }
 
 export const configMediaSource = (
-  image: MediaProperties | null
+  image: MediaProperties | null,
 ): MediaUrlProperties | null => {
   if (!image?.url || !image?.filename || !image?.site?.bucket) {
     return null;

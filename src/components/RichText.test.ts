@@ -19,22 +19,23 @@ describe("RichText", () => {
               value: {
                 altText: "alt text",
                 site: {
-                  bucket: 'bucket1',
+                  bucket: "bucket1",
                 },
                 url: "/asset/upload.png",
                 filename: "upload.png",
                 mimeType: "image/png",
                 filesize: 123456,
-              }
-            }
-          ]
-        }
-      }
-    }
+              },
+            },
+          ],
+        },
+      },
+    };
 
-    const result = await container.renderToString(RichText, { props: richTextProps });
+    const result = await container.renderToString(RichText, {
+      props: richTextProps,
+    });
 
     expect(result).toContain("alt text");
-  })
-
+  });
 });

@@ -14,7 +14,9 @@ if (baseUrl && baseUrl !== "/") {
 
 // Remove preview/branch segments if they exist; remove page segment
 if (branch) {
-  cleanPath = cleanPath.replace(`/preview/${branch}`, "").replace("/page/", "/");
+  cleanPath = cleanPath
+    .replace(`/preview/${branch}`, "")
+    .replace("/page/", "/");
 }
 cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "").replace("/page/", "/");
 
@@ -22,43 +24,58 @@ cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "").replace("/page/", "/");
 const pathSegments = cleanPath.split("/").filter(Boolean);
 
 const buildBreadcrumbs = () => {
-
   const breadcrumbs = [
-    { text: "Home", url: "/", isCurrent: currentPath === "/" || cleanPath === "" }
+    {
+      text: "Home",
+      url: "/",
+      isCurrent: currentPath === "/" || cleanPath === "",
+    },
   ];
 
   // Skip if we're on home page
   if (currentPath === "/" || cleanPath === "") {
     return breadcrumbs;
   }
-  
+
   // Build breadcrumb trail
   let currentUrl = "";
   for (let i = 0; i < pathSegments.length; i++) {
     const segment = pathSegments[i];
     currentUrl += `/${segment}`;
-    
+
     // Generate page title from URL segment
-    let pageTitle = segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-    
+    let pageTitle = segment
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
+
     // Handle known collection pages
-    if (["reports", "resources", "news", "events", "posts", "leadership"].includes(segment)) {
-      const collectionTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
+    if (
+      [
+        "reports",
+        "resources",
+        "news",
+        "events",
+        "posts",
+        "leadership",
+      ].includes(segment)
+    ) {
+      const collectionTitle =
+        segment.charAt(0).toUpperCase() + segment.slice(1);
       breadcrumbs.push({
         text: collectionTitle,
         url: currentUrl,
-        isCurrent: i === pathSegments.length - 1
+        isCurrent: i === pathSegments.length - 1,
       });
       continue;
     }
-    
+
     breadcrumbs.push({
       text: pageTitle,
       url: currentUrl,
-      isCurrent: i === pathSegments.length - 1
+      isCurrent: i === pathSegments.length - 1,
     });
   }
-  
+
   return breadcrumbs;
 };
 
@@ -73,19 +90,21 @@ if (currentPath === "/" || cleanPath === "" || cleanPath === "/") {
 <div class="grid-container">
   <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
     <ol class="usa-breadcrumb__list">
-      {breadcrumbs.map((crumb, index) => (
-        <li class="usa-breadcrumb__list-item">
-          {crumb.isCurrent ? (
-            <span class="usa-breadcrumb__current" aria-current="page">
-              {crumb.text}
-            </span>
-          ) : (
-            <Link href={crumb.url} className="usa-breadcrumb__link">
-              <span>{crumb.text}</span>
-            </Link>
-          )}
-        </li>
-      ))}
+      {
+        breadcrumbs.map((crumb, index) => (
+          <li class="usa-breadcrumb__list-item">
+            {crumb.isCurrent ? (
+              <span class="usa-breadcrumb__current" aria-current="page">
+                {crumb.text}
+              </span>
+            ) : (
+              <Link href={crumb.url} className="usa-breadcrumb__link">
+                <span>{crumb.text}</span>
+              </Link>
+            )}
+          </li>
+        ))
+      }
     </ol>
   </nav>
 </div>

@@ -12,7 +12,9 @@ let page;
 
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
-  const res = await payloadFetch(`pages?where[slug][equals]=${slug}&draft=${preview}`);
+  const res = await payloadFetch(
+    `pages?where[slug][equals]=${slug}&draft=${preview}`,
+  );
   const { docs } = await res.json();
   if (!docs?.length) return Astro.redirect("/404");
   page = docs[0];
@@ -32,7 +34,7 @@ export async function getStaticPaths() {
 
 <Layout title={page.title}>
   <PagesSection heading={page.title}>
-    {page.image && (<Media media={page.image} />)}
+    {page.image && <Media media={page.image} />}
     <RichText content={page.content} />
   </PagesSection>
 </Layout>

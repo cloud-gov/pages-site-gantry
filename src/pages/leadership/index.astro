@@ -25,21 +25,31 @@ const sortedLeadership = people.sort((a, b) => {
   const dateA = new Date(a.createdAt);
   const dateB = new Date(b.createdAt);
   return dateB.getTime() - dateA.getTime();
-})
+});
 
-const { totalPages, paginatedItems } = paginate(sortedLeadership, currentPage, PAGE_SIZE);
+const { totalPages, paginatedItems } = paginate(
+  sortedLeadership,
+  currentPage,
+  PAGE_SIZE,
+);
 
 const items = paginatedItems.map(leadershipMapper);
 
-export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "leadership");
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "leadership");
 export const prerender = true;
 ---
 
 <Layout title="Leadership">
   <PagesSection heading="Leadership" color="gray-10">
     <CollectionItemList items={items} />
-    {people.length >= PAGE_SIZE && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/leadership/page" />
-    )}
+    {
+      people.length >= PAGE_SIZE && (
+        <PaginationNav
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath="/leadership/page"
+        />
+      )
+    }
   </PagesSection>
 </Layout>
