@@ -13,22 +13,29 @@ const currentPage = parseInt(page) || 1;
 
 const collectionName = "resources";
 
-const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData(
-  collectionName,
-  currentPage,
-  PAGE_SIZE,
-  resourceMapper,
-);
+const { items, totalPages, hasPaginationNav } =
+  await getPaginatedCollectionData(
+    collectionName,
+    currentPage,
+    PAGE_SIZE,
+    resourceMapper,
+  );
 
-export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "resources");
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "resources");
 export const prerender = true;
 ---
 
 <Layout title="Resources">
   <PagesSection heading="Resources" color="gray-10">
     <CollectionItemList items={items} />
-    {hasPaginationNav && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/resources/page" />
-    )}
+    {
+      hasPaginationNav && (
+        <PaginationNav
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath="/resources/page"
+        />
+      )
+    }
   </PagesSection>
 </Layout>

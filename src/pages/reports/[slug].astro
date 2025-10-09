@@ -6,7 +6,7 @@ import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
-import { reportMapper } from "@/utilities/contentMapper"
+import { reportMapper } from "@/utilities/contentMapper";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 
@@ -17,7 +17,7 @@ let data: CollectionEntry<typeof collectionName>["data"];
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
   );
   const n = await response.json();
   if (n.docs.length === 0) return Astro.redirect("/404");
@@ -38,9 +38,12 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
   <PagesSection>
     <div class="flex-column margin-bottom-5">
       <h1 set:text={report.title} />
-      {data.image && (<Media media={data.image} />)}
+      {data.image && <Media media={data.image} />}
       <p class="font-sans-sm text-italic" set:text={report.date} />
-      <ul class="usa-collection__meta display-flex" aria-label="More information">
+      <ul
+        class="usa-collection__meta display-flex"
+        aria-label="More information"
+      >
         <Tags tags={report.tags} />
       </ul>
     </div>

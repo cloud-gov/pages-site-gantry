@@ -1,6 +1,12 @@
 ---
 import filePresent from "@uswds-images/usa-icons/file_present.svg";
-import { getMediaUrl, imageMimeTypes, tag, formatMimeType, formatBytes } from "@/utilities/media";
+import {
+  getMediaUrl,
+  imageMimeTypes,
+  tag,
+  formatMimeType,
+  formatBytes,
+} from "@/utilities/media";
 import type { MediaValueProps } from "@/env";
 
 interface Props {
@@ -13,18 +19,24 @@ const { className, media } = Astro.props;
 
 {
   () => {
-    if(media && imageMimeTypes?.includes(media.mimeType)) {
-      return(
+    if (media && imageMimeTypes?.includes(media.mimeType)) {
+      return (
         <div class="maxw-tablet">
           <img src={getMediaUrl(media)} alt={media.altText} class={className} />
         </div>
-      )
-    } else if(media) {
-      return(
+      );
+    } else if (media) {
+      return (
         <div class="usa-alert usa-alert--info usa-alert--slim usa-alert--no-icon">
           <div class="usa-alert__body">
             <h4 class="usa-alert__heading display-flex flex-row flex-align-center">
-              <img src={filePresent.src} width={filePresent.width} height={filePresent.height} alt="download file" /> Download File
+              <img
+                src={filePresent.src}
+                width={filePresent.width}
+                height={filePresent.height}
+                alt="download file"
+              />{" "}
+              Download File
             </h4>
             <p class="usa-alert__text">
               <a class="usa-link" href={getMediaUrl(media)} download="true">
@@ -34,14 +46,16 @@ const { className, media } = Astro.props;
             <div class="usa-alert__text display-flex flex-column flex-align-end maxw-full">
               <p class="usa-alert__text">
                 {media?.mimeType && (
-                  <Fragment set:html={formatMimeType(media.mimeType)} />
-                  <Fragment set:html={formatBytes(media.filesize)} />
+                  <>
+                    <Fragment set:html={formatMimeType(media.mimeType)} />
+                    <Fragment set:html={formatBytes(media.filesize)} />
+                  </>
                 )}
               </p>
             </div>
           </div>
         </div>
-      )
+      );
     }
   }
 }

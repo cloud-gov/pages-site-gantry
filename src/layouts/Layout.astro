@@ -19,7 +19,7 @@ let menu: CollectionEntry<typeof menuCollectionName>["data"];
 
 if (!Astro.isPrerendered) {
   const siteConfigResponse = await payloadFetch(
-    `${siteConfigEndpoint}?draft=true`
+    `${siteConfigEndpoint}?draft=true`,
   );
   const siteConfigResponseData = await siteConfigResponse.json();
   siteConfig = siteConfigResponseData;

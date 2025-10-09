@@ -3,7 +3,7 @@ import path from "node:path";
 const payloadFetch = async (
   baseurl: string,
   endpoint: string,
-  payloadAPIKey
+  payloadAPIKey,
 ) => {
   const url = path.join(baseurl || "", "api", endpoint);
   return fetch(url, {
@@ -27,12 +27,12 @@ const colorToken = (name: string): { family: string; mod: string } => {
 
 export const buildThemeStyle = async (
   editorAppURL: string,
-  payloadAPIKey: string
+  payloadAPIKey: string,
 ) => {
   const siteConfigResponse = await payloadFetch(
     editorAppURL,
     "globals/site-config?draft=true",
-    payloadAPIKey
+    payloadAPIKey,
   );
   const data: {
     primaryColor?: string;

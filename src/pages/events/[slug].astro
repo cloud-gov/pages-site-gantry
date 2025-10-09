@@ -21,7 +21,7 @@ let data: CollectionEntry<typeof collectionName>["data"];
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
   );
   const events = await response.json();
   if (events.docs.length === 0) return Astro.redirect("/404");
@@ -46,28 +46,25 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       role="region"
       aria-labelledby={`event-details-${slug}`}
     >
-    <div class="usa-summary-box__body">
-      <h2 class="usa-summary-box__heading" id={`event-details-${slug}`}>
-        Event details
-      </h2>
-      <div class="usa-summary-box__text">
-        <ul class="usa-list">
-          <li><b>Format:</b> {data.format}</li>
-          <li><b>Location:</b> {data.location}</li>
-          <li>
-            <b>Date and time:</b> {start.full}
-            {end && (
-              <span>until {end!.full}</span>
-            )}
-          </li>
-        </ul>
+      <div class="usa-summary-box__body">
+        <h2 class="usa-summary-box__heading" id={`event-details-${slug}`}>
+          Event details
+        </h2>
+        <div class="usa-summary-box__text">
+          <ul class="usa-list">
+            <li><b>Format:</b> {data.format}</li>
+            <li><b>Location:</b> {data.location}</li>
+            <li>
+              <b>Date and time:</b>
+              {start.full}
+              {end && <span>until {end!.full}</span>}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-    </div>
     <section>
-      {data.description && 
-        <p class="margin-bottom-2">{data.description}</p>
-      }
+      {data.description && <p class="margin-bottom-2">{data.description}</p>}
       <a class="usa-button" href={data.registrationUrl}>Register</a>
     </section>
   </PagesSection>

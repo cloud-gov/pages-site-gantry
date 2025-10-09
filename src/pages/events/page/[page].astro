@@ -13,22 +13,29 @@ const currentPage = parseInt(page) || 1;
 
 const collectionName = "events";
 
-const { items, totalPages, hasPaginationNav } = await getPaginatedCollectionData(
-  collectionName,
-  currentPage,
-  PAGE_SIZE,
-  eventsMapper,
-);
+const { items, totalPages, hasPaginationNav } =
+  await getPaginatedCollectionData(
+    collectionName,
+    currentPage,
+    PAGE_SIZE,
+    eventsMapper,
+  );
 
-export const getStaticPaths = createPagingStaticPath(PAGE_SIZE , "events");
+export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "events");
 export const prerender = true;
 ---
 
 <Layout title="events">
   <PagesSection heading="Events">
-    <CollectionItemList showEvent hideDate={true} items={items}/>
-    {hasPaginationNav && (
-      <PaginationNav currentPage={currentPage} totalPages={totalPages} basePath="/events/page" />
-    )}
+    <CollectionItemList showEvent hideDate={true} items={items} />
+    {
+      hasPaginationNav && (
+        <PaginationNav
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath="/events/page"
+        />
+      )
+    }
   </PagesSection>
 </Layout>

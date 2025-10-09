@@ -31,25 +31,25 @@ type MapperConfig = {
   fileField?: string;
 };
 
-function safeParse(input? : string | number | Date): DateParts | null {
-  if (!input) return null; 
+function safeParse(input?: string | number | Date): DateParts | null {
+  if (!input) return null;
   const parts = parseDateParts(input);
-  return Number.isNaN(parts.raw.getTime()) ? null : parts; 
-} 
+  return Number.isNaN(parts.raw.getTime()) ? null : parts;
+}
 
 export function contentMapper(
   data: ContentData,
-  { baseUrl, dateField = "publishedAt", fileField }: MapperConfig
+  { baseUrl, dateField = "publishedAt", fileField }: MapperConfig,
 ) {
-  const endSrc = (data as any).endDate; 
+  const endSrc = (data as any).endDate;
   const files: File[] = fileField ? data[fileField] : [];
-  const dateParts = parseDateParts(data[dateField] || data.publishedAt || '');
+  const dateParts = parseDateParts(data[dateField] || data.publishedAt || "");
 
   return {
     title: data.title,
     content: data.content,
-    date: safeParse(data[dateField] || data.publishedAt || ''),
-    startDate: safeParse(data.startDate || ''),
+    date: safeParse(data[dateField] || data.publishedAt || ""),
+    startDate: safeParse(data.startDate || ""),
     endDate: safeParse(endSrc),
     description: data.excerpt,
     media: data.image,
@@ -71,7 +71,6 @@ export function eventsMapper(data: CollectionEntry<"events">["data"]) {
 }
 
 export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {
-
   return {
     title: data.title,
     description: data.description,

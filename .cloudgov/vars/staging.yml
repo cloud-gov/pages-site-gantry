@@ -1,0 +1,5 @@
+instances: 1
+env: staging
+log_level: verbose
+node_env: development
+preview_mode: true

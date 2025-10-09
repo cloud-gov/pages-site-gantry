@@ -128,7 +128,10 @@ const {
 </footer>
 
 <div class="usa-identifier">
-  <section class="usa-identifier__section usa-identifier__section--masthead" aria-label="Agency identifier">
+  <section
+    class="usa-identifier__section usa-identifier__section--masthead"
+    aria-label="Agency identifier"
+  >
     <div class="usa-identifier__container">
       <div class="usa-identifier__logos">
         <a href={identifierUrl} class="usa-identifier__logo">
@@ -149,14 +152,20 @@ const {
         </p>
       </section>
     </div>
-    <nav class="usa-identifier__section usa-identifier__section--required-links" aria-label="Important links">
+    <nav
+      class="usa-identifier__section usa-identifier__section--required-links"
+      aria-label="Important links"
+    >
       <div class="usa-identifier__container">
         <ul class="usa-identifier__required-links-list">
           {
             identifierLinks &&
               identifierLinks.map((link) => (
                 <li class="usa-identifier__required-links-item">
-                  <a href={link.url} class="usa-identifier__required-link usa-link">
+                  <a
+                    href={link.url}
+                    class="usa-identifier__required-link usa-link"
+                  >
                     {link.text}
                   </a>
                 </li>
@@ -167,10 +176,15 @@ const {
     </nav>
     <section
       class="usa-identifier__section usa-identifier__section--usagov"
-      aria-label="Government information and services">
+      aria-label="Government information and services"
+    >
       <div class="usa-identifier__container">
-        <div class="usa-identifier__usagov-description">Looking for U.S. government information and services?</div>
-        <a href="https://www.usa.gov/" class="usa-link--external">Visit USA.gov</a>
+        <div class="usa-identifier__usagov-description">
+          Looking for U.S. government information and services?
+        </div>
+        <a href="https://www.usa.gov/" class="usa-link--external"
+          >Visit USA.gov</a
+        >
       </div>
     </section>
   </section>

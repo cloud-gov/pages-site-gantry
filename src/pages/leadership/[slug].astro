@@ -15,7 +15,7 @@ let data: CollectionEntry<typeof collectionName>["data"];
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
   );
   const n = await response.json();
   if (n.docs.length === 0) return Astro.redirect("/404");
@@ -34,11 +34,13 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
   <PagesSection>
     <div class="flex-column margin-bottom-2">
       <h1 set:text={data.title} />
-      {data.jobTitle && (
-        <p class="usa-intro margin-top-0" set:text={data.jobTitle} />
-      )}
+      {
+        data.jobTitle && (
+          <p class="usa-intro margin-top-0" set:text={data.jobTitle} />
+        )
+      }
     </div>
-    {data.image && (<Media media={data.image} />)}
+    {data.image && <Media media={data.image} />}
     {data.content && <RichText content={data.content} />}
   </PagesSection>
 </Layout>

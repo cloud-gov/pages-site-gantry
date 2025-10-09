@@ -1,6 +1,12 @@
 import type { SerializedUploadNode } from "@payloadcms/richtext-lexical";
 import filePresent from "@uswds-images/usa-icons/file_present.svg";
-import { getUploadUrl, imageMimeTypes, tag, formatMimeType, formatBytes } from "@/utilities/media";
+import {
+  getUploadUrl,
+  imageMimeTypes,
+  tag,
+  formatMimeType,
+  formatBytes,
+} from "@/utilities/media";
 import type { MediaValueProps as UploadValueProps } from "@/env";
 
 const upload = ({ node }: { node: SerializedUploadNode }): string => {

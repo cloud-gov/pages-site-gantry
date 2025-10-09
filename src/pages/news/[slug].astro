@@ -15,7 +15,7 @@ let data: CollectionEntry<typeof collectionName>["data"];
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
   );
   const n = await response.json();
   if (n.docs.length === 0) return Astro.redirect("/404");
@@ -35,7 +35,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <div class="flex-column margin-bottom-5">
       <h1 set:text={data.title} />
     </div>
-    {data.image && (<Media media={data.image} />)}
+    {data.image && <Media media={data.image} />}
     <RichText content={data.content} />
   </PagesSection>
 </Layout>

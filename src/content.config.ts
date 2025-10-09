@@ -7,7 +7,9 @@ function collectionLoader(apiPath: string) {
   return async () => {
     // fetch drafts for the previewer, not on build
     const fetchDrafts =
-      import.meta.env.RENDER_MODE === "static" ? "?limit=0" : "?draft=true&limit=0";
+      import.meta.env.RENDER_MODE === "static"
+        ? "?limit=0"
+        : "?draft=true&limit=0";
 
     const response = await payloadFetch(`${apiPath}${fetchDrafts}`);
 
@@ -15,7 +17,7 @@ function collectionLoader(apiPath: string) {
       console.error(
         `API call failed for ${apiPath}:`,
         response.status,
-        response.statusText
+        response.statusText,
       );
       return [];
     }
@@ -41,7 +43,7 @@ function collectionLoader(apiPath: string) {
 // NOTE: because we are rendering drafts, every property should
 // accept being nullable
 export function makeAllKeysNullable<T extends ZodRawShape>(
-  schema: ZodObject<T>
+  schema: ZodObject<T>,
 ) {
   const nullableShape: {
     [K in keyof T]: z.ZodNullable<T[K]>;
@@ -55,23 +57,33 @@ export function makeAllKeysNullable<T extends ZodRawShape>(
 }
 
 // Custom Zod schema for MediaValueProps
-const mvCustom = z.custom<MediaValueProps>((val) => {
-  return typeof val === "object" &&
-    val !== null &&
-    typeof (val as any).url === "string";
-  },{
-    message: "Invalid MediaValueProps: must be an object with at least a 'url' string",
-  }
+const mvCustom = z.custom<MediaValueProps>(
+  (val) => {
+    return (
+      typeof val === "object" &&
+      val !== null &&
+      typeof (val as any).url === "string"
+    );
+  },
+  {
+    message:
+      "Invalid MediaValueProps: must be an object with at least a 'url' string",
+  },
 );
 
 // Custom Zod schema for CollectionCategoryProps
-const cCustom = z.custom<CollectionCategoryProps>((val) => {
-  return typeof val === "object" &&
-    val !== null &&
-    typeof (val as any).title === "string";
-  },{
-    message: "Invalid CollectionCategoryProps: must be an object with at least a 'title' string",
-  }
+const cCustom = z.custom<CollectionCategoryProps>(
+  (val) => {
+    return (
+      typeof val === "object" &&
+      val !== null &&
+      typeof (val as any).title === "string"
+    );
+  },
+  {
+    message:
+      "Invalid CollectionCategoryProps: must be an object with at least a 'title' string",
+  },
 );
 
 // Site Collections
@@ -84,15 +96,15 @@ const events = defineCollection({
       title: z.string(),
       description: z.string(),
       image: mvCustom,
-      attachments: z.array(
-        z.object({
-          id: z.string(),
-          file: mvCustom,
-        })
-      ).optional(),
-      categories: z.array(
-        cCustom.optional(),
-      ),
+      attachments: z
+        .array(
+          z.object({
+            id: z.string(),
+            file: mvCustom,
+          }),
+        )
+        .optional(),
+      categories: z.array(cCustom.optional()),
       site: z.any(),
       publishedAt: z.string().datetime(),
       slug: z.string(),
@@ -108,7 +120,7 @@ const events = defineCollection({
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
-    })
+    }),
   ),
 });
 
@@ -129,7 +141,7 @@ const leadership = defineCollection({
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
-    })
+    }),
   ),
 });
 
@@ -141,9 +153,7 @@ const news = defineCollection({
       title: z.string(),
       description: z.string(),
       image: mvCustom,
-      categories: z.array(
-        cCustom.optional(),
-      ),
+      categories: z.array(cCustom.optional()),
       content: z.any(), // content is a lexical object
       site: z.any(),
       reviewReady: z.boolean(),
@@ -153,7 +163,7 @@ const news = defineCollection({
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
-    })
+    }),
   ),
 });
 
@@ -165,9 +175,7 @@ const posts = defineCollection({
       title: z.string(),
       description: z.string(),
       image: mvCustom,
-      categories: z.array(
-        cCustom.optional(),
-      ),
+      categories: z.array(cCustom.optional()),
       site: z.any(),
       content: z.any(), // content is a lexical object
       reviewReady: z.boolean(),
@@ -176,11 +184,16 @@ const posts = defineCollection({
       publishedAt: z.string().datetime(),
       slug: z.string(),
       slugLock: z.boolean(),
-      'Example Custom Field': z.enum(["radio", "television", "podcast", "video"]),
+      "Example Custom Field": z.enum([
+        "radio",
+        "television",
+        "podcast",
+        "video",
+      ]),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
-    })
+    }),
   ),
 });
 
@@ -196,14 +209,12 @@ const reports = defineCollection({
         z.object({
           id: z.string(),
           file: mvCustom,
-        })
+        }),
       ),
       slug: z.string(),
       slugLock: z.boolean(),
       reportDate: z.string().datetime(),
-      categories: z.array(
-        cCustom.optional(),
-      ), // categoriesField, can be any
+      categories: z.array(cCustom.optional()), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
@@ -211,7 +222,7 @@ const reports = defineCollection({
       updatedAt: z.string().datetime().optional(),
       createdAt: z.string().datetime().optional(),
       _status: z.enum(["draft", "published"]).optional(),
-    })
+    }),
   ),
 });
 
@@ -227,14 +238,12 @@ const resources = defineCollection({
         z.object({
           id: z.string(),
           file: mvCustom,
-        })
+        }),
       ),
       slug: z.string(),
       slugLock: z.boolean(),
       resourceDate: z.string().datetime(),
-      categories: z.array(
-        cCustom.optional(),
-      ), // categoriesField, can be any
+      categories: z.array(cCustom.optional()), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
@@ -242,7 +251,7 @@ const resources = defineCollection({
       updatedAt: z.string().datetime().optional(),
       createdAt: z.string().datetime().optional(),
       _status: z.enum(["draft", "published"]).optional(),
-    })
+    }),
   ),
 });
 
@@ -271,11 +280,11 @@ const menu = defineCollection({
                       id: z.string(),
                       blockName: z.string().nullable(),
                       blockType: z.string(),
-                    })
+                    }),
                   )
                   .optional(),
               })
-              .optional()
+              .optional(),
           )
           .optional(),
         _status: z.enum(["draft", "published"]),
@@ -283,7 +292,7 @@ const menu = defineCollection({
         createdAt: z.string().datetime(),
         globalType: z.string(),
       })
-      .partial()
+      .partial(),
   ),
 });
 
@@ -300,7 +309,7 @@ const siteConfig = defineCollection({
         favicon: z.any().optional(),
         logo: z.any().optional(),
       })
-      .partial()
+      .partial(),
   ),
 });
 
