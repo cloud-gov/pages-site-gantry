@@ -48,3 +48,96 @@ export interface CollectionCategoryProps {
   updatedAt: string;
   createdAt: string;
 }
+
+export interface IdentifierLink {
+  text: string;
+  url: string;
+}
+
+export interface Identifiers {
+  siteDomain: string;
+  identifierLinks: IdentifierLink[];
+  identifierName: string;
+  identifierUrl: string;
+}
+
+export interface PreFooterSlimLink {
+  text: string;
+  url: string;
+}
+
+export interface PreFooterSlimModel {
+  contactTelephone: string;
+  contactEmail: string;
+  footerLinks: PreFooterSlimLink[];
+}
+
+export const CONNECT_SECTION_RIGHT = "right";
+export const CONNECT_SECTION_BOTTOM = "bottom";
+export const CONNECT_SECTION_LOCATION_DEFAULT = CONNECT_SECTION_RIGHT;
+
+export const TOPIC_COLUMNS_DEFAULT = 2;
+export const TOPIC_COLUMNS_MAX = 4;
+
+export enum SocialPlatform {
+  FACEBOOK = "facebook",
+  X = "x",
+  YOUTUBE = "youtube",
+  INSTAGRAM = "instagram",
+  RSS_FEED = "rssFeed",
+}
+
+export interface SocialLink {
+  platform: string;
+  link: string;
+  displayOrder: number;
+}
+
+export interface ContactCenter {
+  name: string;
+  phone: string;
+  email: string;
+}
+
+export interface ConnectSectionModel {
+  contactCenter: ContactCenter;
+  socialLinks: SocialLink[];
+}
+
+export interface TopicLinkItem {
+  text: string;
+  url: string;
+  displayOrder: number;
+}
+
+export interface Topic {
+  name: string;
+  links: TopicLinkItem[];
+}
+
+export type ConnectSectionLocation = "right" | "bottom";
+
+export interface PreFooterBigConfiguration {
+  connectSectionLocation: ConnectSectionLocation;
+  columnsInTopic: number;
+}
+
+export interface PreFooterBigModel {
+  id: number;
+  topics: Topic[];
+  connectSection: ConnectSectionModel;
+  configuration: PreFooterBigConfiguration;
+}
+
+export const PRE_FOOTER_TYPE_BIG = "big";
+export const PRE_FOOTER_TYPE_SLIM = "slim";
+export const PRE_FOOTER_TYPE_NONE = "none";
+
+export type PreFooterType = "big" | "slim" | "none";
+
+export type PreFooterData = PreFooterBigModel | PreFooterSlimModel;
+
+export interface PreFooterModel {
+  preFooterType: PreFooterType;
+  preFooterData: PreFooterData;
+}
