@@ -31,7 +31,8 @@
     "jose": "^5.9.6",
     "pino-http": "^10.4.0",
     "sanitize-html": "^2.16.0",
-    "sharp": "^0.34.1"
+    "sharp": "^0.34.1",
+    "prettier": "^3.0.3"
   },
   "author": "",
   "license": "ISC",
