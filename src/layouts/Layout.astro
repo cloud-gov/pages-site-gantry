@@ -32,11 +32,12 @@ if (!Astro.isPrerendered) {
   const menuResponseData = await getCollection(menuCollectionName);
 
   siteConfig = {
-    agencyName: siteConfigResponseData[0].data.agencyName,
+    agencyName:
+      siteConfigResponseData[0]?.data?.agencyName || "Agency Homepage",
   };
 
   menu = {
-    items: menuResponseData[0].data.items,
+    items: menuResponseData[0]?.data?.items || [],
   };
 }
 
