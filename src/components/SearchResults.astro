@@ -1,0 +1,45 @@
+---
+import payloadFetch from "@/utilities/payload-fetch";
+import type { CollectionEntry } from "astro:content";
+
+const siteConfigCollectionName = "siteConfig";
+const siteConfigEndpoint = "globals/site-config";
+let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
+
+const siteConfigResponse = await payloadFetch(
+  `${siteConfigEndpoint}?draft=true`
+);
+const siteConfigResponseData = await siteConfigResponse.json();
+siteConfig = siteConfigResponseData;
+
+const apiKey = siteConfig?.searchAccessKey;
+const affiliate = siteConfig?.searchAffiliate;
+
+const { query } = Astro.props
+
+const response = await fetch(`https://api.gsa.gov/technology/searchgov/v2/results/i14y?query=${encodeURIComponent(query)}&affiliate=${affiliate}&access_key=${apiKey}`);
+
+const data = await response.json();
+const results = data.web?.results ?? [];
+
+function highlightSnippet(snippet) {
+  return snippet
+  .replace(/&lt;U\+E000&gt;/g, '<strong>')
+  .replace(//g, '<strong>')
+  .replace(/&lt;U\+E001&gt;/g, '</strong>')
+  .replace(//g, '</strong> ');
+}
+---
+
+<ul>
+  {results.length > 0 ? (
+    results.map(result => (
+      <li>
+        <a href={result.url} target="_blank" rel="noopener noreferrer">{result.title}</a>
+        <p set:html={highlightSnippet(result.snippet)}></p>
+      </li>
+    ))
+  ) : (
+    <li>No results found.</li>
+  )}
+</ul>

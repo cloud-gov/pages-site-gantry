@@ -4,7 +4,10 @@
 import { Image } from "astro:assets";
 import search from "@uswds-images/usa-icons-bg/search--white.svg";
 
-const affliate = "FILL IN VIA GLOBAL";
+// const affliate = "FILL IN VIA GLOBAL";
+const {
+  searchAffiliate
+} = Astro.props;
 ---
 
 <form
@@ -15,7 +18,7 @@ const affliate = "FILL IN VIA GLOBAL";
   method="get"
 >
   <input name="utf8" type="hidden" value="✓" />
-  <input name="affiliate" type="hidden" value={affliate} />
+  <input name="affiliate" type="hidden" value={searchAffiliate} />
 
   <div role="search">
     <label class="usa-sr-only" for="extended-search-field-small"
