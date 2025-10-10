@@ -5,6 +5,8 @@ import payloadFetch from "@/utilities/payload-fetch";
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
+import RichText from "@/components/RichText.astro";
+import Tags from "@/components/Tags.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 
 const { slug } = Astro.params;
@@ -16,7 +18,7 @@ const { slug } = Astro.params;
 // to this file
 // 3. data needs to be a top-level variable here
 const collectionName = "events";
-let data: CollectionEntry<typeof collectionName>["data"];
+let data: any;
 
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
@@ -41,6 +43,19 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
 
 <Layout title="events">
   <PagesSection heading={data.title}>
+    {
+      data.categories && data.categories.length > 0 && (
+        <div class="margin-bottom-3">
+          <Tags
+            tags={data.categories.map((cat) => ({
+              label: cat.title,
+              url: `/events?category=${cat.slug}`,
+            }))}
+          />
+        </div>
+      )
+    }
+
     <div
       class="usa-summary-box maxw-tablet margin-bottom-2"
       role="region"
@@ -52,13 +67,53 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         </h2>
         <div class="usa-summary-box__text">
           <ul class="usa-list">
-            <li><b>Format:</b> {data.format}</li>
-            <li><b>Location:</b> {data.location}</li>
+            <li>
+              <b>Format:</b>{" "}
+              {data.format === "inperson" ? "In-Person" : "Virtual"}
+            </li>
+            <li>
+              <b>Type:</b>{" "}
+              {data.eventType === "onetime" ? "One Time" : "Series"}
+            </li>
+            {
+              data.location && (
+                <li>
+                  <b>Location:</b> {data.location}
+                </li>
+              )
+            }
             <li>
               <b>Date and time:</b>
               {start.full}
               {end && <span>until {end!.full}</span>}
             </li>
+            {
+              data.pointOfContact && (
+                <li>
+                  <b>Point of Contact:</b> {data.pointOfContact}
+                </li>
+              )
+            }
+            {
+              data.pointOfContactEmail && (
+                <li>
+                  <b>Contact Email:</b>{" "}
+                  <a href={`mailto:${data.pointOfContactEmail}`}>
+                    {data.pointOfContactEmail}
+                  </a>
+                </li>
+              )
+            }
+            {
+              data.pointOfContactPhone && (
+                <li>
+                  <b>Contact Phone:</b>{" "}
+                  <a href={`tel:${data.pointOfContactPhone}`}>
+                    {data.pointOfContactPhone}
+                  </a>
+                </li>
+              )
+            }
           </ul>
         </div>
       </div>
@@ -67,6 +122,35 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       {data.description && <p class="margin-bottom-2">{data.description}</p>}
       <a class="usa-button" href={data.registrationUrl}>Register</a>
     </section>
+
+    {
+      data.content && (
+        <section class="margin-top-4">
+          <RichText content={data.content} />
+        </section>
+      )
+    }
+
+    {
+      data.attachments && data.attachments.length > 0 && (
+        <section class="margin-top-4">
+          <h3>Event Materials</h3>
+          <ul class="usa-list">
+            {data.attachments.map((attachment) => (
+              <li>
+                <a
+                  href={attachment.file.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {attachment.file.filename}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
   </PagesSection>
 </Layout>
 

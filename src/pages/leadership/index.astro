@@ -36,7 +36,7 @@ const { totalPages, paginatedItems } = paginate(
 const items = paginatedItems.map(leadershipMapper);
 
 export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "leadership");
-export const prerender = true;
+export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title="Leadership">

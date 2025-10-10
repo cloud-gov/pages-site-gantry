@@ -62,12 +62,18 @@ export function contentMapper(
   };
 }
 
-export function eventsMapper(data: CollectionEntry<"events">["data"]) {
-  return contentMapper(data, {
+export function eventsMapper(data: any) {
+  const mapped = contentMapper(data, {
     baseUrl: "/events",
-    dateField: "eventsDate",
-    fileField: "eventsFiles",
+    dateField: "startDate",
+    fileField: "attachments",
   });
+
+  // Override description to use the correct field for events
+  return {
+    ...mapped,
+    description: data.description || data.excerpt || "",
+  };
 }
 
 export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {

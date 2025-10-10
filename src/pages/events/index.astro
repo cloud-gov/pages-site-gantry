@@ -22,7 +22,7 @@ const { items, totalPages, hasPaginationNav } =
   );
 
 export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "events");
-export const prerender = true;
+export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title="events">
