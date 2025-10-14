@@ -22,12 +22,12 @@ export interface Props {
 }
 
 const {
-  title = "", 
-  description = "", 
+  title = "",
+  description = "",
   date = "",
   startDate = "",
   tags = [],
-  media = null, 
+  media = null,
   link = "",
   showEvent = false,
   jobTitle = "",
@@ -36,59 +36,89 @@ const {
 
 function normalizeDate(input?: string | DateParts): DateParts | null {
   return input
-    ? (typeof input === 'string' ? parseDateParts(input) : input)
-    : null; 
+    ? typeof input === "string"
+      ? parseDateParts(input)
+      : input
+    : null;
 }
 
 const dateParts = normalizeDate(date);
 const startParts = normalizeDate(startDate);
 
-const hasTags = tags?.length > 0; 
+const hasTags = tags?.length > 0;
 const hasDescription = !!description?.trim();
 
-const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dateParts.raw.getTime()));
+const hasValidDate = !!(
+  dateParts &&
+  dateParts.raw instanceof Date &&
+  !isNaN(dateParts.raw.getTime())
+);
 ---
 
 <>
   <li class="usa-collection__item maxw-tablet">
-    {media?.thumbnailURL && (
-      <Media className="usa-collection__img" media={media} />
-    )}
-    {showEvent && startParts?.raw && (
-      <div class="usa-collection__calendar-date">
-      <time datetime={startParts.raw.toISOString()}>
-        <span class="usa-collection__calendar-date-month">{startParts.abbrMonth}</span>
-        <span class="usa-collection__calendar-date-day">{startParts.day}</span>
-      </time>
-    </div>
-    )}
+    {
+      media?.thumbnailURL && (
+        <Media className="usa-collection__img" media={media} />
+      )
+    }
+    {
+      showEvent && startParts?.raw && (
+        <div class="usa-collection__calendar-date">
+          <time datetime={startParts.raw.toISOString()}>
+            <span class="usa-collection__calendar-date-month">
+              {startParts.abbrMonth}
+            </span>
+            <span class="usa-collection__calendar-date-day">
+              {startParts.day}
+            </span>
+          </time>
+        </div>
+      )
+    }
     <div class="usa-collection__body">
-      <SectionHeader headingLevel="h2" class="usa-collection__heading font-body-lg">
+      <SectionHeader
+        headingLevel="h2"
+        class="usa-collection__heading font-body-lg"
+      >
         <Link href={link}>{title}</Link>
       </SectionHeader>
-      {isLeadership && jobTitle && (
-        <div class="usa-collection__description">
-          <h3 class="usa-collection__job-title font-body-md">{jobTitle}</h3>
-          {description && <p>{description}</p>}
-        </div>
-      )}
-      {hasDescription && !isLeadership && (
-        <div class="usa-collection__description">
-          <p set:html={description.replace(/\n/g, '<br>')} />
-        </div>
-      )}
-      {hasValidDate && !showEvent && (
-        <ul class="usa-collection__meta" aria-label="More information">
-          <li class="usa-collection__meta-item">
-            <time datetime={dateParts.raw.toISOString()}>{dateParts.full}</time>
-          </li>
-        </ul>
-      )}
-      {hasTags && (
-        <ul class="usa-collection__meta display-flex margin-top-2" aria-label="Tag links">
-          <Tags tags={tags} />
-        </ul>
-      )}
+      {
+        isLeadership && jobTitle && (
+          <div class="usa-collection__description">
+            <h3 class="usa-collection__job-title font-body-md">{jobTitle}</h3>
+            {description && <p>{description}</p>}
+          </div>
+        )
+      }
+      {
+        hasDescription && !isLeadership && (
+          <div class="usa-collection__description">
+            <p set:html={description.replace(/\n/g, "<br>")} />
+          </div>
+        )
+      }
+      {
+        hasValidDate && !showEvent && (
+          <ul class="usa-collection__meta" aria-label="More information">
+            <li class="usa-collection__meta-item">
+              <time datetime={dateParts.raw.toISOString()}>
+                {dateParts.full}
+              </time>
+            </li>
+          </ul>
+        )
+      }
+      {
+        hasTags && (
+          <ul
+            class="usa-collection__meta display-flex margin-top-2"
+            aria-label="Tag links"
+          >
+            <Tags tags={tags} />
+          </ul>
+        )
+      }
     </div>
   </li>
 </>
@@ -106,11 +136,11 @@ const hasValidDate = !!(dateParts && dateParts.raw instanceof Date && !isNaN(dat
     font-size: var(--font-size-sm);
     margin-top: var(--spacing-2);
   }
-  
+
   .usa-collection__item:has(.usa-collection__job-title) .usa-collection__img {
     width: var(--spacing-40);
     height: var(--spacing-40);
-    margin-right: var(--spacing-6); 
+    margin-right: var(--spacing-6);
     object-fit: cover;
   }
 </style>

@@ -25,6 +25,22 @@ node oauth/index.js
 
 This project uses Vitest and Astro Container for testing Astro components. See [docs/TESTING.md](docs/TESTING.md) for detailed information on writing and running tests.
 
+## Formatting
+
+You can auto format your code by using the package.json script:
+
+```sh
+npm run format
+```
+
+You can check your if the code is formatted by using the package.json script:
+
+```sh
+npm run format:check
+```
+
+This check is also used in CI to verify the code is formatted in a pull request before the pull request is merged.
+
 ## CI
 
 The CI pipeline is used to deploy the sites to allow `pages-editor` users to preview their content updates in the same layout, configuration, and theme as their production site. This repository contains the defintion for a single Concourse pipeline. This pipeline is responsible for reading from a specific S3 bucket and deploying one application per JSON file found there. Those JSON files correspond to sites created by `pages-editor` and contain at least the following properties:
@@ -37,6 +53,10 @@ The deployment process is orchestrated through a **Concourse CI pipeline** that 
 **1. Pipeline Setup (`set-pipeline` job)**
 - The pipeline first boots up and sets itself using environment-specific configuration
 - It uses the `deploy-env` variable to determine which environment to deploy to (likely staging/production)
+
+**2. Code Checks (`test` job)**
+- The pipeline runs the automated tests and formatting check whenever the repository source is updated
+- If the test or the formatting check fails, the pull request status checks will fail and a developer must fix the issues before being able to merge the pull request
 
 **2. Site Discovery (`new-deploys` job)**
 - The pipeline monitors an S3 bucket for changes to site configurations

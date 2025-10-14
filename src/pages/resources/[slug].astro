@@ -6,7 +6,7 @@ import RichText from "@/components/RichText.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
-import { resourceMapper } from "@/utilities/contentMapper"
+import { resourceMapper } from "@/utilities/contentMapper";
 import Media from "@/components/Media.astro";
 
 const { slug } = Astro.params;
@@ -16,7 +16,7 @@ let data: CollectionEntry<typeof collectionName>["data"];
 if (!Astro.isPrerendered) {
   const preview = import.meta.env.PREVIEW_MODE;
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`
+    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
   );
   const n = await response.json();
   if (n.docs.length === 0) return Astro.redirect("/404");
@@ -37,9 +37,12 @@ export const prerender = true;
   <PagesSection>
     <div class="flex-column margin-bottom-5">
       <h1 set:text={resource.title} />
-      {data.image && (<Media media={data.image} />)}
+      {data.image && <Media media={data.image} />}
       <p class="font-sans-sm text-italic" set:text={resource.date} />
-      <ul class="usa-collection__meta display-flex" aria-label="More information">
+      <ul
+        class="usa-collection__meta display-flex"
+        aria-label="More information"
+      >
         <Tags tags={resource.tags} />
       </ul>
     </div>

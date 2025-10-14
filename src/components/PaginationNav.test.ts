@@ -1,4 +1,3 @@
-
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, it, expect, beforeEach } from "vitest";
 import PaginationNav from "./PaginationNav.astro";
@@ -22,11 +21,11 @@ describe("PaginationNav", () => {
 
   function getPaginationElements(doc: Document) {
     return {
-      prevTab: doc.querySelector('.usa-pagination__previous-page'),
-      nextTab: doc.querySelector('.usa-pagination__next-page'),
-      pageTabs: doc.querySelectorAll('.usa-pagination__page-no'),
-      elipsTabs: doc.querySelectorAll('.usa-pagination__overflow'),
-      currentTab: doc.querySelector('.usa-current'),
+      prevTab: doc.querySelector(".usa-pagination__previous-page"),
+      nextTab: doc.querySelector(".usa-pagination__next-page"),
+      pageTabs: doc.querySelectorAll(".usa-pagination__page-no"),
+      elipsTabs: doc.querySelectorAll(".usa-pagination__overflow"),
+      currentTab: doc.querySelector(".usa-current"),
     };
   }
 
@@ -34,10 +33,11 @@ describe("PaginationNav", () => {
     const doc = await renderAndParse({
       currentPage: 1,
       totalPages: 3,
-      basePath: '/news/page',
+      basePath: "/news/page",
     });
 
-    const { prevTab, nextTab, pageTabs, elipsTabs } = getPaginationElements(doc);
+    const { prevTab, nextTab, pageTabs, elipsTabs } =
+      getPaginationElements(doc);
 
     expect(prevTab).toBeNull();
     expect(pageTabs.length).toBe(3);
@@ -49,10 +49,11 @@ describe("PaginationNav", () => {
     const doc = await renderAndParse({
       currentPage: 1,
       totalPages: 10,
-      basePath: '/news/page',
+      basePath: "/news/page",
     });
 
-    const { prevTab, nextTab, pageTabs, elipsTabs } = getPaginationElements(doc);
+    const { prevTab, nextTab, pageTabs, elipsTabs } =
+      getPaginationElements(doc);
 
     expect(prevTab).toBeNull();
     expect(pageTabs.length).toBe(3);
@@ -64,10 +65,11 @@ describe("PaginationNav", () => {
     const doc = await renderAndParse({
       currentPage: 5,
       totalPages: 10,
-      basePath: '/news/page',
+      basePath: "/news/page",
     });
 
-    const { prevTab, nextTab, pageTabs, elipsTabs } = getPaginationElements(doc);
+    const { prevTab, nextTab, pageTabs, elipsTabs } =
+      getPaginationElements(doc);
 
     expect(prevTab).not.toBeNull();
     expect(pageTabs.length).toBe(5);
@@ -79,11 +81,11 @@ describe("PaginationNav", () => {
     const doc = await renderAndParse({
       currentPage: 5,
       totalPages: 10,
-      basePath: '/news/page',
+      basePath: "/news/page",
     });
 
     const { currentTab } = getPaginationElements(doc);
 
-    expect(currentTab?.innerHTML.trim()).toBe('5');
+    expect(currentTab?.innerHTML.trim()).toBe("5");
   });
 });

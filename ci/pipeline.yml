@@ -12,7 +12,10 @@ jobs:
     plan:
       - get: src
         params:
+          #@ if/end env != 'dev':
           depth: 1
+          #@ if/end env == 'dev':
+          integration_tool: checkout
         trigger: true
       - get: pipeline-tasks
       - get: general-task
@@ -26,12 +29,49 @@ jobs:
         instance_vars:
           deploy-env: ((deploy-env))
 
+  - name: test
+    plan:
+      - get: src
+        params:
+          #@ if/end env != 'dev':
+          depth: 1
+          #@ if/end env == 'dev':
+          integration_tool: checkout
+        passed: [set-pipeline]
+        trigger: true
+      - get: general-task
+      - get: node22
+      - in_parallel:
+        - task: check-format
+          file: src/ci/partials/check-formatting.yml
+          image: node22
+        - task: test
+          file: src/ci/partials/test.yml
+          image: node22
+
+    on_failure:
+      in_parallel:
+        -  #@ slack_hook("failure", "tests failed")
+        #@ if/end env == 'dev':
+        -  #@ pr_hook("failure", "test-pages-site-gantry")
+    on_success:
+      in_parallel:
+        #@ if/end env == 'dev':
+        -  #@ pr_hook("success", "test-pages-site-gantry")
+
   - name: new-deploys
     plan:
       - get: src
         params:
+          #@ if/end env != 'dev':
           depth: 1
+          #@ if/end env == 'dev':
+          integration_tool: checkout
+        #@ if/end env == 'dev':
         passed: [set-pipeline]
+        #@ if/end env != 'dev':
+        passed: [test]
+        trigger: true
       - get: s3
         trigger: true
       - get: general-task
@@ -57,9 +97,31 @@ jobs:
               SITE: ((.:site.name))
               API_KEY: ((.:site.apiKey))
 
+    on_failure:
+      in_parallel:
+        -  #@ slack_hook("failure", "deploy preview apps")
+        #@ if/end env == 'dev':
+        -  #@ pr_hook("failure", "deploy-pages-site-gantry-previews")
+    on_success:
+      in_parallel:
+        #@ if/end env == 'dev':
+        -  #@ pr_hook("success", "deploy-pages-site-gantry-previews")
+
 #!  RESOURCES
 
 resources:
+  #@ if/end env == 'dev':
+  - name: src
+    type: pull-request
+    check_every: 1m
+    source:
+      repository: ((pages-site-gantry-repository-path))
+      access_token: ((pages-operations-ci-github-token))
+      base_branch: main
+      disable_forks: true
+      ignore_drafts: true
+
+  #@ if/end env == 'staging':
   - name: src
     type: git
     icon: github
@@ -70,6 +132,7 @@ resources:
       private_key: ((pages-gpg-operations-github-sshkey.private_key))
 
   - name: general-task
+  - name: node22
   - name: pipeline-tasks
   - name: s3
     type: s3-resource
@@ -79,6 +142,7 @@ resources:
       path: _sites/
       bucket: ((editor-site-data-bucket-((deploy-env))))
       region: us-gov-west-1
+  - name: slack
 
 #!  RESOURCE TYPES
 
@@ -86,3 +150,6 @@ resource_types:
   - name: git
   - name: registry-image
   - name: s3-resource
+  - name: slack-notification
+  #@ if/end env == 'dev':
+  - name: pull-request

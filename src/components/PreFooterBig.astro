@@ -1,0 +1,130 @@
+---
+import Link from "./Link.astro";
+import ConnectSection from "@/components/ConnectSection.astro";
+import { cleanPreFooterBig } from "@/utilities/preFooterBig";
+import {
+  CONNECT_SECTION_BOTTOM,
+  CONNECT_SECTION_RIGHT,
+  type ConnectSectionModel,
+  type PreFooterBigModel,
+  type Topic,
+  type PreFooterBigConfiguration,
+} from "@/env";
+
+const { preFooter } = Astro.props;
+
+const cleanedPreFooter: PreFooterBigModel = cleanPreFooterBig(preFooter);
+const topics: Topic[] = cleanedPreFooter?.topics;
+const connectSection: ConnectSectionModel = cleanedPreFooter?.connectSection;
+const configuration: PreFooterBigConfiguration =
+  cleanedPreFooter?.configuration;
+
+const connectSectionRight =
+  connectSection != null &&
+  configuration?.connectSectionLocation === CONNECT_SECTION_RIGHT;
+const connectSectionBottom =
+  connectSection != null &&
+  configuration?.connectSectionLocation === CONNECT_SECTION_BOTTOM;
+
+const topicsCol =
+  configuration?.connectSectionLocation === CONNECT_SECTION_BOTTOM ||
+  !connectSection
+    ? 12
+    : 9;
+const connectSectionCol = 3;
+
+const topicsGridColClass = `grid-col-12 tablet:grid-col-${topicsCol}`;
+const connectSectionGridColClass = `grid-col-12 tablet:grid-col-${connectSectionCol}`;
+---
+
+{
+  cleanedPreFooter && (
+    <>
+      {topics && (
+        <div
+          class="usa-footer__primary-section"
+          style={`--columns: ${configuration.columnsInTopic};`}
+          id="pre-footer-big-topics"
+        >
+          <div class="grid-container">
+            <div class="grid-row grid-gap-1">
+              <div class={topicsGridColClass}>
+                <nav class="usa-footer__nav" aria-label="Pre-footer links">
+                  <div class="grid-row grid-gap-4 grid-col-auto">
+                    {topics.map((topic) => (
+                      <section class="usa-footer__primary-content usa-footer__primary-content--collapsible">
+                        <div class="single-list-grid">
+                          <div style="grid-column: 1 / -1">
+                            <h4 class="usa-footer__primary-link">
+                              {topic.name}
+                            </h4>
+                          </div>
+                          <ul
+                            class="usa-list usa-list--unstyled"
+                            style="display: contents;"
+                          >
+                            {topic.links.map((link, index) => (
+                              <div class="usa-footer__secondary-content usa-footer__secondary-link">
+                                <Link
+                                  className="usa-footer__secondary-link"
+                                  href={link.url}
+                                >
+                                  {link.text}
+                                </Link>
+                              </div>
+                            ))}
+                          </ul>
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                </nav>
+              </div>
+              {connectSectionRight && (
+                <ConnectSection
+                  connectSection={connectSection}
+                  gridColClass={connectSectionGridColClass}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {connectSectionBottom && (
+        <div class="usa-footer__primary-section">
+          <div class="grid-container">
+            <div class="grid-row grid-gap-1">
+              <ConnectSection
+                connectSection={connectSection}
+                gridColClass="grid-col-12"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+<style>
+  .usa-footer__secondary-link + .usa-footer__secondary-link {
+    padding-top: 0rem;
+  }
+
+  .list-label {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  .single-list-grid {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 2rem;
+  }
+
+  @media (min-width: 801px) {
+    .single-list-grid {
+      grid-template-columns: repeat(var(--columns, 4), 1fr);
+    }
+  }
+</style>

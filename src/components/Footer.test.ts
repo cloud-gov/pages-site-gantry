@@ -1,92 +1,93 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import Footer from "./Footer.astro";
+import {
+  PRE_FOOTER_TYPE_BIG,
+  PRE_FOOTER_TYPE_NONE,
+  PRE_FOOTER_TYPE_SLIM,
+} from "@/env";
+
+import * as api from "@/utilities/preFooterDataFetch";
+import { getPreFooterBig } from "@/components/PreFooterBig.testData";
+import { getPreFooterSlim } from "@/components/PreFooterSlim.testData.ts";
+
+let container: any;
 
 describe("Footer", () => {
-  let container: any;
-
   beforeEach(async () => {
+    vi.clearAllMocks();
     container = await AstroContainer.create();
   });
 
-  it('renders the USWDS footer and identifier classes', async () => {
-    const result = await container.renderToString(Footer, { props: {} });
+  it("renders PreFooterBig", async () => {
+    vi.spyOn(api, "fetchPreFooter").mockResolvedValue({
+      preFooterType: PRE_FOOTER_TYPE_BIG,
+      preFooterData: getPreFooterBig(),
+    });
+
+    const result = await container.renderToString(Footer);
+    expect(result).not.toContain("pre-footer-slim");
+    expect(result).toContain('id="pre-footer-big-topics"');
+  });
+
+  it("renders PreFooterSlim", async () => {
+    vi.spyOn(api, "fetchPreFooter").mockResolvedValue({
+      preFooterType: PRE_FOOTER_TYPE_SLIM,
+      preFooterData: getPreFooterSlim(),
+    });
+
+    const result = await container.renderToString(Footer);
+    expect(result).toContain("pre-footer-slim");
+    expect(result).not.toContain('id="pre-footer-big-topics"');
+  });
+
+  it("does not render prefooter", async () => {
+    vi.spyOn(api, "fetchPreFooter").mockResolvedValue({
+      preFooterType: PRE_FOOTER_TYPE_NONE,
+      preFooterData: null,
+    });
+
+    const result = await container.renderToString(Footer);
+    expect(result).not.toContain("pre-footer-slim");
+    expect(result).not.toContain('id="pre-footer-big-topics"');
+  });
+
+  it("renders the USWDS footer and identifier classes", async () => {
+    const result = await container.renderToString(Footer);
     expect(result).toContain("usa-footer");
     expect(result).toContain("usa-identifier");
   });
 
-  it('renders the return to top link', async () => {
-    const result = await container.renderToString(Footer, { props: {} });
+  it("renders the return to top link", async () => {
+    const result = await container.renderToString(Footer);
     expect(result).toContain("Return to top");
   });
 
-  it("renders a list of links when footerLinks are provided", async () => {
-    const footerLinks = [
+  it("renders the site identifier content from given props", async () => {
+    const identifierName = "U.S. Agency Name";
+    const identifierUrl = "https://domain.gov";
+    const siteDomain = "Domain.gov";
+    const identifierLinks = [
       {
-        text: "First test link text",
-        url: "url-test-1",
+        text: "About This Agency",
+        url: "https://www.agency.gov/about-us",
       },
       {
-        text: "Second test link text",
-        url: "url-test-2",
+        text: "Agency Statement",
+        url: "https://www.agency.gov/statement",
       },
     ];
 
+    const container = await AstroContainer.create();
     const result = await container.renderToString(Footer, {
-      props: { footerLinks },
-    });
-
-    // Check that the list is rendered
-    expect(result).toContain("<ul");
-    expect(result).toContain("</ul>");
-
-    // Check that both link items are rendered
-    expect(result).toContain("First test link text");
-    expect(result).toContain('href="/url-test-1"');
-
-    expect(result).toContain("Second test link text");
-    expect(result).toContain('href="/url-test-2"');
-  });
-
-
-  it("renders a contact email if provided", async () => {
-    const contactEmail = "you@agency.gov"
-
-    const result = await container.renderToString(Footer, {
-      props: { contactEmail },
-    });
-
-    // Check that the email is rendered
-    expect(result).toContain("mailto:you@agency.gov");
-  });
-
-  it("renders a contact phone if provided", async () => {
-    const contactTelephone = "1-800-CALL-USA"
-
-    const result = await container.renderToString(Footer, {
-      props: { contactTelephone },
-    });
-
-    // Check that the phone is rendered
-    expect(result).toContain("tel:1-800-CALL-USA");
-  });
-
-
-  it("renders the site identifier content from given props", async () => {
-    const identifierName = "U.S. Agency Name"
-    const identifierUrl = "https://domain.gov"
-    const siteDomain = "Domain.gov"
-    const identifierLinks = [{
-      text: "About This Agency",
-      url: "https://www.agency.gov/about-us",
-    },
-    {
-      text: "Agency Statement",
-      url: "https://www.agency.gov/statement",
-    }]
-
-    const result = await container.renderToString(Footer, {
-      props: { identifierName, identifierUrl, siteDomain, identifierLinks },
+      props: {
+        identifiers: {
+          identifierName,
+          identifierUrl,
+          siteDomain,
+          identifierLinks,
+        },
+      },
     });
 
     // Check that the Identifier renders given content
@@ -108,10 +109,10 @@ describe("Footer", () => {
     expect(result).toContain('href="https://www.agency.gov/statement"');
 
     // Renders USA.gov required content
-    expect(result).toContain("Looking for U.S. government information and services?");
+    expect(result).toContain(
+      "Looking for U.S. government information and services?",
+    );
     expect(result).toContain('href="https://www.usa.gov/"');
     expect(result).toContain("Visit USA.gov");
-
   });
-
 });

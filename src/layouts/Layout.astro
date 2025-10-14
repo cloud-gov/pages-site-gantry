@@ -19,7 +19,7 @@ let menu: CollectionEntry<typeof menuCollectionName>["data"];
 
 if (!Astro.isPrerendered) {
   const siteConfigResponse = await payloadFetch(
-    `${siteConfigEndpoint}?draft=true`
+    `${siteConfigEndpoint}?draft=true`,
   );
   const siteConfigResponseData = await siteConfigResponse.json();
   siteConfig = siteConfigResponseData;
@@ -32,13 +32,14 @@ if (!Astro.isPrerendered) {
   const menuResponseData = await getCollection(menuCollectionName);
 
   siteConfig = {
-    agencyName: siteConfigResponseData[0].data.agencyName,
-    searchAccessKey: siteConfigResponseData[0].data.searchAccessKey,
-    searchAffiliate: siteConfigResponseData[0].data.searchAffiliate,
+    agencyName:
+      siteConfigResponseData[0]?.data?.agencyName || "Agency Homepage",
+    searchAccessKey: siteConfigResponseData[0]?.data?.searchAccessKey,
+    searchAffiliate: siteConfigResponseData[0]?.data?.searchAffiliate,
   };
 
   menu = {
-    items: menuResponseData[0].data.items,
+    items: menuResponseData[0]?.data?.items || [],
   };
 }
 
