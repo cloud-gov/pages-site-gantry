@@ -22,24 +22,118 @@ const response = await fetch(`https://api.gsa.gov/technology/searchgov/v2/result
 const data = await response.json();
 const results = data.web?.results ?? [];
 
-function highlightSnippet(snippet) {
-  return snippet
-  .replace(/&lt;U\+E000&gt;/g, '<strong>')
-  .replace(//g, '<strong>')
-  .replace(/&lt;U\+E001&gt;/g, '</strong>')
-  .replace(//g, '</strong> ');
+function highlightKeyword(string: string) {
+  return string
+  .replace(/\uE000/g, '<strong>')
+  .replace(/\uE001/g, '</strong> ');
 }
 ---
-
-<ul>
+{results.length > 0 && 
+    (
+      <div class="results-count-wrapper search-result-item-wrapper">
+        <div class="grid-container search-result-item">
+          <div class="grid-row grid-gap-md">
+            <div class="grid-col results-count">{results.length} results</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+<div class="search-result-item-wrapper">
   {results.length > 0 ? (
     results.map(result => (
-      <li>
-        <a href={result.url} target="_blank" rel="noopener noreferrer">{result.title}</a>
-        <p set:html={highlightSnippet(result.snippet)}></p>
-      </li>
+      <div class="grid-container result search-result-item">
+        <div class="grid-row grid-gap-md result-meta-grid-wrapper">
+          <div class="grid-col result-meta-data">
+            <div class="result-title">
+              <div class="result-title">
+                <h2 class="result-title-label" set:html={`<a href={result.url} target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>`}></h2>
+              </div>
+            </div>
+            <div class="result-desc">
+              <p set:html={highlightKeyword(result.snippet)}></p>
+              <div class="result-url-text" set:html={result.url}></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-row row-mobile-divider"></div>
+      </div>
     ))
   ) : (
     <li>No results found.</li>
   )}
-</ul>
+</div>
+
+<style>
+  .search-result-item-wrapper{
+    margin-top: 1.5rem;
+  }
+
+  .search-result-item{
+    /* margin-top: 3rem; */
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .search-result-item .result-title-label{
+    /* color: #005EA2; */
+    font-size: 1.375rem;
+    font-weight: 400;
+    margin-bottom: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .search-result-item .result-desc p{
+    color: #1B1B1B;
+    font-size: 1rem;
+    letter-spacing: 0.25px;
+    line-height: 26px;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    word-wrap: break-word;
+    max-width: none;
+  }
+
+  .search-result-item .result-desc .result-url-text{
+    color: #446443;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: break-word;
+  }
+
+  .row-mobile-divider{
+    border-top: 1px solid #DFE1E2;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    visibility: hidden;
+  }
+
+  /* Media Queries */
+@media (max-width: 767.98px) {
+  .search-result-item{
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .row-mobile-divider{
+    visibility: visible;
+  }
+
+  .search-item-wrapper .search-result-item:nth-last-child(2) .row-mobile-divider{
+    margin-top: 0.5rem;
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 767px){
+  .result-meta-grid-wrapper:active{
+    outline: 0.25rem solid #2491ff;
+  }
+
+  .search-result-item .result-title-link{
+    pointer-events: none;
+  }
+}
+
+</style>
