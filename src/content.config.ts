@@ -257,6 +257,99 @@ const resources = defineCollection({
 
 // Site Globals
 
+const homepage = defineCollection({
+  loader: collectionLoader("globals/home-page"),
+  schema: makeAllKeysNullable(
+    z
+      .object({
+        id: z.string(),
+        content: z
+          .array(
+            z.discriminatedUnion("blockType", [
+              z.object({
+                title: z.string(),
+                subtitle: z.string().nullable().optional(),
+                description: z.string().nullable().optional(),
+                bgImage: z.union([z.number().nullable(), z.any()]).optional(), // MediaValueProps or number
+                ctaButton: z
+                  .object({
+                    text: z.string().nullable().optional(),
+                    url: z.string().nullable().optional(),
+                    style: z
+                      .enum(["primary", "secondary", "outline"])
+                      .nullable()
+                      .optional(),
+                  })
+                  .optional(),
+                id: z.string().nullable().optional(),
+                blockName: z.string().nullable().optional(),
+                blockType: z.literal("hero"),
+              }),
+              z.object({
+                title: z.string().nullable().optional(),
+                description: z.string().nullable().optional(),
+                cards: z
+                  .array(
+                    z.object({
+                      title: z.string(),
+                      description: z.string().nullable().optional(),
+                      image: z
+                        .union([z.number().nullable(), z.any()])
+                        .optional(), // MediaValueProps or number
+                      link: z
+                        .object({
+                          url: z.string().nullable().optional(),
+                          text: z.string().nullable().optional(),
+                        })
+                        .optional(),
+                      id: z.string().nullable().optional(),
+                    }),
+                  )
+                  .nullable()
+                  .optional(),
+                id: z.string().nullable().optional(),
+                blockName: z.string().nullable().optional(),
+                blockType: z.literal("cardGrid"),
+              }),
+              z.object({
+                title: z.string().nullable().optional(),
+                content: z
+                  .object({
+                    root: z.object({
+                      type: z.string(),
+                      children: z.array(z.any()),
+                      direction: z.enum(["ltr", "rtl"]).nullable(),
+                      format: z.enum([
+                        "left",
+                        "start",
+                        "center",
+                        "right",
+                        "end",
+                        "justify",
+                        "",
+                      ]),
+                      indent: z.number(),
+                      version: z.number(),
+                    }),
+                  })
+                  .nullable()
+                  .optional(),
+                id: z.string().nullable().optional(),
+                blockName: z.string().nullable().optional(),
+                blockType: z.literal("textBlock"),
+              }),
+            ]),
+          )
+          .nullable()
+          .optional(),
+        _status: z.enum(["draft", "published"]).nullable().optional(),
+        updatedAt: z.string().nullable().optional(),
+        createdAt: z.string().nullable().optional(),
+      })
+      .partial(),
+  ),
+});
+
 const menu = defineCollection({
   loader: collectionLoader("globals/menu"),
   schema: makeAllKeysNullable(
@@ -415,6 +508,7 @@ export const collections = {
   reports,
   resources,
   // site globals
+  homepage,
   menu,
   siteConfig,
   preFooter,

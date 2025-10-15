@@ -3,7 +3,6 @@ import filePresent from "@uswds-images/usa-icons/file_present.svg";
 import {
   getUploadUrl,
   imageMimeTypes,
-  tag,
   formatMimeType,
   formatBytes,
 } from "@/utilities/media";
