@@ -8,65 +8,71 @@ const affiliate = siteConfig?.searchAffiliate;
 
 const { query } = Astro.props;
 
-const response = await fetch(`https://api.gsa.gov/technology/searchgov/v2/results/i14y?query=${encodeURIComponent(query)}&affiliate=${affiliate}&access_key=${apiKey}`);
+const response = await fetch(
+  `https://api.gsa.gov/technology/searchgov/v2/results/i14y?query=${encodeURIComponent(query)}&affiliate=${affiliate}&access_key=${apiKey}`,
+);
 
 const data = await response.json();
 const results = data.web?.results ?? [];
 
 function highlightKeyword(string: string) {
-  return string
-  .replace(/\uE000/g, '<strong>')
-  .replace(/\uE001/g, '</strong> ');
+  return string.replace(/\uE000/g, "<strong>").replace(/\uE001/g, "</strong> ");
 }
 ---
-{results.length > 0 && 
-    (
-      <div class="results-count-wrapper search-result-item-wrapper">
-        <div class="grid-container search-result-item">
-          <div class="grid-row grid-gap-md">
-            <div class="grid-col results-count">{results.length} results</div>
-          </div>
+
+{
+  results.length > 0 && (
+    <div class="results-count-wrapper search-result-item-wrapper">
+      <div class="grid-container search-result-item">
+        <div class="grid-row grid-gap-md">
+          <div class="grid-col results-count">{results.length} results</div>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 <div class="search-result-item-wrapper">
-  {results.length > 0 ? (
-    results.map(result => (
-      <div class="grid-container result search-result-item">
-        <div class="grid-row grid-gap-md result-meta-grid-wrapper">
-          <div class="grid-col result-meta-data">
-            <div class="result-title">
+  {
+    results.length > 0 ? (
+      results.map((result) => (
+        <div class="grid-container result search-result-item">
+          <div class="grid-row grid-gap-md result-meta-grid-wrapper">
+            <div class="grid-col result-meta-data">
               <div class="result-title">
-                <h2 class="result-title-label" set:html={`<a href="${result.url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>`}></h2>
+                <div class="result-title">
+                  <h2
+                    class="result-title-label"
+                    set:html={`<a href="${result.url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>`}
+                  />
+                </div>
+              </div>
+              <div class="result-desc">
+                <p set:html={highlightKeyword(result.snippet)} />
+                <div class="result-url-text" set:html={result.url} />
               </div>
             </div>
-            <div class="result-desc">
-              <p set:html={highlightKeyword(result.snippet)}></p>
-              <div class="result-url-text" set:html={result.url}></div>
-            </div>
           </div>
+          <div class="grid-row row-mobile-divider" />
         </div>
-        <div class="grid-row row-mobile-divider"></div>
-      </div>
-    ))
-  ) : (
-    <li>No results found.</li>
-  )}
+      ))
+    ) : (
+      <li>No results found.</li>
+    )
+  }
 </div>
 
 <style>
-  .search-result-item-wrapper{
+  .search-result-item-wrapper {
     margin-top: 1.5rem;
   }
 
-  .search-result-item{
+  .search-result-item {
     /* margin-top: 3rem; */
     padding-left: 2.5rem;
     padding-right: 2.5rem;
   }
 
-  .search-result-item .result-title-label{
+  .search-result-item .result-title-label {
     /* color: #005EA2; */
     font-size: 1.375rem;
     font-weight: 400;
@@ -74,8 +80,8 @@ function highlightKeyword(string: string) {
     margin-top: 0.35rem;
   }
 
-  .search-result-item .result-desc p{
-    color: #1B1B1B;
+  .search-result-item .result-desc p {
+    color: #1b1b1b;
     font-size: 1rem;
     letter-spacing: 0.25px;
     line-height: 26px;
@@ -85,7 +91,7 @@ function highlightKeyword(string: string) {
     max-width: none;
   }
 
-  .search-result-item .result-desc .result-url-text{
+  .search-result-item .result-desc .result-url-text {
     color: #446443;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -93,38 +99,39 @@ function highlightKeyword(string: string) {
     word-wrap: break-word;
   }
 
-  .row-mobile-divider{
-    border-top: 1px solid #DFE1E2;
+  .row-mobile-divider {
+    border-top: 1px solid #dfe1e2;
     margin-bottom: 1rem;
     margin-top: 1rem;
     visibility: hidden;
   }
 
   /* Media Queries */
-@media (max-width: 767.98px) {
-  .search-result-item{
-    padding-left: 1rem;
-    padding-right: 1rem;
+  @media (max-width: 767.98px) {
+    .search-result-item {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .row-mobile-divider {
+      visibility: visible;
+    }
+
+    .search-item-wrapper
+      .search-result-item:nth-last-child(2)
+      .row-mobile-divider {
+      margin-top: 0.5rem;
+      visibility: hidden;
+    }
   }
 
-  .row-mobile-divider{
-    visibility: visible;
-  }
+  @media (max-width: 767px) {
+    .result-meta-grid-wrapper:active {
+      outline: 0.25rem solid #2491ff;
+    }
 
-  .search-item-wrapper .search-result-item:nth-last-child(2) .row-mobile-divider{
-    margin-top: 0.5rem;
-    visibility: hidden;
+    .search-result-item .result-title-link {
+      pointer-events: none;
+    }
   }
-}
-
-@media (max-width: 767px){
-  .result-meta-grid-wrapper:active{
-    outline: 0.25rem solid #2491ff;
-  }
-
-  .search-result-item .result-title-link{
-    pointer-events: none;
-  }
-}
-
 </style>
