@@ -2,6 +2,7 @@
 import payloadFetch from "../utilities/payload-fetch";
 import Hero from "./Hero.astro";
 import CardGrid from "./CardGrid.astro";
+import RichText from "./RichText.astro";
 
 // Fetch home page data from Payload CMS
 let homePageData: any = null;
@@ -52,9 +53,7 @@ const contentBlocks = homePageData?.content || [];
                 <h2 class="font-heading-xl margin-bottom-3">{block.title}</h2>
               )}
               {block.content && (
-                <div class="usa-prose">
-                  <div set:html={block.content} />
-                </div>
+                <RichText content={block.content} />
               )}
             </div>
           </div>

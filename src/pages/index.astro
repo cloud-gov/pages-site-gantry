@@ -1,9 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ContentBlocks from "../components/ContentBlocks.astro";
+import payloadFetch from "../utilities/payload-fetch";
 
+// Fetch home page global data for SEO
+let homePageData: any = null;
+let seoData: any = null;
+
+try {
+  const response = await payloadFetch("globals/home-page");
+  if (response.ok) {
+    homePageData = await response.json();
+    seoData = homePageData?.seo;
+  }
+} catch (error) {
+  console.warn("Could not fetch home page data from API:", error);
+}
+
+// Use SEO data for meta tags
+const pageTitle = seoData?.metaTitle || "Home";
+const pageDescription = seoData?.metaDescription;
+const socialImage = seoData?.socialImage;
 ---
 
-<Layout>
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  socialImage={socialImage}
+>
   <ContentBlocks />
 </Layout>
