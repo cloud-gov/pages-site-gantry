@@ -8,7 +8,7 @@ import Footer from "@/components/Footer.astro";
 import Config from "@/config.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import "../styles/index.scss";
-import { siteConfigResponseData } from "@/utilities/queries";
+import { fetchSiteConfig } from "@/utilities/queries";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -18,7 +18,7 @@ let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 let menu: CollectionEntry<typeof menuCollectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  siteConfig = siteConfigResponseData;
+  siteConfig = await fetchSiteConfig();
 
   const menuResponse = await payloadFetch(`${menuEndpoint}?draft=true`);
   const menuResponseData = await menuResponse.json();

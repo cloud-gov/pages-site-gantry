@@ -2,10 +2,19 @@ import payloadFetch from "@/utilities/payload-fetch";
 
 const siteConfigEndpoint = "globals/site-config";
 
-const previewMode = import.meta.env.PREVIEW_MODE;
+interface SiteConfig {
+  searchAccessKey?: string;
+  searchAffiliate?: string;
+  tagline?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  primaryFont?: string;
+  favicon?: any;
+  logo?: any;
+}
 
-const siteConfigResponse = await payloadFetch(
-  `${siteConfigEndpoint}?draft=${previewMode}`,
-);
-
-export const siteConfigResponseData = await siteConfigResponse.json();
+export async function fetchSiteConfig(): Promise<SiteConfig> {
+  const response = await payloadFetch(`${siteConfigEndpoint}?draft=true`);
+  const data = await response.json();
+  return data as SiteConfig;
+}
