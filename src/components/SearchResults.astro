@@ -1,15 +1,10 @@
 ---
-import payloadFetch from "@/utilities/payload-fetch";
+import { siteConfigResponseData } from "@/utilities/queries";
 import type { CollectionEntry } from "astro:content";
 
 const siteConfigCollectionName = "siteConfig";
-const siteConfigEndpoint = "globals/site-config";
 let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 
-const siteConfigResponse = await payloadFetch(
-  `${siteConfigEndpoint}?draft=true`,
-);
-const siteConfigResponseData = await siteConfigResponse.json();
 siteConfig = siteConfigResponseData;
 
 const apiKey = siteConfig?.searchAccessKey;

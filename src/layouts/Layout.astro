@@ -8,9 +8,9 @@ import Footer from "@/components/Footer.astro";
 import Config from "@/config.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import "../styles/index.scss";
+import { siteConfigResponseData } from "@/utilities/queries";
 
 const siteConfigCollectionName = "siteConfig";
-const siteConfigEndpoint = "globals/site-config";
 const menuCollectionName = "menu";
 const menuEndpoint = "globals/menu";
 
@@ -18,10 +18,6 @@ let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 let menu: CollectionEntry<typeof menuCollectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  const siteConfigResponse = await payloadFetch(
-    `${siteConfigEndpoint}?draft=true`,
-  );
-  const siteConfigResponseData = await siteConfigResponse.json();
   siteConfig = siteConfigResponseData;
 
   const menuResponse = await payloadFetch(`${menuEndpoint}?draft=true`);
