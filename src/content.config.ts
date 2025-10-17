@@ -308,6 +308,8 @@ const siteConfig = defineCollection({
         primaryFont: z.string().optional(),
         favicon: z.any().optional(),
         logo: z.any().optional(),
+        searchAccessKey: z.any().optional(),
+        searchAffiliate: z.any().optional(),
       })
       .partial(),
   ),
