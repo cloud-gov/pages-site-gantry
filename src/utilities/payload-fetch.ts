@@ -6,5 +6,6 @@ export default async (endpoint: string) => {
     headers: {
       Authorization: `users API-Key ${import.meta.env.PAYLOAD_API_KEY}`,
     },
+    signal: AbortSignal.timeout(5000), // 5 second timeout
   });
 };
