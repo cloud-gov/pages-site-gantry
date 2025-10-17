@@ -5,7 +5,9 @@ import { Image } from "astro:assets";
 import search from "@uswds-images/usa-icons-bg/search--white.svg";
 
 const { searchAffiliate } = Astro.props;
-const baseUrl = import.meta.env.BASE_URL || "/";
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? "/"
+  : import.meta.env.BASE_URL + "/";
 ---
 
 <form

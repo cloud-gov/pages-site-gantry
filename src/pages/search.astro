@@ -5,6 +5,8 @@ import SearchResults from "@/components/SearchResults.astro";
 
 const url = new URL(Astro.request.url, Astro.site);
 const search = url.searchParams.get("query");
+
+export const prerender = false;
 ---
 
 <Layout>
