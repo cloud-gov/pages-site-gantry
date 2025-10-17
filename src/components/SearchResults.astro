@@ -9,9 +9,13 @@ import { fetchSiteConfig } from "@/utilities/queries";
 ---
 
 <script type="module">
-  const query = decodeURIComponent(new URLSearchParams(window.location.search).get("query") || "");
-  const affiliate = decodeURIComponent(new URLSearchParams(window.location.search).get("affiliate") || "");
-  const apiKey = 'lULolvNFA7gCaduUESY9S2o54K18l0zrYm-lVkDAqkU='; // Test API Key. Not for Production
+  const query = decodeURIComponent(
+    new URLSearchParams(window.location.search).get("query") || "",
+  );
+  const affiliate = decodeURIComponent(
+    new URLSearchParams(window.location.search).get("affiliate") || "",
+  );
+  const apiKey = "lULolvNFA7gCaduUESY9S2o54K18l0zrYm-lVkDAqkU="; // Test API Key. Not for Production
   const resultsContainer = document.getElementById("search-results");
   const countContainer = document.getElementById("results-count");
 
@@ -19,7 +23,7 @@ import { fetchSiteConfig } from "@/utilities/queries";
     if (!query) return;
 
     const response = await fetch(
-      `https://api.gsa.gov/technology/searchgov/v2/results/i14y?query=${encodeURIComponent(query)}&affiliate=${affiliate}&access_key=${apiKey}`
+      `https://api.gsa.gov/technology/searchgov/v2/results/i14y?query=${encodeURIComponent(query)}&affiliate=${affiliate}&access_key=${apiKey}`,
     );
     const data = await response.json();
     const results = data.web?.results ?? [];
@@ -33,7 +37,9 @@ import { fetchSiteConfig } from "@/utilities/queries";
       return;
     }
 
-    resultsContainer.innerHTML = results.map(result => `
+    resultsContainer.innerHTML = results
+      .map(
+        (result) => `
       <div class="grid-container result search-result-item">
         <div class="grid-row grid-gap-md result-meta-grid-wrapper">
           <div class="grid-col result-meta-data">
@@ -123,11 +129,15 @@ import { fetchSiteConfig } from "@/utilities/queries";
     }
   }
 </style>
-    `).join("");
+    `,
+      )
+      .join("");
   }
 
   function highlightKeyword(string) {
-    return string.replace(/\uE000/g, "<strong>").replace(/\uE001/g, "</strong>");
+    return string
+      .replace(/\uE000/g, "<strong>")
+      .replace(/\uE001/g, "</strong>");
   }
 
   fetchResults();
