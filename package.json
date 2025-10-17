@@ -37,8 +37,8 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "^22.x.x",
-    "npm": "^11.x.x"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.4",
