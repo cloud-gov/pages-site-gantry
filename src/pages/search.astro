@@ -2,15 +2,10 @@
 import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import SearchResults from "@/components/SearchResults.astro";
-
-const url = new URL(Astro.request.url, Astro.site);
-const search = url.searchParams.get("query");
 ---
 
 <Layout>
   <PagesSection heading="Search">
-    <!-- search results -->
-    {search && <SearchResults query={search} client:load />}
-    <!-- /search results -->
+    <SearchResults client:load />
   </PagesSection>
 </Layout>
