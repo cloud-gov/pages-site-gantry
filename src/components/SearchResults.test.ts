@@ -18,10 +18,7 @@ const mockResults = {
 
 describe("searchResultsClient", () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="results-count"></div>
-      <div id="search-results"></div>
-    `;
+    document.body.innerHTML = ` <div id="results-count"></div> <div id="search-results"></div> `;
 
     vi.stubGlobal(
       "fetch",
@@ -54,7 +51,10 @@ describe("searchResultsClient", () => {
       "fetch",
       vi.fn(() =>
         Promise.resolve({
-          json: () => Promise.resolve({ web: { results: [] } }),
+          json: () =>
+            Promise.resolve({
+              web: { results: [] },
+            }),
         }),
       ),
     );
