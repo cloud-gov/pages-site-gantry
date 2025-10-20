@@ -9,6 +9,8 @@ const search = url.searchParams.get("query");
 
 <Layout>
   <PagesSection heading="Search">
+    <!-- search results -->
     {search && <SearchResults query={search} client:load />}
+    <!-- /search results -->
   </PagesSection>
 </Layout>
