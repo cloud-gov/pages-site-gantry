@@ -36,23 +36,16 @@ export async function renderSearchResults({
   resultsContainer.innerHTML = results
     .map(
       (result) => `
-      <div class="grid-container result search-result-item">
-        <div class="grid-row grid-gap-md result-meta-grid-wrapper">
-          <div class="grid-col result-meta-data">
-            <div class="result-title">
-              <h2 class="result-title-label">
-                <a href="${result.url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>
-              </h2>
-            </div>
-            <div class="result-desc">
-              <p>${highlightKeyword(result.snippet)}</p>
-              <div class="result-url-text">${result.url}</div>
-            </div>
-          </div>
+        <div class="result-title">
+          <h2 class="result-title-label">
+            <a href="${result.url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>
+          </h2>
         </div>
-        <div class="grid-row row-mobile-divider"></div>
-      </div>
-    `,
+        <div class="result-desc">
+          <p>${highlightKeyword(result.snippet)}</p>
+          <div class="result-url-text">${result.url}</div>
+        </div>
+      `,
     )
     .join("");
 }
