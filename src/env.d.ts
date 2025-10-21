@@ -79,6 +79,17 @@ export const CONNECT_SECTION_LOCATION_DEFAULT = CONNECT_SECTION_RIGHT;
 export const TOPIC_COLUMNS_DEFAULT = 2;
 export const TOPIC_COLUMNS_MAX = 4;
 
+export interface SiteConfig {
+  searchAccessKey?: string;
+  searchAffiliate?: string;
+  tagline?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  primaryFont?: string;
+  favicon?: any;
+  logo?: any;
+}
+
 export enum SocialPlatform {
   FACEBOOK = "facebook",
   X = "x",
