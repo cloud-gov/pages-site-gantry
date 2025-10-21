@@ -1,0 +1,168 @@
+---
+import { fetchSiteConfig } from "@/utilities/queries";
+import type { CollectionEntry } from "astro:content";
+const siteConfigCollectionName = "siteConfig";
+let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
+siteConfig = await fetchSiteConfig();
+
+const apiKey = siteConfig?.searchAccessKey || "";
+---
+
+<div id="results-count"></div>
+<div id="search-results" data-search-gov={apiKey}></div>
+
+<script type="module">
+  export function highlightKeyword(string) {
+    return string
+      .replace(/\uE000/g, "<strong>")
+      .replace(/\uE001/g, "</strong>");
+  }
+
+  async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok)
+          throw new Error(`HTTP error. status: ${response.status}`);
+        return await response.json();
+      } catch (error) {
+        console.warn(`Attempt ${ATTEMPT + 1} failed: ${error.message}`);
+        if (attempt < retries) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, delay * Math.pow(2, attempt)),
+          );
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  export async function renderSearchResults() {
+    const resultsContainer = document.getElementById("search-results");
+    const countContainer = document.getElementById("results-count");
+
+    const apiKey = resultsContainer?.dataset.searchGov || null;
+
+    const query =
+      new URLSearchParams(window.location.search).get("query") || "";
+    const affiliate =
+      new URLSearchParams(window.location.search).get("affiliate") || "";
+
+    if (!query || !resultsContainer || !countContainer) return;
+
+    const apiUrl = `https://api.gsa.gov/technology/searchgov/v2/results/i14y?affiliate=${affiliate}&access_key=${apiKey}&query=${encodeURIComponent(query)}`;
+
+    try {
+      const data = await fetchWithRetry(apiUrl);
+      const results = data.web?.results ?? [];
+      countContainer.textContent = `${results.length} results`;
+
+      if (results.length === 0) {
+        resultsContainer.innerHTML = `<li>No results found.</li>`;
+        return;
+      }
+
+      resultsContainer.innerHTML = results
+        .map(
+          (result) => `
+        <div class="grid-container result search-result-item">
+          <div class="grid-row grid-gap-md result-meta-grid-wrapper">
+            <div class="grid-col result-meta-data">
+              <div class="result-title">
+                <h2 class="result-title-label">
+                  <a href="${result.url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>
+                </h2>
+              </div>
+              <div class="result-desc">
+                <p>${highlightKeyword(result.snippet)}</p>
+                <div class="result-url-text">${result.url}</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-row row-mobile-divider"></div>
+        </div>
+      `,
+        )
+        .join("");
+    } catch (error) {
+      resultsContainer.innerHTML = `<li>Error fetching results: ${error.message}</li>`;
+      countContainer.textContent = "0 results";
+    }
+  }
+
+  renderSearchResults();
+</script>
+<style is:global>
+  .search-result-item-wrapper {
+    margin-top: 1.5rem;
+  }
+
+  .search-result-item {
+    /* margin-top: 3rem; */
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .search-result-item .result-title-label {
+    /* color: #005EA2; */
+    font-size: 1.375rem;
+    font-weight: 400;
+    margin-bottom: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .search-result-item .result-desc p {
+    color: #1b1b1b;
+    font-size: 1rem;
+    letter-spacing: 0.25px;
+    line-height: 26px;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    word-wrap: break-word;
+    max-width: none;
+  }
+  .search-result-item .result-desc .result-url-text {
+    color: #446443;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: break-word;
+  }
+
+  .row-mobile-divider {
+    border-top: 1px solid #dfe1e2;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    visibility: hidden;
+  }
+
+  /* Media Queries */
+  @media (max-width: 767.98px) {
+    .search-result-item {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .row-mobile-divider {
+      visibility: visible;
+    }
+
+    .search-item-wrapper
+      .search-result-item:nth-last-child(2)
+      .row-mobile-divider {
+      margin-top: 0.5rem;
+      visibility: hidden;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .result-meta-grid-wrapper:active {
+      outline: 0.25rem solid #2491ff;
+    }
+
+    .search-result-item .result-title-link {
+      pointer-events: none;
+    }
+  }
+</style>

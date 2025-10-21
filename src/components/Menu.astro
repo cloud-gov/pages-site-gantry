@@ -7,10 +7,12 @@ import close from "@uswds-images/usa-icons/close.svg";
 interface Props {
   title: string;
   items: CollectionEntry<"menu">["data"]["items"];
+  searchAccessKey: string;
+  searchAffiliate: string;
 }
 
 const currentPath = Astro.url.pathname;
-const { title, items = [] } = Astro.props;
+const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
 ---
 
 <header class="usa-header usa-header--extended" role="banner">
@@ -116,7 +118,10 @@ const { title, items = [] } = Astro.props;
       </ul>
       <div class="usa-nav__secondary">
         <ul class="usa-nav__secondary-links"></ul>
-        <Search />
+        <Search
+          searchAccessKey={searchAccessKey}
+          searchAffiliate={searchAffiliate}
+        />
       </div>
     </div>
   </nav>

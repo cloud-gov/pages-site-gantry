@@ -57,6 +57,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# Docker file copied over from pages-editor
+Dockerfile
+
 # Virtual Environments
 !.env.example
 .env
