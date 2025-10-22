@@ -9,6 +9,7 @@ import Config from "@/config.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import "../styles/index.scss";
 import { fetchSiteConfig } from "@/utilities/queries";
+import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -32,6 +33,8 @@ if (!Astro.isPrerendered) {
       siteConfigResponseData[0]?.data?.agencyName || "Agency Homepage",
     searchAccessKey: siteConfigResponseData[0]?.data?.searchAccessKey,
     searchAffiliate: siteConfigResponseData[0]?.data?.searchAffiliate,
+    dapAgencyCode: siteConfigResponseData[0]?.data?.dapAgencyCode,
+    dapSubAgencyCode: siteConfigResponseData[0]?.data?.dapSubAgencyCode,
   };
 
   menu = {
@@ -68,6 +71,14 @@ const metaTitle = title
       <slot />
     </main>
     <Footer />
+    {
+      siteConfig.dapAgencyCode && (
+        <DigitalAnalytics
+          dapAgencyCode={siteConfig.dapAgencyCode}
+          dapSubAgencyCode={siteConfig.dapSubAgencyCode}
+        />
+      )
+    }
   </body>
 
   <style>
