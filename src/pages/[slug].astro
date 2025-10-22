@@ -1,7 +1,7 @@
 ---
 // src/pages/[slug].astro
 import Layout from "@/layouts/Layout.astro";
-import PagesSection from "@/components/PagesSection.astro";
+import PageWithSideNav from "@/components/PageWithSideNav.astro";
 import payloadFetch from "@/utilities/payload-fetch";
 import RichText from "@/components/RichText.astro";
 import Media from "@/components/Media.astro";
@@ -33,8 +33,12 @@ export async function getStaticPaths() {
 ---
 
 <Layout title={page.title}>
-  <PagesSection heading={page.title}>
+  <PageWithSideNav 
+    heading={page.title}
+    showSideNav={true}
+    currentPath={`/${page.slug}`}
+  >
     {page.image && <Media media={page.image} />}
     <RichText content={page.content} />
-  </PagesSection>
+  </PageWithSideNav>
 </Layout>
