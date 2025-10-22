@@ -310,6 +310,8 @@ const siteConfig = defineCollection({
         logo: z.any().optional(),
         searchAccessKey: z.any().optional(),
         searchAffiliate: z.any().optional(),
+        dapAgencyCode: z.string().optional(),
+        dapSubAgencyCode: z.string().optional(),
       })
       .partial(),
   ),
