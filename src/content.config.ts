@@ -313,6 +313,95 @@ const siteConfig = defineCollection({
   ),
 });
 
+const preFooter = defineCollection({
+ schema: makeAllKeysNullable(
+    z
+      .object({
+        type: z.string().optional(),
+        connectSectionLocation: z.string().optional(),
+        contactCenter: z.array(
+          z
+            .object({
+              name: z.string().optional(),
+              phone: z.string().optional(),
+              email: z.string().optional(),
+            })
+            .optional(),
+        ),
+        facebook: z.array(
+          z
+            .object({
+              url: z.string().optional(),
+            })
+            .optional(),
+        ),
+        platform_x: z.array(
+          z
+            .object({
+              url: z.string().optional(),
+            })
+            .optional(),
+        ),
+        youtube: z.array(
+          z
+            .object({
+              url: z.string().optional(),
+            })
+            .optional(),
+        ),
+        instagram: z.array(
+          z
+            .object({
+              url: z.string().optional(),
+            })
+            .optional(),
+        ),
+        rssfeed: z.array(
+          z
+            .object({
+              url: z.string().optional(),
+            })
+            .optional(),
+        ),
+        groupCol: z.string().optional(),
+        linkGroup: z.array(
+          z
+            .object({
+              groupName: z.string().optional(),
+              link: z.array(
+                z
+                  .object({
+                    blockType: z.string().optional(),
+                    name: z.string().optional(),
+                    type: z.any().optional(),
+                    id: z.string().optional(),
+                    linkUrl: z.string().optional(),
+                  })
+                  .optional(),
+              ),
+            })
+            .optional(),
+        ),
+        slimLink: z.array(
+          z
+            .object({
+              blockType: z.string().optional(),
+              name: z.string().optional(),
+              page: z.any().optional(),
+              id: z.string().optional(),
+              linkUrl: z.string().optional(),
+            })
+            .optional(),
+        ),
+        _status: z.enum(["draft", "published"]),
+        updatedAt: z.string().datetime(),
+        createdAt: z.string().datetime(),
+        globalType: z.string(),
+      })
+      .partial(),
+  ),
+});
+
 export const collections = {
   // site collections
   events,
@@ -324,4 +413,5 @@ export const collections = {
   // site globals
   menu,
   siteConfig,
+  preFooter,
 };
