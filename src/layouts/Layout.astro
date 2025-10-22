@@ -56,14 +56,6 @@ const metaTitle = title
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{metaTitle}</title>
     {canonical && <link rel="canonical" href={canonical} />}
-    {
-      siteConfig.dapAgencyCode && (
-        <DigitalAnalytics
-          dapAgencyCode={siteConfig.dapAgencyCode}
-          dapSubAgencyCode={siteConfig.dapSubAgencyCode}
-        />
-      )
-    }
   </head>
   <body>
     <Config />
@@ -79,6 +71,14 @@ const metaTitle = title
       <slot />
     </main>
     <Footer />
+    {
+      siteConfig.dapAgencyCode && (
+        <DigitalAnalytics
+          dapAgencyCode={siteConfig.dapAgencyCode}
+          dapSubAgencyCode={siteConfig.dapSubAgencyCode}
+        />
+      )
+    }
   </body>
 
   <style>
