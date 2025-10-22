@@ -1,5 +1,5 @@
 import { type DataEntryMap, getCollection } from "astro:content";
-import { payloadFetch } from "./payload-fetch";
+import { payloadFetch, safeJsonParse } from "./payload-fetch";
 
 export function createGetStaticPath(collectionName: keyof DataEntryMap) {
   return async function () {
@@ -20,7 +20,7 @@ export function createPagingStaticPath(
 ) {
   return async function getStaticPaths() {
     const response = await payloadFetch(`${collectionName}?limit=0`);
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     const totalItems = data.totalDocs || data.docs?.length || 0;
     const totalPages = Math.ceil(totalItems / pageSize);
 
@@ -39,7 +39,7 @@ export function processPagesResponse(data) {
 export function createGetStaticPathForPages() {
   return async function getStaticPaths() {
     const response = await payloadFetch("pages?limit=0");
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     return processPagesResponse(data);
   };
 }
@@ -58,7 +58,7 @@ export function processPagesSlugResponse(data) {
 export function createStaticPathsForPagesSlug() {
   return async function getStaticPaths() {
     const res = await payloadFetch(`pages?limit=1000&depth=0`);
-    let data = await res.json();
+    let data = await safeJsonParse(res);
     return processPagesSlugResponse(data);
   };
 }

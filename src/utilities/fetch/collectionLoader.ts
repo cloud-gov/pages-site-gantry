@@ -1,19 +1,9 @@
-import { payloadFetch } from "./payload-fetch";
+import { payloadFetch, safeJsonParse } from "./payload-fetch";
 
 export function collectionLoader(apiPath: string) {
   return async () => {
     const response = await payloadFetch(`${apiPath}?limit=0`);
-
-    if (!response.ok) {
-      console.error(
-        `API call failed for ${apiPath}:`,
-        response.status,
-        response.statusText,
-      );
-      return [];
-    }
-
-    const data = await response.json();
+    const data = await safeJsonParse(response);
 
     if (apiPath.includes("globals")) {
       return [{ ...data, id: "main" }];

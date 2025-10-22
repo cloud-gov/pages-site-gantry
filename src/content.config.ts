@@ -471,6 +471,45 @@ const preFooter = defineCollection({
   ),
 });
 
+const sideNavigations = defineCollection({
+  loader: collectionLoader("page-menus"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      title: z.string().optional(),
+      enabled: z.boolean().optional(),
+      items: z
+        .array(
+          z.object({
+            id: z.string(),
+            label: z.string(),
+            blockType: z.string(),
+            page: z.any().optional(),
+            url: z.string().optional(),
+            order: z.number().optional(),
+            subitems: z
+              .array(
+                z.object({
+                  id: z.string(),
+                  label: z.string(),
+                  blockType: z.string(),
+                  page: z.any().optional(),
+                  url: z.string().optional(),
+                  order: z.number().optional(),
+                }),
+              )
+              .optional(),
+          }),
+        )
+        .optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
 export const collections = {
   // site collections
   events,
@@ -479,6 +518,7 @@ export const collections = {
   posts,
   reports,
   resources,
+  sideNavigations,
   // site globals
   homepage,
   menu,

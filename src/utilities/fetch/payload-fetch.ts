@@ -21,3 +21,31 @@ export async function payloadFetch(endpoint: string) {
     signal: AbortSignal.timeout(5000), // 5 second timeout
   });
 }
+
+export async function safeJsonParse<T = any>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "Unknown error");
+    console.warn(
+      `API call failed for ${response.url}: ${response.status} ${response.statusText}`,
+    );
+    return { docs: [], totalDocs: 0 } as T;
+  }
+
+  const contentType = response.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
+    const text = await response.text().catch(() => "Unknown error");
+    console.warn(
+      `API call returned non-JSON for ${response.url}: ${contentType}`,
+    );
+    return { docs: [], totalDocs: 0 } as T;
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn(
+      `Failed to parse JSON from ${response.url}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    return { docs: [], totalDocs: 0 } as T;
+  }
+}

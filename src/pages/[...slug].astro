@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { createGetStaticPathForPages, fetchPageSlug } from "@/utilities/fetch";
-import PagesSection from "@/components/PagesSection.astro";
+import PageWithSideNav from "@/components/PageWithSideNav.astro";
 import RichText from "@/components/RichText.astro";
 
 const { slug } = Astro.params;
@@ -23,8 +23,12 @@ export const getStaticPaths = createGetStaticPathForPages();
 ---
 
 <Layout title={pageTitle}>
-  <PagesSection>
-    <h1>{pageTitle}</h1>
+  <PageWithSideNav
+    heading={pageTitle}
+    showSideNav={true}
+    currentPath={`/${slug}`}
+    sideNavId={page.sideNavigation?.id}
+  >
     <RichText content={pageContent} />
-  </PagesSection>
+  </PageWithSideNav>
 </Layout>

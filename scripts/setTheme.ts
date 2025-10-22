@@ -30,16 +30,43 @@ export const buildThemeStyle = async (
   payloadAPIKey: string,
   preview: string,
 ) => {
-  const siteConfigResponse = await payloadFetch(
-    editorAppURL,
-    `globals/site-config?draft=${preview === "true"}`,
-    payloadAPIKey,
-  );
-  const data: {
+  let data: {
     primaryColor?: string;
     secondaryColor?: string;
     primaryFont?: string;
-  } = await siteConfigResponse.json();
+  } = {};
+
+  try {
+    const siteConfigResponse = await payloadFetch(
+      editorAppURL,
+      `globals/site-config?draft=${preview === "true"}`,
+      payloadAPIKey,
+    );
+
+    if (!siteConfigResponse.ok) {
+      const errorText = await siteConfigResponse.text();
+      console.warn(
+        `Failed to fetch site config: ${siteConfigResponse.status} ${siteConfigResponse.statusText}`,
+      );
+      console.warn(`Response: ${errorText.substring(0, 200)}`);
+      console.warn(`Using default theme values`);
+    } else {
+      const contentType = siteConfigResponse.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await siteConfigResponse.text();
+        console.warn(`Expected JSON but got: ${contentType}`);
+        console.warn(`Response body: ${text.substring(0, 200)}`);
+        console.warn(`Using default theme values`);
+      } else {
+        data = await siteConfigResponse.json();
+      }
+    }
+  } catch (error) {
+    console.warn(
+      `Error fetching site config: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    console.warn(`Using default theme values`);
+  }
 
   const primaryColor = data?.primaryColor || "blue-warm-vivid";
   const pc = colorToken(primaryColor);
