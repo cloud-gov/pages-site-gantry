@@ -66,7 +66,7 @@ const socialLinks: SocialLink[] | undefined =
               {socialLinks.map((sm) => (
                 <div class="grid-col-auto">
                   <a
-                    href={sm.link}
+                    href={sm.url}
                     class="usa-social-link"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -87,7 +87,7 @@ const socialLinks: SocialLink[] | undefined =
                                   : ""
                       }
                       class="usa-social-link__icon"
-                      alt={sm.link}
+                      alt={sm.url}
                       loading="lazy"
                       decoding="async"
                     />

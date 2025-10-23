@@ -49,35 +49,36 @@ export interface CollectionCategoryProps {
   createdAt: string;
 }
 
-export interface IdentifierLink {
+export interface LinkModel {
   text: string;
+  url: string;
+  externalLink?: boolean;
+}
+
+export interface SocialLink {
+  platform: string;
   url: string;
 }
 
 export interface Identifiers {
   siteDomain: string;
-  identifierLinks: IdentifierLink[];
+  identifierLinks: LinkItem[];
   identifierName: string;
   identifierUrl: string;
-}
-
-export interface PreFooterSlimLink {
-  text: string;
-  url: string;
 }
 
 export interface PreFooterSlimModel {
   contactTelephone: string;
   contactEmail: string;
-  footerLinks: PreFooterSlimLink[];
+  footerLinks: LinkModel[];
 }
 
 export const CONNECT_SECTION_RIGHT = "right";
 export const CONNECT_SECTION_BOTTOM = "bottom";
 export const CONNECT_SECTION_LOCATION_DEFAULT = CONNECT_SECTION_RIGHT;
 
-export const TOPIC_COLUMNS_DEFAULT = 2;
-export const TOPIC_COLUMNS_MAX = 4;
+export const LINK_GROUP_COLUMNS_DEFAULT = 2;
+export const LINK_GROUP_COLUMNS_MAX = 4;
 
 export interface SiteConfig {
   searchAccessKey?: string;
@@ -98,12 +99,6 @@ export enum SocialPlatform {
   RSS_FEED = "rssFeed",
 }
 
-export interface SocialLink {
-  platform: string;
-  link: string;
-  displayOrder: number;
-}
-
 export interface ContactCenter {
   name: string;
   phone: string;
@@ -115,28 +110,21 @@ export interface ConnectSectionModel {
   socialLinks: SocialLink[];
 }
 
-export interface TopicLinkItem {
-  text: string;
-  url: string;
-  displayOrder: number;
-}
-
-export interface Topic {
+export interface LinkGroup {
   name: string;
-  links: TopicLinkItem[];
+  links: LinkModel[];
 }
 
 export type ConnectSectionLocation = "right" | "bottom";
 
 export interface PreFooterBigConfiguration {
   connectSectionLocation: ConnectSectionLocation;
-  columnsInTopic: number;
+  columnsInLinkGroup: number;
 }
 
 export interface PreFooterBigModel {
-  id: number;
-  topics: Topic[];
-  connectSection: ConnectSectionModel;
+  linkGroups?: LinkGroup[];
+  connectSection?: ConnectSectionModel;
   configuration: PreFooterBigConfiguration;
 }
 
@@ -151,4 +139,9 @@ export type PreFooterData = PreFooterBigModel | PreFooterSlimModel;
 export interface PreFooterModel {
   preFooterType: PreFooterType;
   preFooterData: PreFooterData;
+}
+
+export interface PageModel {
+  title?: string;
+  slug?: string;
 }

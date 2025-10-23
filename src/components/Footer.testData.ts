@@ -1,6 +1,6 @@
-import type { Identifiers } from "@/env";
-import { getPreFooterBig } from "@/components/PreFooterBig.testData.ts";
-import { PRE_FOOTER_TYPE_BIG, type PreFooterModel } from "@/env";
+import { type Identifiers, PRE_FOOTER_TYPE_SLIM } from "@/env";
+import { type PreFooterModel } from "@/env";
+import { getPreFooterSlim } from "@/components/PreFooterSlim.testData";
 
 export function getIdentifiers(): Identifiers {
   return {
@@ -42,7 +42,7 @@ export function getIdentifiers(): Identifiers {
 
 export function getPreFooter(): PreFooterModel {
   return {
-    preFooterType: PRE_FOOTER_TYPE_BIG,
-    preFooterData: getPreFooterBig(),
+    preFooterType: PRE_FOOTER_TYPE_SLIM,
+    preFooterData: getPreFooterSlim(),
   };
 }

@@ -3,138 +3,142 @@ import {
   cleanConfiguration,
   cleanConnectSection,
   cleanPreFooterBig,
-  cleanTopics,
+  cleanLinkGroups,
+  cleanLinkGroupColumns,
 } from "@/utilities/preFooterBig";
 import {
   type ConnectSectionModel,
   type ContactCenter,
   CONNECT_SECTION_LOCATION_DEFAULT,
-  TOPIC_COLUMNS_DEFAULT,
-  TOPIC_COLUMNS_MAX,
+  LINK_GROUP_COLUMNS_DEFAULT,
+  LINK_GROUP_COLUMNS_MAX,
   type PreFooterBigConfiguration,
   type PreFooterBigModel,
   type SocialLink,
-  type Topic,
+  type LinkGroup,
   SocialPlatform,
 } from "@/env";
 import {
   contactCenterEmail,
   contactCenterName,
   contactCenterPhone,
-  facebookDisplayOrder,
   facebookLink,
-  instagramDisplayOrder,
   instagramLink,
-  rssFeedDisplayOrder,
   rssFeedLink,
   unexpectedPlatform,
-  unexpectedPlatformDisplayOrder,
   unexpectedPlatformLink,
-  xDisplayOrder,
   xLink,
-  youtubeDisplayOrder,
   youtubeLink,
   getConnectSectionFull,
   getContactCenter,
   getUnexpectedPlatformSocialLink,
 } from "@/components/ConnectSection.testData.ts";
-import { getCouncilsTopics } from "@/components/PreFooterBig.testData";
+import { getCouncilsLinkGroups } from "@/components/PreFooterBig.testData";
 
 function expectInitialSocialLinks(socialLinks: SocialLink[]) {
   expect(socialLinks.length).toEqual(6);
 
   expect(socialLinks[0].platform).toEqual(SocialPlatform.YOUTUBE);
-  expect(socialLinks[0].link).toEqual(youtubeLink);
-  expect(socialLinks[0].displayOrder).toEqual(youtubeDisplayOrder);
+  expect(socialLinks[0].url).toEqual(youtubeLink);
 
   expect(socialLinks[1].platform).toEqual(SocialPlatform.INSTAGRAM);
-  expect(socialLinks[1].link).toEqual(instagramLink);
-  expect(socialLinks[1].displayOrder).toEqual(instagramDisplayOrder);
+  expect(socialLinks[1].url).toEqual(instagramLink);
 
   expect(socialLinks[2].platform).toEqual(SocialPlatform.X);
-  expect(socialLinks[2].link).toEqual(xLink);
-  expect(socialLinks[2].displayOrder).toEqual(xDisplayOrder);
+  expect(socialLinks[2].url).toEqual(xLink);
 
   expect(socialLinks[3].platform).toEqual(SocialPlatform.RSS_FEED);
-  expect(socialLinks[3].link).toEqual(rssFeedLink);
-  expect(socialLinks[3].displayOrder).toEqual(rssFeedDisplayOrder);
+  expect(socialLinks[3].url).toEqual(rssFeedLink);
 
   expect(socialLinks[4].platform).toEqual(unexpectedPlatform);
-  expect(socialLinks[4].link).toEqual(unexpectedPlatformLink);
-  expect(socialLinks[4].displayOrder).toEqual(unexpectedPlatformDisplayOrder);
+  expect(socialLinks[4].url).toEqual(unexpectedPlatformLink);
 
   expect(socialLinks[5].platform).toEqual(SocialPlatform.FACEBOOK);
-  expect(socialLinks[5].link).toEqual(facebookLink);
-  expect(socialLinks[5].displayOrder).toEqual(facebookDisplayOrder);
+  expect(socialLinks[5].url).toEqual(facebookLink);
 }
 
 function expectCleanedSocialLinks(socialLinks: SocialLink[]) {
   expect(socialLinks.length).toEqual(5);
 
   expect(socialLinks[0].platform).toEqual(SocialPlatform.FACEBOOK);
-  expect(socialLinks[0].link).toEqual(facebookLink);
-  expect(socialLinks[0].displayOrder).toEqual(facebookDisplayOrder);
+  expect(socialLinks[0].url).toEqual(facebookLink);
 
   expect(socialLinks[1].platform).toEqual(SocialPlatform.X);
-  expect(socialLinks[1].link).toEqual(xLink);
-  expect(socialLinks[1].displayOrder).toEqual(xDisplayOrder);
+  expect(socialLinks[1].url).toEqual(xLink);
 
   expect(socialLinks[2].platform).toEqual(SocialPlatform.YOUTUBE);
-  expect(socialLinks[2].link).toEqual(youtubeLink);
-  expect(socialLinks[2].displayOrder).toEqual(youtubeDisplayOrder);
+  expect(socialLinks[2].url).toEqual(youtubeLink);
 
   expect(socialLinks[3].platform).toEqual(SocialPlatform.INSTAGRAM);
-  expect(socialLinks[3].link).toEqual(instagramLink);
-  expect(socialLinks[3].displayOrder).toEqual(instagramDisplayOrder);
+  expect(socialLinks[3].url).toEqual(instagramLink);
 
   expect(socialLinks[4].platform).toEqual(SocialPlatform.RSS_FEED);
-  expect(socialLinks[4].link).toEqual(rssFeedLink);
-  expect(socialLinks[4].displayOrder).toEqual(rssFeedDisplayOrder);
+  expect(socialLinks[4].url).toEqual(rssFeedLink);
 }
 
-function expectCleanedTopics(cleanedTopics: Topic[]) {
-  expect(cleanedTopics.length).toEqual(1);
+function expectcleanedLinkGroups(cleanedLinkGroups: LinkGroup[]) {
+  expect(cleanedLinkGroups.length).toEqual(1);
 
-  expect(cleanedTopics[0].name).toEqual("Federal Executive Councils");
-  expect(cleanedTopics[0].links.length).toEqual(12);
-  expect(cleanedTopics[0].links[1].text).toEqual("Chief AI Officers Council");
-  expect(cleanedTopics[0].links[1].url).toEqual("#url1");
-  expect(cleanedTopics[0].links[0].text).toEqual(
+  expect(cleanedLinkGroups[0].name).toEqual("Federal Executive Councils");
+  expect(cleanedLinkGroups[0].links.length).toEqual(12);
+
+  expect(cleanedLinkGroups[0].links[0].text).toEqual(
     "Chief Acquisition Officers Council",
   );
-  expect(cleanedTopics[0].links[0].url).toEqual("#url2");
-  expect(cleanedTopics[0].links[2].text).toEqual("Chief Data Officers Council");
-  expect(cleanedTopics[0].links[2].url).toEqual("#url3");
-  expect(cleanedTopics[0].links[3].text).toEqual(
-    "Chief Financial Officers Council",
+  expect(cleanedLinkGroups[0].links[0].url).toEqual("#url1");
+
+  expect(cleanedLinkGroups[0].links[1].text).toEqual(
+    "Chief Data Officers Council",
   );
-  expect(cleanedTopics[0].links[3].url).toEqual("#url4");
-  expect(cleanedTopics[0].links[4].text).toEqual(
+  expect(cleanedLinkGroups[0].links[1].url).toEqual("#url2");
+
+  expect(cleanedLinkGroups[0].links[2].text).toEqual(
     "Chief Information Officers Council",
   );
-  expect(cleanedTopics[0].links[4].url).toEqual("#url5");
-  expect(cleanedTopics[0].links[5].text).toEqual(
-    "Council on Federal Financial Assistance",
+  expect(cleanedLinkGroups[0].links[2].url).toEqual("#url3");
+
+  expect(cleanedLinkGroups[0].links[3].text).toEqual(
+    "Evaluation Officer Council",
   );
-  expect(cleanedTopics[0].links[5].url).toEqual("#url6");
-  expect(cleanedTopics[0].links[6].text).toEqual("Evaluation Officer Council");
-  expect(cleanedTopics[0].links[6].url).toEqual("#url7");
-  expect(cleanedTopics[0].links[7].text).toEqual("Made in America Council");
-  expect(cleanedTopics[0].links[7].url).toEqual("#url8");
-  expect(cleanedTopics[0].links[8].text).toEqual(
+  expect(cleanedLinkGroups[0].links[3].url).toEqual("#url4");
+
+  expect(cleanedLinkGroups[0].links[4].text).toEqual(
     "Federal Real Property Council",
   );
-  expect(cleanedTopics[0].links[8].url).toEqual("#url9");
-  expect(cleanedTopics[0].links[9].text).toEqual("Federal Privacy Council");
-  expect(cleanedTopics[0].links[9].url).toEqual("#url10");
-  expect(cleanedTopics[0].links[10].text).toEqual(
+  expect(cleanedLinkGroups[0].links[4].url).toEqual("#url5");
+
+  expect(cleanedLinkGroups[0].links[5].text).toEqual(
     "Interagency Council on Statistical Policy",
   );
-  expect(cleanedTopics[0].links[10].url).toEqual("#url11");
-  expect(cleanedTopics[0].links[11].text).toEqual(
+  expect(cleanedLinkGroups[0].links[5].url).toEqual("#url6");
+
+  expect(cleanedLinkGroups[0].links[6].text).toEqual(
+    "Chief AI Officers Council",
+  );
+  expect(cleanedLinkGroups[0].links[6].url).toEqual("#url7");
+
+  expect(cleanedLinkGroups[0].links[7].text).toEqual(
+    "Chief Financial Officers Council",
+  );
+  expect(cleanedLinkGroups[0].links[7].url).toEqual("#url8");
+
+  expect(cleanedLinkGroups[0].links[8].text).toEqual(
+    "Council on Federal Financial Assistance",
+  );
+  expect(cleanedLinkGroups[0].links[8].url).toEqual("#url9");
+
+  expect(cleanedLinkGroups[0].links[9].text).toEqual("Made in America Council");
+  expect(cleanedLinkGroups[0].links[9].url).toEqual("#url10");
+
+  expect(cleanedLinkGroups[0].links[10].text).toEqual(
+    "Federal Privacy Council",
+  );
+  expect(cleanedLinkGroups[0].links[10].url).toEqual("#url11");
+
+  expect(cleanedLinkGroups[0].links[11].text).toEqual(
     "Performance Improvement Council",
   );
-  expect(cleanedTopics[0].links[11].url).toEqual("#url12");
+  expect(cleanedLinkGroups[0].links[11].url).toEqual("#url12");
 }
 
 function expectContactCenter(contactCenter: ContactCenter) {
@@ -241,18 +245,18 @@ describe("PreFooterBig Utilities, Connect Section", () => {
   });
 });
 
-describe("PreFooterBig Utilities, Topics", () => {
-  it("does not clean populated Topics", () => {
-    const topics = getCouncilsTopics();
-    let cleanedTopics = cleanTopics(topics);
+describe("PreFooterBig Utilities, LinkGroups ", () => {
+  it("does not clean populated LinkGroups ", () => {
+    const linkGroups = getCouncilsLinkGroups();
+    let cleanedLinkGroups = cleanLinkGroups(linkGroups);
 
-    expectCleanedTopics(cleanedTopics);
+    expectcleanedLinkGroups(cleanedLinkGroups);
   });
 
-  it("does not throw errors if no Topics", () => {
-    function test(topics: Topic[] | any) {
-      let cleanedTopics = cleanTopics(topics);
-      expect(cleanedTopics).toBeNull();
+  it("does not throw errors if no LinkGroups ", () => {
+    function test(linkGroups: LinkGroup[] | any) {
+      let cleanedLinkGroups = cleanLinkGroups(linkGroups);
+      expect(cleanedLinkGroups).toBeNull();
     }
 
     test(null);
@@ -278,14 +282,16 @@ describe("PreFooterBig Utilities, Topics", () => {
 describe("PreFooterBig Utilities, Configuration", () => {
   it("does not clean populated Configuration", () => {
     const configuration: PreFooterBigConfiguration = {
-      columnsInTopic: TOPIC_COLUMNS_MAX,
+      columnsInLinkGroup: LINK_GROUP_COLUMNS_MAX,
       connectSectionLocation: "bottom",
     };
 
     const cleanedConfiguration: PreFooterBigConfiguration =
       cleanConfiguration(configuration);
 
-    expect(cleanedConfiguration.columnsInTopic).toEqual(TOPIC_COLUMNS_MAX);
+    expect(cleanedConfiguration.columnsInLinkGroup).toEqual(
+      LINK_GROUP_COLUMNS_MAX,
+    );
     expect(cleanedConfiguration.connectSectionLocation).toEqual("bottom");
   });
 
@@ -294,8 +300,8 @@ describe("PreFooterBig Utilities, Configuration", () => {
       const cleanedConfiguration: PreFooterBigConfiguration =
         cleanConfiguration(configuration);
 
-      expect(cleanedConfiguration.columnsInTopic).toEqual(
-        TOPIC_COLUMNS_DEFAULT,
+      expect(cleanedConfiguration.columnsInLinkGroup).toEqual(
+        LINK_GROUP_COLUMNS_DEFAULT,
       );
       expect(cleanedConfiguration.connectSectionLocation).toEqual(
         CONNECT_SECTION_LOCATION_DEFAULT,
@@ -307,15 +313,15 @@ describe("PreFooterBig Utilities, Configuration", () => {
     test(undefined);
     test([]);
     test({
-      columnsInTopic: null,
+      columnsInLinkGroup: null,
       connectSectionLocation: null,
     });
     test({
-      columnsInTopic: undefined,
+      columnsInLinkGroup: undefined,
       connectSectionLocation: undefined,
     });
     test({
-      columnsInTopic: "test",
+      columnsInLinkGroup: "test",
       connectSectionLocation: undefined,
     });
   });
@@ -324,12 +330,11 @@ describe("PreFooterBig Utilities, Configuration", () => {
 describe("PreFooterBig Utilities, PreFooterBig", () => {
   it("does not clean populated PreFooterBig", () => {
     const preFooterBig: PreFooterBigModel = {
-      id: 1111,
-      topics: getCouncilsTopics(),
+      linkGroups: getCouncilsLinkGroups(),
       connectSection: getConnectSectionFull(),
       configuration: {
         connectSectionLocation: "bottom",
-        columnsInTopic: 1,
+        columnsInLinkGroup: 1,
       },
     };
 
@@ -337,12 +342,11 @@ describe("PreFooterBig Utilities, PreFooterBig", () => {
 
     expectContactCenter(cleanedPreFooterBig.connectSection.contactCenter);
     expectCleanedSocialLinks(cleanedPreFooterBig.connectSection.socialLinks);
-    expectCleanedTopics(cleanedPreFooterBig.topics);
-    expect(cleanedPreFooterBig.id).toEqual(1111);
+    expectcleanedLinkGroups(cleanedPreFooterBig.linkGroups);
     expect(cleanedPreFooterBig.configuration.connectSectionLocation).toEqual(
       "bottom",
     );
-    expect(cleanedPreFooterBig.configuration.columnsInTopic).toEqual(1);
+    expect(cleanedPreFooterBig.configuration.columnsInLinkGroup).toEqual(1);
   });
 
   it("does not throw errors if no data", () => {
@@ -357,14 +361,14 @@ describe("PreFooterBig Utilities, PreFooterBig", () => {
     test({});
   });
 
-  it("cleans Topics", () => {
+  it("cleans LinkGroups ", () => {
     const preFooterBig: PreFooterBigModel | any = {
       id: 1111,
-      topics: [],
+      linkGroups: [],
       connectSection: getConnectSectionFull(),
       configuration: {
         connectSectionLocation: "bottom",
-        columnsInTopic: 1,
+        columnsInLinkGroup: 1,
       },
     };
 
@@ -372,37 +376,38 @@ describe("PreFooterBig Utilities, PreFooterBig", () => {
 
     expectContactCenter(cleanedPreFooterBig.connectSection.contactCenter);
     expectCleanedSocialLinks(cleanedPreFooterBig.connectSection.socialLinks);
-    expect(cleanedPreFooterBig.topics).toBeNull();
-    expect(cleanedPreFooterBig.id).toEqual(1111);
+    expect(cleanedPreFooterBig.linkGroups).toBeNull();
     expect(cleanedPreFooterBig.configuration.connectSectionLocation).toEqual(
       "bottom",
     );
-    expect(cleanedPreFooterBig.configuration.columnsInTopic).toEqual(1);
+    expect(cleanedPreFooterBig.configuration.columnsInLinkGroup).toEqual(1);
   });
 
   it("cleans Connect Section", () => {
     const preFooterBig: PreFooterBigModel | any = {
       id: 1111,
-      topics: getCouncilsTopics(),
+      linkGroups: getCouncilsLinkGroups(),
       connectSection: {},
-      configuration: { connectSectionLocation: "bottom", columnsInTopic: 1 },
+      configuration: {
+        connectSectionLocation: "bottom",
+        columnsInLinkGroup: 1,
+      },
     };
 
     const cleanedPreFooterBig = cleanPreFooterBig(preFooterBig);
 
     expect(cleanedPreFooterBig.connectSection).toBeNull();
-    expectCleanedTopics(cleanedPreFooterBig.topics);
-    expect(cleanedPreFooterBig.id).toEqual(1111);
+    expectcleanedLinkGroups(cleanedPreFooterBig.linkGroups);
     expect(cleanedPreFooterBig.configuration.connectSectionLocation).toEqual(
       "bottom",
     );
-    expect(cleanedPreFooterBig.configuration.columnsInTopic).toEqual(1);
+    expect(cleanedPreFooterBig.configuration.columnsInLinkGroup).toEqual(1);
   });
 
   it("defaults Connect Section location", () => {
     const preFooterBig: PreFooterBigModel | any = {
       id: 1111,
-      topics: getCouncilsTopics(),
+      linkGroups: getCouncilsLinkGroups(),
       connectSection: getConnectSectionFull(),
       configuration: {},
     };
@@ -411,13 +416,16 @@ describe("PreFooterBig Utilities, PreFooterBig", () => {
 
     expectContactCenter(cleanedPreFooterBig.connectSection.contactCenter);
     expectCleanedSocialLinks(cleanedPreFooterBig.connectSection.socialLinks);
-    expectCleanedTopics(cleanedPreFooterBig.topics);
-    expect(cleanedPreFooterBig.id).toEqual(1111);
+    expectcleanedLinkGroups(cleanedPreFooterBig.linkGroups);
     expect(cleanedPreFooterBig.configuration.connectSectionLocation).toEqual(
       CONNECT_SECTION_LOCATION_DEFAULT,
     );
-    expect(cleanedPreFooterBig.configuration.columnsInTopic).toEqual(
-      TOPIC_COLUMNS_DEFAULT,
+    expect(cleanedPreFooterBig.configuration.columnsInLinkGroup).toEqual(
+      LINK_GROUP_COLUMNS_DEFAULT,
     );
+  });
+
+  it("doesn't throw an error if not a number", () => {
+    expect(cleanLinkGroupColumns("not a number")).toEqual(2);
   });
 });
