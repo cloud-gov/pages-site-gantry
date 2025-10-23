@@ -31,8 +31,7 @@
     "jose": "^5.9.6",
     "pino-http": "^10.4.0",
     "sanitize-html": "^2.16.0",
-    "sharp": "^0.34.1",
-    "prettier": "^3.0.3"
+    "sharp": "^0.34.1"
   },
   "author": "",
   "license": "ISC",
@@ -43,8 +42,8 @@
   "devDependencies": {
     "@types/node": "^22.13.4",
     "@types/sanitize-html": "^2.15.0",
-    "happy-dom": "^18.0.1",
-    "prettier": "3.6.2",
+    "happy-dom": "^20.0.8",
+    "prettier": "^3.6.2",
     "prettier-plugin-astro": "0.14.1",
     "sass-embedded": "^1.85.0",
     "vitest": "^3.2.4"

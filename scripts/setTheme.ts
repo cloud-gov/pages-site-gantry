@@ -147,19 +147,19 @@ export const buildThemeStyle = async (
       $theme-color-secondary-darker: "${sc.family}-80${sc.mod}",
       $theme-color-secondary-darkest: "${sc.family}-90",
 
-      $theme-color-accent-cool-lightest: "mint-cool-5v",
-      $theme-color-accent-cool-lighter: "mint-cool-5v",
-      $theme-color-accent-cool-light: "mint-cool-10v",
-      $theme-color-accent-cool: "mint-cool-40v",
-      $theme-color-accent-cool-dark: "mint-cool-60v",
-      $theme-color-accent-cool-darker: "mint-cool-70v",
+      $theme-color-accent-cool-lightest: "blue-cool-5v",
+      $theme-color-accent-cool-lighter: "blue-cool-5v",
+      $theme-color-accent-cool-light: "blue-cool-20v",
+      $theme-color-accent-cool: "cyan-30v",
+      $theme-color-accent-cool-dark: "blue-cool-40v",
+      $theme-color-accent-cool-darker: "blue-cool-60v",
 
-      $theme-color-accent-warm-lightest: "orange-warm-5v",
-      $theme-color-accent-warm-lighter: "orange-warm-5v",
-      $theme-color-accent-warm-light: "orange-warm-10v",
-      $theme-color-accent-warm: "orange-warm-40v",
-      $theme-color-accent-warm-dark: "orange-warm-50v",
-      $theme-color-accent-warm-darker: "orange-warm-60v",
+      $theme-color-accent-warm-lightest: "orange-10",
+      $theme-color-accent-warm-lighter: "orange-10",
+      $theme-color-accent-warm-light: "orange-20v",
+      $theme-color-accent-warm: "orange-30v",
+      $theme-color-accent-warm-dark: "orange-50v",
+      $theme-color-accent-warm-darker: "orange-60",
     );
   `;
 };

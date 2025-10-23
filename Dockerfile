@@ -1,13 +1,15 @@
-    # Use a base Node.js image
-    FROM node:22 AS build
+# Use a base Node.js image
+FROM node:22
 
-    WORKDIR /app
+WORKDIR /app
 
-    COPY package*.json ./
+COPY package*.json ./
 
-    RUN npm ci
+RUN npm ci
 
-    COPY .  .
+COPY . .
 
-    EXPOSE 4321
+EXPOSE 4321
+
+CMD ["npm", "run", "dev"]
 

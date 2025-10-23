@@ -1,0 +1,121 @@
+---
+import { getMediaUrl } from "@/utilities/media";
+
+export interface Props {
+  title?: string;
+  cards: Array<{
+    title: string;
+    description: string;
+    image?: any;
+    ctaText?: string;
+    ctaURL?: string;
+  }>;
+}
+
+const { title, cards } = Astro.props;
+---
+
+<section class="usa-section">
+  <div class="grid-container">
+    {title && <h2 class="font-heading-xl margin-bottom-3">{title}</h2>}
+
+    <div class="grid-row grid-gap">
+      {
+        cards?.map((card) => (
+          <div class="tablet:grid-col-4">
+            <div class="usa-card card-grid-item">
+              <div class="usa-card__container">
+                {card.image && (
+                  <div class="usa-card__media">
+                    <div class="usa-card__img card-image-container">
+                      <img
+                        src={getMediaUrl(card.image)}
+                        alt={card.image.altText || card.title}
+                        class="usa-card__img card-image"
+                      />
+                    </div>
+                  </div>
+                )}
+                <header class="usa-card__header">
+                  <h3 class="usa-card__heading">{card.title}</h3>
+                </header>
+                <div class="usa-card__body">
+                  <p>
+                    {card.description.length > 300
+                      ? card.description.substring(0, 300) + "..."
+                      : card.description}
+                  </p>
+                </div>
+                {card.ctaText && card.ctaURL && (
+                  <div class="usa-card__footer">
+                    <a href={card.ctaURL} class="usa-button">
+                      {card.ctaText}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .grid-row > div {
+    flex: 0 0 calc(33.333% - 1rem);
+    padding: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    .grid-row > div {
+      flex: 0 0 100%;
+    }
+  }
+
+  .card-grid-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .usa-card__container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+  }
+
+  .usa-card__body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .usa-card__footer {
+    margin-top: auto;
+  }
+
+  .usa-card__img.card-image-container {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    padding: 0 1rem;
+    background-color: transparent;
+  }
+
+  .usa-card__img.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background-color: transparent;
+  }
+</style>

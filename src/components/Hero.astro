@@ -1,19 +1,53 @@
 ---
+import { getMediaUrl } from "@/utilities/media";
 
+export interface Props {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  bgImage?: any;
+  ctaButton?: {
+    text: string;
+    url: string;
+    style: string;
+  };
+}
+
+const {
+  title = "Hero callout: Bring attention to a project priority!",
+  subtitle,
+  description = "Support the callout with some short explanatory text. You don't need more than a couple of sentences.",
+  bgImage,
+  ctaButton = {
+    text: "Call to action",
+    url: "javascript:void(0)",
+    style: "primary",
+  },
+} = Astro.props;
+
+const backgroundImageUrl = bgImage ? getMediaUrl(bgImage) : null;
 ---
 
-<section class="usa-hero">
+<section
+  class="usa-hero"
+  style={backgroundImageUrl
+    ? `background-image: url('${backgroundImageUrl}'); background-size: cover; background-position: center;`
+    : ""}
+>
   <div class="grid-container">
     <div class="usa-hero__callout">
       <h1 class="usa-hero__heading">
-        <span class="usa-hero__heading--alt">Hero callout:</span>Bring attention
-        to a project priority
+        {title}
       </h1>
-      <p>
-        Support the callout with some short explanatory text. You don’t need
-        more than a couple of sentences.
-      </p>
-      <a class="usa-button" href="javascript:void(0)">Call to action</a>
+      {subtitle && <h2 class="usa-hero__heading--alt">{subtitle}</h2>}
+      {description && <p>{description}</p>}
+      {
+        ctaButton && (
+          <a class="usa-button" href={ctaButton.url}>
+            {ctaButton.text}
+          </a>
+        )
+      }
     </div>
   </div>
 </section>

@@ -1,12 +1,66 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Hero from "../components/Hero.astro";
-import Tagline from "../components/Tagline.astro";
-import Highlights from "../components/Highlights.astro";
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import CardGrid from "@/components/CardGrid.astro";
+import RichText from "@/components/RichText.astro";
+import { fetchHomePage } from "@/utilities/queries";
+
+// Fetch home page data from Payload CMS
+
+const homePageData = await fetchHomePage();
+const contentBlocks = homePageData?.content || [];
 ---
 
 <Layout>
-  <Hero />
-  <Tagline />
-  <Highlights />
+  {
+    contentBlocks.map((block: any) => {
+      switch (block.blockType) {
+        case "hero":
+          return (
+            <Hero
+              title={block.title}
+              subtitle={block.subtitle}
+              description={block.description}
+              bgImage={block.bgImage}
+              ctaButton={block.ctaButton}
+            />
+          );
+
+        case "cardGrid":
+          return (
+            <CardGrid
+              title={block.title}
+              cards={
+                block.cards?.map((card: any) => ({
+                  title: card.title,
+                  description: card.description,
+                  image: card.image,
+                  ctaText: card.link?.text,
+                  ctaURL: card.link?.url,
+                })) || []
+              }
+            />
+          );
+
+        case "textBlock":
+          return (
+            <section class="usa-section">
+              <div class="grid-container">
+                <div class="maxw-4xl">
+                  {block.title && (
+                    <h2 class="font-heading-xl margin-bottom-3">
+                      {block.title}
+                    </h2>
+                  )}
+                  {block.content && <RichText content={block.content} />}
+                </div>
+              </div>
+            </section>
+          );
+
+        default:
+          return null;
+      }
+    })
+  }
 </Layout>

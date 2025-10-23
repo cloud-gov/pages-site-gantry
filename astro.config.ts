@@ -20,7 +20,11 @@ const isTestEnvironment =
   process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const hasRequiredEnvVars = env.EDITOR_APP_URL && env.PAYLOAD_API_KEY;
 
-if (!isTestEnvironment && !hasRequiredEnvVars) {
+// Skip API checks during build - we'll use default theme
+const isBuildEnvironment =
+  process.env.NODE_ENV === "production" || process.env.ASTRO_BUILD === "true";
+
+if (!isTestEnvironment && !hasRequiredEnvVars && !isBuildEnvironment) {
   console.error("Unable to build site:");
   console.error(
     "Verify $EDITOR_APP_URL and $PAYLOAD_API_KEY are set in the environment.",
@@ -30,12 +34,20 @@ if (!isTestEnvironment && !hasRequiredEnvVars) {
 
 let theme;
 
-if (isTestEnvironment) {
-  // Mock theme for testing
+if (isTestEnvironment || isBuildEnvironment) {
+  // Mock theme for testing and build environments
   theme = "";
+} else if (hasRequiredEnvVars) {
+  try {
+    // Use API-fetched theme for production builds
+    theme = await buildThemeStyle(env.EDITOR_APP_URL, env.PAYLOAD_API_KEY);
+  } catch (error) {
+    console.warn("Could not fetch theme from API, using default theme:", error);
+    theme = "";
+  }
 } else {
-  // Use API-fetched theme for production builds
-  theme = await buildThemeStyle(env.EDITOR_APP_URL, env.PAYLOAD_API_KEY);
+  // Use default theme when API is not available
+  theme = "";
 }
 
 export default defineConfig({

@@ -48,6 +48,77 @@ export interface CollectionCategoryProps {
   updatedAt: string;
   createdAt: string;
 }
+export interface HomePage {
+  id: number;
+  content?:
+    | (
+        | {
+            title: string;
+            subtitle?: string | null;
+            description?: string | null;
+            bgImage?: (number | null) | MediaValueProps;
+            ctaButton?: {
+              text?: string | null;
+              url?: string | null;
+              style?: ("primary" | "secondary" | "outline") | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: "hero";
+          }
+        | {
+            title?: string | null;
+            description?: string | null;
+            cards?:
+              | {
+                  title: string;
+                  description?: string | null;
+                  image?: (number | null) | MediaValueProps;
+                  link?: {
+                    url?: string | null;
+                    text?: string | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: "cardGrid";
+          }
+        | {
+            title?: string | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: string;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ("ltr" | "rtl") | null;
+                format:
+                  | "left"
+                  | "start"
+                  | "center"
+                  | "right"
+                  | "end"
+                  | "justify"
+                  | "";
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: "textBlock";
+          }
+      )[]
+    | null;
+  _status?: ("draft" | "published") | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
 
 export interface LinkModel {
   text: string;
