@@ -1,4 +1,8 @@
-import { type ConnectSectionModel, SocialPlatform } from "@/env";
+import {
+  type ConnectSectionModel,
+  type SocialLink,
+  SocialPlatform,
+} from "@/env";
 
 export const contactCenterName = "Agency Contact Center";
 export const contactCenterPhone = "1-800-555-GOVT";
@@ -10,50 +14,50 @@ export const rssFeedLink = "https://www.govinfo.gov/rss/budget.xmll";
 export const unexpectedPlatformLink = "https://www.agency.com";
 export const facebookLink = "https://www.facebook.com/GSA";
 
-export const facebookDisplayOrder = 1;
-export const xDisplayOrder = 2;
-export const youtubeDisplayOrder = 3;
-export const instagramDisplayOrder = 4;
-export const rssFeedDisplayOrder = 5;
-export const unexpectedPlatformDisplayOrder = 6;
-
 export const unexpectedPlatform = "UnexpectedPlatform";
+export const ConnectSectionFull = 1;
+export const ConnectSectionWithEmptyFields = 2;
+export const ConnectSectionEmpty = 3;
+export const ConnectSectionWithoutContactCenter = 4;
+export const ConnectSectionWithEmptyContactCenter = 5;
+export const ConnectSectionWithoutEmailAndPhone = 6;
+export const ConnectSectionWithoutContactCenterName = 7;
+export const ConnectSectionWithoutEmail = 8;
+export const ConnectSectionWithoutPhone = 9;
+export const ConnectSectionWith3Platforms = 10;
+export const ConnectSectionWithoutSocialLinks = 11;
+export const ConnectSectionWithEmptySocialLinks = 12;
+export const ConnectSectionWithUnexpectedSocialLinks = 13;
 
-export function getUnexpectedPlatformSocialLink() {
+export function getUnexpectedPlatformSocialLink(): SocialLink {
   return {
     platform: unexpectedPlatform,
-    link: unexpectedPlatformLink,
-    displayOrder: unexpectedPlatformDisplayOrder,
+    url: unexpectedPlatformLink,
   };
 }
 
-export function getSocialLinks() {
+export function getSocialLinks(): SocialLink[] {
   return [
     {
       platform: "youtube",
-      link: youtubeLink,
-      displayOrder: youtubeDisplayOrder,
+      url: youtubeLink,
     },
     {
       platform: "instagram",
-      link: instagramLink,
-      displayOrder: instagramDisplayOrder,
+      url: instagramLink,
     },
     {
       platform: "x",
-      link: xLink,
-      displayOrder: xDisplayOrder,
+      url: xLink,
     },
     {
       platform: "rssFeed",
-      link: rssFeedLink,
-      displayOrder: rssFeedDisplayOrder,
+      url: rssFeedLink,
     },
     getUnexpectedPlatformSocialLink(),
     {
       platform: "facebook",
-      link: facebookLink,
-      displayOrder: facebookDisplayOrder,
+      url: facebookLink,
     },
   ];
 }
@@ -66,8 +70,8 @@ export function getContactCenter() {
   };
 }
 
-export function getConnectSectionFull(shuffle = true) {
-  const connectSection = {
+export function getConnectSectionFull(shuffle = true): ConnectSectionModel {
+  const connectSection: ConnectSectionModel = {
     contactCenter: getContactCenter(),
     socialLinks: getSocialLinks(),
   };
@@ -183,47 +187,47 @@ export function getConnectSectionWithUnexpectedSocialLinks() {
   return connectSection;
 }
 
-export function getConnectSection(testCase = 1): ConnectSectionModel {
+export function getConnectSection(testCase: number): ConnectSectionModel {
   let connectSection: ConnectSectionModel;
 
   switch (testCase) {
-    case 1:
+    case ConnectSectionFull:
       connectSection = getConnectSectionFull();
       break;
-    case 2:
+    case ConnectSectionWithEmptyFields:
       connectSection = getConnectSectionWithEmptyFields();
       break;
-    case 3:
+    case ConnectSectionEmpty:
       connectSection = getConnectSectionEmpty();
       break;
-    case 4:
+    case ConnectSectionWithoutContactCenter:
       connectSection = getConnectSectionWithoutContactCenter();
       break;
-    case 5:
+    case ConnectSectionWithEmptyContactCenter:
       connectSection = getConnectSectionWithEmptyContactCenter();
       break;
-    case 6:
+    case ConnectSectionWithoutEmailAndPhone:
       connectSection = getConnectSectionWithoutEmailAndPhone();
       break;
-    case 7:
+    case ConnectSectionWithoutContactCenterName:
       connectSection = getConnectSectionWithoutContactCenterName();
       break;
-    case 8:
+    case ConnectSectionWithoutEmail:
       connectSection = getConnectSectionWithoutEmail();
       break;
-    case 9:
+    case ConnectSectionWithoutPhone:
       connectSection = getConnectSectionWithoutPhone();
       break;
-    case 10:
+    case ConnectSectionWith3Platforms:
       connectSection = getConnectSectionWith3Platforms();
       break;
-    case 11:
+    case ConnectSectionWithoutSocialLinks:
       connectSection = getConnectSectionWithoutSocialLinks();
       break;
-    case 12:
+    case ConnectSectionWithEmptySocialLinks:
       connectSection = getConnectSectionWithEmptySocialLinks();
       break;
-    case 13:
+    case ConnectSectionWithUnexpectedSocialLinks:
       connectSection = getConnectSectionWithUnexpectedSocialLinks();
       break;
     default:

@@ -1,10 +1,8 @@
 ---
 import Link from "./Link.astro";
-import { getPreFooterSlim } from "@/components/PreFooterSlim.testData";
+import { type LinkModel, SocialPlatform } from "@/env";
 
-type Link = { text: string; url: string };
-
-const { preFooter = getPreFooterSlim() } = Astro.props;
+const { preFooter } = Astro.props;
 ---
 
 {
@@ -16,14 +14,24 @@ const { preFooter = getPreFooterSlim() } = Astro.props;
             <nav class="usa-footer__nav" aria-label="Footer navigation,">
               {preFooter.footerLinks && (
                 <ul class="grid-row grid-gap">
-                  {preFooter.footerLinks.map((link) => (
+                  {preFooter.footerLinks.map((l: LinkModel) => (
                     <li class="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
-                      <Link
-                        className="usa-footer__primary-link"
-                        href={link.url}
-                      >
-                        {link.text}
-                      </Link>
+                      {!l?.externalLink && (
+                        <Link className="usa-footer__primary-link" href={l.url}>
+                          {l.text}
+                        </Link>
+                      )}
+                      {l?.externalLink && (
+                        <a
+                          href={l.url}
+                          class="usa-footer__primary-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="{l.text} (opens in new tab)"
+                        >
+                          {l.text}
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>

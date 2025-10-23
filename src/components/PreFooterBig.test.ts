@@ -2,11 +2,11 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeEach, describe, expect, it } from "vitest";
 import PreFooterBig from "@/components/PreFooterBig.astro";
 import {
-  TOPIC_COLUMNS_DEFAULT,
+  LINK_GROUP_COLUMNS_DEFAULT,
   type PreFooterBigModel,
   CONNECT_SECTION_BOTTOM,
 } from "@/env";
-import { getCouncilsTopics } from "@/components/PreFooterBig.testData";
+import { getCouncilsLinkGroups } from "@/components/PreFooterBig.testData";
 import { getConnectSectionFull } from "@/components/ConnectSection.testData";
 
 describe("PreFooterBig", () => {
@@ -16,14 +16,13 @@ describe("PreFooterBig", () => {
     container = await AstroContainer.create();
   });
 
-  it("renders Connect Section and Topics", async () => {
+  it("renders Connect Section and LinkGroups", async () => {
     const preFooterBig: PreFooterBigModel = {
-      id: 1111,
-      topics: getCouncilsTopics(),
+      linkGroups: getCouncilsLinkGroups(),
       connectSection: getConnectSectionFull(),
       configuration: {
         connectSectionLocation: CONNECT_SECTION_BOTTOM,
-        columnsInTopic: TOPIC_COLUMNS_DEFAULT,
+        columnsInLinkGroup: LINK_GROUP_COLUMNS_DEFAULT,
       },
     };
 
@@ -39,14 +38,13 @@ describe("PreFooterBig", () => {
     );
   });
 
-  it("renders only Connect Section if no Topics", async () => {
+  it("renders only Connect Section if no LinkGroups", async () => {
     const preFooterBig: PreFooterBigModel | any = {
-      id: 1111,
-      topics: null,
+      linkGroups: null,
       connectSection: getConnectSectionFull(),
       configuration: {
         connectSectionLocation: CONNECT_SECTION_BOTTOM,
-        columnsInTopic: TOPIC_COLUMNS_DEFAULT,
+        columnsInLinkGroup: LINK_GROUP_COLUMNS_DEFAULT,
       },
     };
 
@@ -62,14 +60,13 @@ describe("PreFooterBig", () => {
     );
   });
 
-  it("renders only Topics if no Connect Section", async () => {
+  it("renders only LinkGroups if no Connect Section", async () => {
     const preFooterBig: PreFooterBigModel | any = {
-      id: 1111,
-      topics: getCouncilsTopics(),
+      linkGroups: getCouncilsLinkGroups(),
       connectSection: null,
       configuration: {
         connectSectionLocation: CONNECT_SECTION_BOTTOM,
-        columnsInTopic: TOPIC_COLUMNS_DEFAULT,
+        columnsInLinkGroup: LINK_GROUP_COLUMNS_DEFAULT,
       },
     };
 
@@ -94,21 +91,19 @@ describe("PreFooterBig", () => {
     }
 
     await test(null);
-    // await test(undefined); // implement with mock API call
     await test({});
-    await test({ topics: null, contactCenter: null });
-    await test({ topics: undefined, contactCenter: {} });
-    await test({ topics: [], contactCenter: {} });
+    await test({ linkGroups: null, contactCenter: null });
+    await test({ linkGroups: undefined, contactCenter: {} });
+    await test({ linkGroups: [], contactCenter: {} });
   });
 
   it("renders Topics and Connect Section with default location", async () => {
     const preFooterBig: PreFooterBigModel | any = {
-      id: 1111,
-      topics: getCouncilsTopics(),
+      linkGroups: getCouncilsLinkGroups(),
       connectSection: getConnectSectionFull(),
       configuration: {
         connectSectionLocation: null,
-        columnsInTopic: TOPIC_COLUMNS_DEFAULT,
+        columnsInLinkGroup: LINK_GROUP_COLUMNS_DEFAULT,
       },
     };
 

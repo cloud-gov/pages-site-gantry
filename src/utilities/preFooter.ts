@@ -8,6 +8,7 @@ import {
   type PreFooterSlimModel,
 } from "@/env";
 import { cleanPreFooterBig } from "@/utilities/preFooterBig.ts";
+import { cleanPreFooterSlim } from "@/utilities/preFooterSlim";
 
 export function cleanPreFooter(preFooter: PreFooterModel): PreFooterModel {
   let preFooterType = preFooter?.preFooterType ?? PRE_FOOTER_TYPE_NONE;
@@ -19,7 +20,9 @@ export function cleanPreFooter(preFooter: PreFooterModel): PreFooterModel {
       );
       break;
     case PRE_FOOTER_TYPE_SLIM:
-      cleanedPreFooterData = <PreFooterSlimModel>preFooter?.preFooterData;
+      cleanedPreFooterData = cleanPreFooterSlim(
+        <PreFooterSlimModel>preFooter?.preFooterData,
+      );
       break;
     case PRE_FOOTER_TYPE_NONE:
     default:

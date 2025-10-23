@@ -7,9 +7,17 @@ import {
   PRE_FOOTER_TYPE_SLIM,
 } from "@/env";
 
+vi.mock("astro:content", () => ({
+  getCollection: vi.fn(),
+  getEntry: vi.fn(),
+  // Add other exports if needed
+}));
+
 import * as api from "@/utilities/preFooterDataFetch";
+
 import { getPreFooterBig } from "@/components/PreFooterBig.testData";
 import { getPreFooterSlim } from "@/components/PreFooterSlim.testData.ts";
+import { getPreFooter } from "@/components/Footer.testData";
 
 let container: any;
 
@@ -27,7 +35,7 @@ describe("Footer", () => {
 
     const result = await container.renderToString(Footer);
     expect(result).not.toContain("pre-footer-slim");
-    expect(result).toContain('id="pre-footer-big-topics"');
+    expect(result).toContain('id="pre-footer-big-link-groups"');
   });
 
   it("renders PreFooterSlim", async () => {
@@ -38,7 +46,7 @@ describe("Footer", () => {
 
     const result = await container.renderToString(Footer);
     expect(result).toContain("pre-footer-slim");
-    expect(result).not.toContain('id="pre-footer-big-topics"');
+    expect(result).not.toContain('id="pre-footer-big-link-groups"');
   });
 
   it("does not render prefooter", async () => {
@@ -49,10 +57,19 @@ describe("Footer", () => {
 
     const result = await container.renderToString(Footer);
     expect(result).not.toContain("pre-footer-slim");
-    expect(result).not.toContain('id="pre-footer-big-topics"');
+    expect(result).not.toContain('id="pre-footer-big-link-groups"');
   });
 
   it("renders the USWDS footer and identifier classes", async () => {
+    const result = await container.renderToString(Footer);
+    expect(result).toContain("usa-footer");
+    expect(result).toContain("usa-identifier");
+  });
+
+  it("renders prefooter", async () => {
+    let preFooter = getPreFooter();
+    vi.spyOn(api, "fetchPreFooter").mockResolvedValue(preFooter);
+
     const result = await container.renderToString(Footer);
     expect(result).toContain("usa-footer");
     expect(result).toContain("usa-identifier");

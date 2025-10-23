@@ -7,51 +7,57 @@ import {
   CONNECT_SECTION_RIGHT,
   type ConnectSectionModel,
   type PreFooterBigModel,
-  type Topic,
+  type LinkGroup,
   type PreFooterBigConfiguration,
 } from "@/env";
 
 const { preFooter } = Astro.props;
 
 const cleanedPreFooter: PreFooterBigModel = cleanPreFooterBig(preFooter);
-const topics: Topic[] = cleanedPreFooter?.topics;
+const linkGroups: LinkGroup[] = cleanedPreFooter?.linkGroups;
 const connectSection: ConnectSectionModel = cleanedPreFooter?.connectSection;
 const configuration: PreFooterBigConfiguration =
   cleanedPreFooter?.configuration;
 
 const connectSectionRight =
   connectSection != null &&
-  configuration?.connectSectionLocation === CONNECT_SECTION_RIGHT;
+  configuration?.connectSectionLocation.trim().toLowerCase() ===
+    CONNECT_SECTION_RIGHT
+    ? true
+    : false;
 const connectSectionBottom =
   connectSection != null &&
-  configuration?.connectSectionLocation === CONNECT_SECTION_BOTTOM;
+  configuration?.connectSectionLocation.trim().toLowerCase() ===
+    CONNECT_SECTION_BOTTOM
+    ? true
+    : false;
 
-const topicsCol =
+const linkGroupsCol =
   configuration?.connectSectionLocation === CONNECT_SECTION_BOTTOM ||
   !connectSection
     ? 12
     : 9;
 const connectSectionCol = 3;
 
-const topicsGridColClass = `grid-col-12 tablet:grid-col-${topicsCol}`;
+const linkGroupsGridColClass = `grid-col-12 tablet:grid-col-${linkGroupsCol}`;
 const connectSectionGridColClass = `grid-col-12 tablet:grid-col-${connectSectionCol}`;
 ---
 
 {
   cleanedPreFooter && (
     <>
-      {topics && (
+      {linkGroups && (
         <div
           class="usa-footer__primary-section"
-          style={`--columns: ${configuration.columnsInTopic};`}
-          id="pre-footer-big-topics"
+          style={`--columns: ${configuration.columnsInLinkGroup};`}
+          id="pre-footer-big-link-groups"
         >
           <div class="grid-container">
             <div class="grid-row grid-gap-1">
-              <div class={topicsGridColClass}>
+              <div class={linkGroupsGridColClass}>
                 <nav class="usa-footer__nav" aria-label="Pre-footer links">
                   <div class="grid-row grid-gap-4 grid-col-auto">
-                    {topics.map((topic) => (
+                    {linkGroups.map((topic) => (
                       <section class="usa-footer__primary-content usa-footer__primary-content--collapsible">
                         <div class="single-list-grid">
                           <div style="grid-column: 1 / -1">
