@@ -23,3 +23,12 @@ export async function fetchMenu(): Promise<
 
   return menu;
 }
+
+export async function fetchPage(collectionName, slug)
+{
+const pageQuery = `${collectionName}?where[slug][equals]=${slug}&depth=1`;
+const res = await payloadFetch(pageQuery);
+const { docs: pageDocs } = await res.json();
+const page = pageDocs[0];
+}
+
