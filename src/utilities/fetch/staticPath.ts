@@ -1,5 +1,5 @@
 import { getCollection, type DataEntryMap } from "astro:content";
-import payloadFetch from "./payload-fetch";
+import { payloadFetch } from "@/utilities/fetch";
 
 export function createGetStaticPath(collectionName: keyof DataEntryMap) {
   return async function () {

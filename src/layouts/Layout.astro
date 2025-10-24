@@ -6,27 +6,32 @@ import Menu from "@/components/Menu.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Footer from "@/components/Footer.astro";
 import Config from "@/config.astro";
-import payloadFetch from "@/utilities/payload-fetch";
 import "../styles/index.scss";
-import { fetchSiteConfig } from "@/utilities/queries";
+import {
+  fetchSiteConfig,
+  fetchMenu,
+  fetchPreFooter,
+  buildPreFooter,
+  menuCollectionName,
+  preFooterCollectionName,
+} from "@/utilities/fetch";
 import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
+import { type PreFooterModel } from "@/env";
 
 const siteConfigCollectionName = "siteConfig";
-const menuCollectionName = "menu";
-const menuEndpoint = "globals/menu";
 
 let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 let menu: CollectionEntry<typeof menuCollectionName>["data"];
+let preFooter: PreFooterModel;
 
 if (!Astro.isPrerendered) {
   siteConfig = await fetchSiteConfig();
-
-  const menuResponse = await payloadFetch(`${menuEndpoint}?draft=true`);
-  const menuResponseData = await menuResponse.json();
-  menu = menuResponseData;
+  menu = await fetchMenu();
+  preFooter = await fetchPreFooter();
 } else {
   const siteConfigResponseData = await getCollection(siteConfigCollectionName);
   const menuResponseData = await getCollection(menuCollectionName);
+  const preFooterResponseData = await getCollection(preFooterCollectionName);
 
   siteConfig = {
     agencyName:
@@ -40,6 +45,8 @@ if (!Astro.isPrerendered) {
   menu = {
     items: menuResponseData[0]?.data?.items || [],
   };
+
+  preFooter = buildPreFooter(preFooterResponseData?.[0]?.data);
 }
 
 const { title, canonical } = Astro.props;
@@ -70,7 +77,7 @@ const metaTitle = title
     <main id="main-content">
       <slot />
     </main>
-    <Footer />
+    <Footer preFooter={preFooter} />
     {
       siteConfig.dapAgencyCode && (
         <DigitalAnalytics

@@ -11,7 +11,7 @@ import {
   buildPreFooterBigConfiguration,
   buildPreFooterSlim,
   buildSocialLinks,
-} from "@/utilities/preFooterDataFetch";
+} from "./preFooterDataFetch";
 
 vi.mock("astro:content", () => ({
   getCollection: vi.fn(),

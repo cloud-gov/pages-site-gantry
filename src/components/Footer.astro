@@ -1,24 +1,18 @@
 ---
 import { Image } from "astro:assets";
 import identifierLogoImg from "@/assets/gsa-logo.svg"; // get this from site data
-import { fetchPreFooter } from "@/utilities/preFooterDataFetch";
-import {
-  PRE_FOOTER_TYPE_BIG,
-  PRE_FOOTER_TYPE_SLIM,
-  type PreFooterModel,
-} from "@/env";
+import { PRE_FOOTER_TYPE_BIG, PRE_FOOTER_TYPE_SLIM } from "@/env";
 import { cleanPreFooter, getUsaFooterClass } from "@/utilities/preFooter.ts";
 import PreFooterSlim from "@/components/PreFooterSlim.astro";
 import PreFooterBig from "@/components/PreFooterBig.astro";
 import { getIdentifiers } from "@/components/Footer.testData.ts";
 
-const { identifiers = getIdentifiers() } = Astro.props;
+const { preFooter, identifiers = getIdentifiers() } = Astro.props;
 
 const { siteDomain, identifierLinks, identifierName, identifierUrl } =
   identifiers;
 
-const rawPreFooter: PreFooterModel = await fetchPreFooter();
-const { preFooterType, preFooterData } = cleanPreFooter(rawPreFooter);
+const { preFooterType, preFooterData } = cleanPreFooter(preFooter);
 let usaFooterClass = await getUsaFooterClass(preFooterType);
 ---
 

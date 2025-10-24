@@ -1,5 +1,5 @@
-import payloadFetch from "./payload-fetch";
-import { paginate } from "./pagination";
+import { payloadFetch } from "@/utilities/fetch";
+import { paginate } from "../pagination";
 
 export async function getPaginatedCollectionData<T>(
   collectionName: string,

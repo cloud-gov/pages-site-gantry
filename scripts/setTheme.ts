@@ -1,17 +1,5 @@
 import path from "node:path";
-
-const payloadFetch = async (
-  baseurl: string,
-  endpoint: string,
-  payloadAPIKey,
-) => {
-  const url = path.join(baseurl || "", "api", endpoint);
-  return fetch(url, {
-    headers: {
-      Authorization: `users API-Key ${payloadAPIKey}`,
-    },
-  });
-};
+import { payloadFetchConfigurable } from "../src/utilities/fetch";
 
 const colorToken = (name: string): { family: string; mod: string } => {
   return name.endsWith("-vivid")
@@ -29,7 +17,7 @@ export const buildThemeStyle = async (
   editorAppURL: string,
   payloadAPIKey: string,
 ) => {
-  const siteConfigResponse = await payloadFetch(
+  const siteConfigResponse = await payloadFetchConfigurable(
     editorAppURL,
     "globals/site-config?draft=true",
     payloadAPIKey,

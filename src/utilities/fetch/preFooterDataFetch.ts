@@ -7,16 +7,22 @@ import {
   type PreFooterBigModel,
   type PreFooterModel,
   type PreFooterSlimModel,
+  type PreFooterType,
   type SocialLink,
   SocialPlatform,
 } from "@/env";
 import { getPreFooter } from "@/components/Footer.testData";
-import payloadFetch from "@/utilities/payload-fetch";
+import { payloadFetch } from "@/utilities/fetch";
 import { cleanConfiguration } from "@/utilities/preFooterBig";
-import { type CollectionEntry } from "astro:content";
 
+export const preFooterCollectionName = "preFooter";
 const preFooterEndpoint = "globals/pre-footer";
-const preFooterCollectionName = "preFooter";
+
+export async function fetchPreFooter() {
+  const preFooterResponse = await payloadFetch(`${preFooterEndpoint}`);
+  const response = preFooterResponse ? await preFooterResponse.json() : null;
+  return buildPreFooter(response);
+}
 
 export function buildPageUrl(page: PageModel) {
   return page?.slug ? `/${page?.slug}` : null;
@@ -140,12 +146,11 @@ export function buildPreFooterSlim(
   return result;
 }
 
-export function buildPreFooter(response) {
-  let responseData: CollectionEntry<typeof preFooterCollectionName>["data"] =
-    response;
-
+export function buildPreFooter(
+  responseData: CollectionEntry<typeof preFooterCollectionName>["data"],
+): PreFooterModel {
   let preFooterData: PreFooterSlimModel | PreFooterBigModel;
-  let type = response?.type;
+  let type: PreFooterType | any = responseData?.type;
   switch (type) {
     case PRE_FOOTER_TYPE_BIG:
       preFooterData = buildPreFooterBig(responseData);
@@ -162,14 +167,6 @@ export function buildPreFooter(response) {
     preFooterType: type,
   };
   return preFooter;
-}
-
-export async function fetchPreFooter() {
-  const preFooterResponse = await payloadFetch(
-    `${preFooterEndpoint}?draft=true`,
-  );
-  const response = preFooterResponse ? await preFooterResponse.json() : null;
-  return buildPreFooter(response);
 }
 
 export async function fetchPreFooterTest(): Promise<PreFooterModel> {
