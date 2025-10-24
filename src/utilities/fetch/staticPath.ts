@@ -1,5 +1,5 @@
 import { getCollection, type DataEntryMap } from "astro:content";
-import { payloadFetch } from "@/utilities/fetch";
+import { payloadFetch } from "./payload-fetch";
 
 export function createGetStaticPath(collectionName: keyof DataEntryMap) {
   return async function () {
@@ -34,3 +34,10 @@ export function createPagingStaticPath(
     return paths;
   };
 }
+
+export async function getStaticPaths() {
+  const res = await payloadFetch(`pages?limit=1000&depth=0`);
+  const { docs } = await res.json();
+  return docs.map((p) => ({ params: { slug: p.slug }, props: { data: p } }));
+}
+

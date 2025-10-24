@@ -5,7 +5,7 @@ import Layout from "@/layouts/Layout.astro";
 import PaginationNav from "@/components/PaginationNav.astro";
 import { resourceMapper } from "@/utilities/contentMapper";
 import { getPaginatedCollectionData } from "@/utilities/fetch";
-import { createPagingStaticPath } from "@/utilities/staticPath";
+import { createPagingStaticPath } from "@/utilities/fetch";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;

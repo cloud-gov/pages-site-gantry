@@ -11,12 +11,12 @@ import {
   fetchSiteConfig,
   fetchMenu,
   fetchPreFooter,
-  buildPreFooter,
   menuCollectionName,
   preFooterCollectionName,
 } from "@/utilities/fetch";
 import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
 import { type PreFooterModel } from "@/env";
+import { buildPreFooter } from "@/utilities/preFooter";
 
 const siteConfigCollectionName = "siteConfig";
 
@@ -27,7 +27,7 @@ let preFooter: PreFooterModel;
 if (!Astro.isPrerendered) {
   siteConfig = await fetchSiteConfig();
   menu = await fetchMenu();
-  preFooter = await fetchPreFooter();
+  preFooter = buildPreFooter(await fetchPreFooter());
 } else {
   const siteConfigResponseData = await getCollection(siteConfigCollectionName);
   const menuResponseData = await getCollection(menuCollectionName);

@@ -1,9 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import payloadFetch from "@/utilities/fetch";
 import PagesSection from "@/components/PagesSection.astro";
 import RichText from "@/components/RichText.astro";
-import { fetchPage } from "../utilities/fetch/queries";
+import { fetchPage, payloadFetch } from "@/utilities/fetch";
 
 const { slug } = Astro.params;
 
@@ -15,7 +14,6 @@ let data: any;
 // const res = await payloadFetch(pageQuery);
 // const { docs: pageDocs } = await res.json();
 // const page = pageDocs[0];
-
 
 const page = fetchPage(collectionName, slug);
 
@@ -35,6 +33,7 @@ export async function getStaticPaths() {
     params: { slug: page.slug },
   }));
 }
+
 ---
 
 <Layout title={pageTitle}>

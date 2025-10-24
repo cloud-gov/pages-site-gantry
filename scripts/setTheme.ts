@@ -1,5 +1,5 @@
 import path from "node:path";
-import { payloadFetchConfigurable } from "../src/utilities/fetch";
+import { payloadFetchConfigurable } from "../src/utilities/fetch/payload-fetch";
 
 const colorToken = (name: string): { family: string; mod: string } => {
   return name.endsWith("-vivid")

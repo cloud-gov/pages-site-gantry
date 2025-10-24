@@ -1,4 +1,4 @@
-import { payloadFetch } from "@/utilities/fetch";
+import { payloadFetch } from "./payload-fetch";
 
 export function collectionLoader(apiPath: string) {
   return async () => {
