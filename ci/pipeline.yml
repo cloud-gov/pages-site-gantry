@@ -73,6 +73,7 @@ jobs:
         passed: [test]
         trigger: true
       - get: s3
+        resource: s3-active-site-configs
         trigger: true
       - get: general-task
       - task: ls-sites
@@ -90,11 +91,11 @@ jobs:
             image: general-task
             params:
               _: #@ template.replace(data.values.env_cf_editor)
-              CF_APP_NAME: ((.:site.name))-site-gantry
+              CF_APP_NAME: site-preview_((.:site.slug))
               CF_MANIFEST: src/.cloudgov/manifest.yml
               CF_VARS_FILE: src/.cloudgov/vars/((deploy-env)).yml
               CF_PATH: src
-              SITE: ((.:site.name))
+              SITE: ((.:site.slug))
               API_KEY: ((.:site.apiKey))
 
     on_failure:
@@ -106,6 +107,46 @@ jobs:
       in_parallel:
         #@ if/end env == 'dev':
         -  #@ pr_hook("success", "deploy-pages-site-gantry-previews")
+
+  - name: delete-deploys
+    plan:
+      - get: src
+        params:
+          #@ if/end env != 'dev':
+          depth: 1
+          #@ if/end env == 'dev':
+          integration_tool: checkout
+        passed: [set-pipeline]
+      - get: s3
+        resource: s3-deleted-site-configs
+        trigger: true
+      - get: general-task
+      - task: ls-sites
+        file: src/ci/partials/ls-sites.yml
+        image: general-task
+      - load_var: sites
+        file: s3/sites.json
+      - across:
+          - var: site
+            values: ((.:sites))
+            max_in_flight: 20
+        do:
+          - task: delete-site-preview
+            file: src/ci/partials/delete-app.yml
+            image: general-task
+            params:
+              _: #@ template.replace(data.values.env_cf_editor)
+              CF_APP_NAME: site-preview_((.:site.slug))
+              CF_PATH: src
+              S3_SERVICE_INSTANCE_NAME: pages-editor-((deploy-env))-s3
+              S3_SITE_CONFIG_KEY: _sites/deleted/((.:site.slug)).json
+
+    on_failure:
+      in_parallel:
+        -  #@ slack_hook("failure", "delete site preview apps")
+    on_success:
+      in_parallel:
+        -  #@ slack_hook("success", "delete site preview apps")
 
 #!  RESOURCES
 
@@ -134,12 +175,22 @@ resources:
   - name: general-task
   - name: node22
   - name: pipeline-tasks
-  - name: s3
+
+  - name: s3-active-site-configs
     type: s3-resource
     source:
       access_key_id: ((editor-site-data-access-key-id-((deploy-env))))
       secret_access_key: ((editor-site-data-secret-access-key-((deploy-env))))
-      path: _sites/
+      path: _sites/active/
+      bucket: ((editor-site-data-bucket-((deploy-env))))
+      region: us-gov-west-1
+
+  - name: s3-deleted-site-configs
+    type: s3-resource
+    source:
+      access_key_id: ((editor-site-data-access-key-id-((deploy-env))))
+      secret_access_key: ((editor-site-data-secret-access-key-((deploy-env))))
+      path: _sites/deleted/
       bucket: ((editor-site-data-bucket-((deploy-env))))
       region: us-gov-west-1
   - name: slack

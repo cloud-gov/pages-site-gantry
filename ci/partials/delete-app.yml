@@ -1,0 +1,12 @@
+platform: linux
+inputs: [name: src]
+params:
+  CF_API:
+  CF_ORG:
+  CF_SPACE:
+  CF_APP_NAME:
+  CF_PATH:
+  S3_SERVICE_INSTANCE_NAME:
+  S3_SITE_CONFIG_KEY:
+run:
+  path: src/ci/tasks/delete-app.sh
