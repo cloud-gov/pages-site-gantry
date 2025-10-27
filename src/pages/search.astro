@@ -2,10 +2,20 @@
 import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import SearchResults from "@/components/SearchResults.astro";
+import { fetchSiteConfig } from "@/utilities/fetch";
+import type { CollectionEntry } from "astro:content";
+
+const siteConfigCollectionName = "siteConfig";
+let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
+siteConfig = await fetchSiteConfig();
+
+const searchAccessKey = siteConfig?.searchAccessKey;
+const searchAffiliate = siteConfig?.searchAffiliate;
+const title = siteConfig.agencyName;
 ---
 
 <Layout>
-  <PagesSection heading="Search">
-    <SearchResults />
+  <PagesSection heading=`Search ${title}`>
+    <SearchResults apiKey={searchAccessKey} searchAffiliate={searchAffiliate} />
   </PagesSection>
 </Layout>
