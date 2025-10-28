@@ -98,7 +98,7 @@ The deployment uses the following environment variables, configured via the Clou
 - `OPTIMIZE_MEMORY`: Set to `true` for memory optimization
 
 **Site Configuration:**
-- `SITE`: The site identifier/name
+- `SITE`: The site identifier slug
 - `APP_ENV`: The deployment environment (staging, production)
 - `PREVIEW_MODE`: (Set to `true`) Tells the site it is running in preview mode
 
