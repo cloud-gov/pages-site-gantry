@@ -4,6 +4,12 @@ import {
   highlightKeyword,
 } from "@/utilities/searchResultsClient";
 
+vi.mock("astro:content", () => ({
+  getCollection: vi.fn(),
+  getEntry: vi.fn(),
+  // Add other exports if needed
+}));
+
 const mockResults = {
   web: {
     results: [

@@ -1,9 +1,8 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { createGetStaticPath } from "@/utilities/staticPath";
+import { createGetStaticPath, fetchSlug } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
-import payloadFetch from "@/utilities/payload-fetch";
 import PagesSection from "@/components/PagesSection.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
@@ -13,13 +12,8 @@ const collectionName = "news";
 let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  const preview = import.meta.env.PREVIEW_MODE;
-  const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
-  );
-  const n = await response.json();
-  if (n.docs.length === 0) return Astro.redirect("/404");
-  data = n.docs[0];
+  data = await fetchSlug(collectionName, slug);
+  if (!data) return Astro.redirect("/404");
 } else {
   // @ts-expect-error
   ({ data } = Astro.props);

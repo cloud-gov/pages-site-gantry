@@ -1,5 +1,5 @@
-import payloadFetch from "./payload-fetch";
-import { paginate } from "./pagination";
+import { paginate } from "../pagination";
+import { fetchCollection } from "./queries";
 
 export async function getPaginatedCollectionData<T>(
   collectionName: string,
@@ -12,11 +12,7 @@ export async function getPaginatedCollectionData<T>(
   rawItems: any[];
   hasPaginationNav: boolean;
 }> {
-  const preview = import.meta.env.PREVIEW_MODE;
-  const response = await payloadFetch(
-    `${collectionName}?draft=${preview}&limit=0`,
-  );
-  const data = await response.json();
+  const data = await fetchCollection(collectionName);
 
   // Handle case where collection doesn't exist or is empty
   if (!data.docs || data.docs.length === 0) {

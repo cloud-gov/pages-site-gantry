@@ -2,21 +2,24 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import PreFooterSlim from "@/components/PreFooterSlim.astro";
 
 import { describe, it, expect, beforeEach } from "vitest";
+import { type PreFooterSlimModel } from "@/env";
 
 describe("PreFooterSlim", () => {
   let container: any;
 
-  const preFooter = {
+  const preFooter: PreFooterSlimModel = {
     contactEmail: "you@agency.gov",
     contactTelephone: "1-800-CALL-USA",
     footerLinks: [
       {
         text: "First link text",
         url: "url-test-1",
+        externalLink: true,
       },
       {
         text: "Second link text",
         url: "url-test-2",
+        externalLink: true,
       },
     ],
   };
@@ -36,10 +39,10 @@ describe("PreFooterSlim", () => {
 
     // Check that both link items are rendered
     expect(result).toContain("First link text");
-    expect(result).toContain('href="/url-test-1"');
+    expect(result).toContain('href="url-test-1"');
 
     expect(result).toContain("Second link text");
-    expect(result).toContain('href="/url-test-2"');
+    expect(result).toContain('href="url-test-2"');
   });
 
   it("renders a contact email if provided", async () => {

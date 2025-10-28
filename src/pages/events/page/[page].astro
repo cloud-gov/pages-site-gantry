@@ -4,8 +4,10 @@ import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import PaginationNav from "@/components/PaginationNav.astro";
 import { eventsMapper } from "@/utilities/contentMapper";
-import { getPaginatedCollectionData } from "@/utilities/collectionDataFetch";
-import { createPagingStaticPath } from "@/utilities/staticPath";
+import {
+  getPaginatedCollectionData,
+  createPagingStaticPath,
+} from "@/utilities/fetch";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;

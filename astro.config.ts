@@ -35,7 +35,11 @@ if (isTestEnvironment) {
   theme = "";
 } else {
   // Use API-fetched theme for production builds
-  theme = await buildThemeStyle(env.EDITOR_APP_URL, env.PAYLOAD_API_KEY);
+  theme = await buildThemeStyle(
+    env.EDITOR_APP_URL,
+    env.PAYLOAD_API_KEY,
+    env.PREVIEW_MODE,
+  );
 }
 
 export default defineConfig({
