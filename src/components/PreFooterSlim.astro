@@ -1,8 +1,10 @@
 ---
 import Link from "./Link.astro";
-import { type LinkModel, SocialPlatform } from "@/env";
+import { type LinkModel, type PreFooterSlimModel } from "@/env";
+import { cleanPreFooterSlim } from "@/utilities/preFooterSlim";
 
-const { preFooter } = Astro.props;
+let { preFooter } = Astro.props;
+preFooter = cleanPreFooterSlim(preFooter);
 ---
 
 {

@@ -28,10 +28,11 @@ const colorToken = (name: string): { family: string; mod: string } => {
 export const buildThemeStyle = async (
   editorAppURL: string,
   payloadAPIKey: string,
+  preview: string,
 ) => {
   const siteConfigResponse = await payloadFetch(
     editorAppURL,
-    "globals/site-config?draft=true",
+    `globals/site-config?draft=${preview}`,
     payloadAPIKey,
   );
   const data: {

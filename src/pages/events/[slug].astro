@@ -1,13 +1,12 @@
 ---
-import { type CollectionEntry } from "astro:content";
-import { createGetStaticPath } from "@/utilities/staticPath";
-import payloadFetch from "@/utilities/payload-fetch";
+import { createGetStaticPath, fetchSlug } from "@/utilities/fetch";
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import RichText from "@/components/RichText.astro";
 import Tags from "@/components/Tags.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
+import type { CollectionEntry } from "astro:content";
 
 const { slug } = Astro.params;
 
@@ -17,17 +16,13 @@ const { slug } = Astro.params;
 // 2. the Astro.props/Astro.prerendered properties are specific
 // to this file
 // 3. data needs to be a top-level variable here
+
 const collectionName = "events";
-let data: any;
+let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
-  const preview = import.meta.env.PREVIEW_MODE;
-  const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&draft=${preview}`,
-  );
-  const events = await response.json();
-  if (events.docs.length === 0) return Astro.redirect("/404");
-  data = events.docs[0];
+  data = await fetchSlug(collectionName, slug);
+  if (!data) return Astro.redirect("/404");
 } else {
   // @ts-expect-error
   ({ data } = Astro.props);

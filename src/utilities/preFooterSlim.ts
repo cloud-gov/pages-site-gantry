@@ -30,7 +30,7 @@ export function cleanLink(link: any): LinkModel {
   let text = clean(link?.text);
   let url = clean(link?.url);
 
-  if (text && url && link?.externalLink) {
+  if (text && url && typeof link?.externalLink === "boolean") {
     return {
       text,
       url,

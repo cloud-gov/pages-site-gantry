@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import payloadFetch from "./utilities/payload-fetch";
 import { getEntry } from "astro:content";
+import { fetchSiteConfig } from "./utilities/fetch";
 
 // This component renders an empty fragment but is really used for
 // exporting configuration. Note that the empty render (and import into
@@ -30,7 +30,7 @@ if (entry) {
 // If not prerendered, try to fetch fresh data from the API
 if (!Astro.isPrerendered) {
   try {
-    const response = await payloadFetch("globals/site-config");
+    const response = await fetchSiteConfig();
     if (response.ok) {
       const apiData = await response.json();
       data = { ...data, ...apiData };

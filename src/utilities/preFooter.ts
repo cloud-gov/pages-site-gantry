@@ -1,12 +1,15 @@
+import type {
+  PreFooterData,
+  PreFooterModel,
+  PreFooterBigModel,
+  PreFooterSlimModel,
+} from "@/env";
 import {
   PRE_FOOTER_TYPE_BIG,
   PRE_FOOTER_TYPE_NONE,
   PRE_FOOTER_TYPE_SLIM,
-  type PreFooterData,
-  type PreFooterModel,
-  type PreFooterBigModel,
-  type PreFooterSlimModel,
 } from "@/env";
+
 import { cleanPreFooterBig } from "@/utilities/preFooterBig.ts";
 import { cleanPreFooterSlim } from "@/utilities/preFooterSlim";
 

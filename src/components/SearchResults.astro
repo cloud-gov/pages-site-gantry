@@ -1,5 +1,5 @@
 ---
-import { fetchSiteConfig } from "@/utilities/queries";
+import { fetchSiteConfig } from "@/utilities/fetch";
 import type { CollectionEntry } from "astro:content";
 const siteConfigCollectionName = "siteConfig";
 let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
