@@ -11,7 +11,7 @@ cf t -o $CF_ORG -s $CF_SPACE
 cf delete -f $CF_APP_NAME
 
 # Delete preview app route
-cf delete-route -f app.cloud.gov --hostname $CF_APP_NAME
+cf delete-route -f app.cloud.gov --hostname $HOSTNAME
 
 # A function to query the s3 credentials from the cf service instance
 setCFAWSS3 () {

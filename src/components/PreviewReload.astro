@@ -1,21 +1,23 @@
 ---
-
+const renderMode = import.meta.env.RENDER_MODE;
 ---
 
-<script>
-  import { ready, subscribe } from "@payloadcms/live-preview";
-  const serverURL = "http://localhost:3000";
+{renderMode !== 'server' && (
+  <script>
+    import { ready, subscribe } from "@payloadcms/live-preview";
+    const serverURL = "http://localhost:3000";
 
-  if (window.self !== window.top) {
-    subscribe({
-      callback: () => {
-        window.location.reload();
-      },
-      depth: 1,
-      initialData: {},
-      serverURL,
-    });
+    if (window.self !== window.top) {
+      subscribe({
+        callback: () => {
+          window.location.reload();
+        },
+        depth: 1,
+        initialData: {},
+        serverURL,
+      });
 
-    ready({ serverURL });
-  }
-</script>
+      ready({ serverURL });
+    }
+  </script>
+)}

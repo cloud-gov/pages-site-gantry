@@ -7,7 +7,6 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import { reportMapper } from "@/utilities/contentMapper";
 import Media from "@/components/Media.astro";
-import PreviewReload from "@/components/PreviewReload.astro";
 
 const { slug } = Astro.params;
 const collectionName = "reports";
@@ -44,5 +43,3 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <RichText content={report.content} />
   </PagesSection>
 </Layout>
-
-<PreviewReload />

@@ -25,6 +25,10 @@ const colorToken = (name: string): { family: string; mod: string } => {
       };
 };
 
+import.meta.env.RENDER_MODE === "static"
+? "?limit=0"
+: "?draft=true&limit=0";
+
 export const buildThemeStyle = async (
   editorAppURL: string,
   payloadAPIKey: string,

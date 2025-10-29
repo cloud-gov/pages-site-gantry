@@ -5,6 +5,7 @@ import GovIdentifier from "@/components/GovIdentifier.astro";
 import Menu from "@/components/Menu.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Footer from "@/components/Footer.astro";
+import PreviewReload from "@/components/PreviewReload.astro";
 import Config from "@/config.astro";
 import { getMediaUrl } from "@/utilities/media";
 import "../styles/index.scss";
@@ -120,4 +121,5 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
   <script>
     import "@uswds/uswds";
   </script>
+  <PreviewReload />
 </html>
