@@ -2,7 +2,7 @@
 // src/pages/[slug].astro
 import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
-import payloadFetch from "@/utilities/payload-fetch";
+import { fetchSlug, createStaticPathsForPagesSlug } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import Media from "@/components/Media.astro";
 
@@ -10,26 +10,10 @@ const { slug } = Astro.params;
 
 let page;
 
-if (!Astro.isPrerendered) {
-  const preview = import.meta.env.PREVIEW_MODE;
-  const res = await payloadFetch(
-    `pages?where[slug][equals]=${slug}&draft=${preview}`,
-  );
-  const { docs } = await res.json();
-  if (!docs?.length) return Astro.redirect("/404");
-  page = docs[0];
-} else {
-  const res = await payloadFetch(`pages?where[slug][equals]=${slug}`);
-  const { docs } = await res.json();
-  if (!docs?.length) return Astro.redirect("/404");
-  page = docs[0];
-}
+page = await fetchSlug("pages", slug);
+if (!page) return Astro.redirect("/404");
 
-export async function getStaticPaths() {
-  const res = await payloadFetch(`pages?limit=1000&depth=0`);
-  const { docs } = await res.json();
-  return docs.map((p) => ({ params: { slug: p.slug }, props: { data: p } }));
-}
+export const getStaticPaths = createStaticPathsForPagesSlug();
 ---
 
 <Layout title={page.title}>

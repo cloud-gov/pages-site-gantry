@@ -41,6 +41,33 @@ npm run format:check
 
 This check is also used in CI to verify the code is formatted in a pull request before the pull request is merged.
 
+
+## Payload API Calls
+
+**Fetch Implementation Locations**
+- Site-wide queries for global collections (like site configuration, menu, footer, etc.) are implemented at Layout level (`src/pages/index.astro`, `src/layouts`).
+- Content collection queries (like news, posts, pages, etc.) are implemented at `src/pages` level: 
+  * for collection in `src/pages/COLLECTION_NAME/page/index.astro`;
+  * for collection item in `src/pages/COLLECTION_NAME/[slug].astro`.
+- Fetch functions are:
+  - implemented in `src/utilities/fetch/` directory;
+  - re-exported via barrel pattern in `src/utilities/fetch/index.ts`.
+
+**Functions**
+- To fetch a global collection add new function similar to `fetchSiteConfig()`, `fetchHomePage()` from `src/utilities/fetch/queries.ts`.
+- To fetch collection items use `fetchCollection(collectionName)` from `src/utilities/fetch/queries.ts`.
+- To fetch single items by slug use `fetchSlug(collectionName, slug)` from `src/utilities/fetch/queries.ts`.
+- Static paths (`getStaticPaths()`) should be implemented in `src/utilities/fetch/staticPaths.ts`.
+- Response mapping should be implemented:
+    - for small mappers in `src/utilities/fetch/contentMappers.ts`.
+    - for large mappers in `src/utilities/fetch` individual files as needed.
+
+**Configuration**
+- Render/Preview modes are handled automatically in `payloadFetch()` (`src/utilities/fetch/payload-fetch.ts`) and
+reflect state of environment-specific variables `RENDER_MODE` and `PREVIEW_MODE`.
+
+
+
 ## CI
 
 The CI pipeline is used to deploy the sites to allow `pages-editor` users to preview their content updates in the same layout, configuration, and theme as their production site. This repository contains the defintion for a single Concourse pipeline. This pipeline is responsible for reading from a specific S3 bucket and deploying one application per JSON file found there. Those JSON files correspond to sites created by `pages-editor` and contain at least the following properties:

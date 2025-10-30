@@ -1,44 +1,7 @@
 import { defineCollection, z } from "astro:content";
-import payloadFetch from "./utilities/payload-fetch";
 import type { ZodObject, ZodRawShape } from "astro:schema";
 import type { MediaValueProps, CollectionCategoryProps } from "@/env";
-
-function collectionLoader(apiPath: string) {
-  return async () => {
-    // fetch drafts for the previewer, not on build
-    const fetchDrafts =
-      import.meta.env.RENDER_MODE === "static"
-        ? "?limit=0"
-        : "?draft=true&limit=0";
-
-    const response = await payloadFetch(`${apiPath}${fetchDrafts}`);
-
-    if (!response.ok) {
-      console.error(
-        `API call failed for ${apiPath}:`,
-        response.status,
-        response.statusText,
-      );
-      return [];
-    }
-
-    const data = await response.json();
-
-    if (apiPath.includes("globals")) {
-      return [{ ...data, id: "main" }];
-    } else {
-      if (!data.docs) {
-        console.error(`No docs property in response for ${apiPath}:`, data);
-        return [];
-      }
-      return data.docs
-        .filter((doc) => doc.slug) // we have issues without a slug
-        .map((doc) => {
-          return { ...doc, id: doc.slug };
-        });
-    }
-  };
-}
+import { collectionLoader } from "@/utilities/fetch";
 
 // NOTE: because we are rendering drafts, every property should
 // accept being nullable
@@ -411,82 +374,91 @@ const siteConfig = defineCollection({
 });
 
 const preFooter = defineCollection({
+  loader: collectionLoader("globals/pre-footer"),
   schema: makeAllKeysNullable(
     z
       .object({
-        type: z.string().optional(),
-        connectSectionLocation: z.string().optional(),
+        type: z.string().nullable().optional(),
+        connectSectionLocation: z.string().nullable().optional(),
         contactCenter: z.array(
           z
             .object({
-              name: z.string().optional(),
-              phone: z.string().optional(),
-              email: z.string().optional(),
+              name: z.string().nullable().optional(),
+              phone: z.string().nullable().optional(),
+              email: z.string().nullable().optional(),
             })
+            .nullable()
             .optional(),
         ),
         facebook: z.array(
           z
             .object({
-              url: z.string().optional(),
+              url: z.string().nullable().optional(),
             })
+            .nullable()
             .optional(),
         ),
         platform_x: z.array(
           z
             .object({
-              url: z.string().optional(),
+              url: z.string().nullable().optional(),
             })
+            .nullable()
             .optional(),
         ),
         youtube: z.array(
           z
             .object({
-              url: z.string().optional(),
+              url: z.string().nullable().optional(),
             })
+            .nullable()
             .optional(),
         ),
         instagram: z.array(
           z
             .object({
-              url: z.string().optional(),
+              url: z.string().nullable().optional(),
             })
+            .nullable()
             .optional(),
         ),
         rssfeed: z.array(
           z
             .object({
-              url: z.string().optional(),
+              url: z.string().nullable().optional(),
             })
+            .nullable()
             .optional(),
         ),
-        groupCol: z.string().optional(),
+        groupCol: z.string().nullable().optional(),
         linkGroup: z.array(
           z
             .object({
-              groupName: z.string().optional(),
+              groupName: z.string().nullable().optional(),
               link: z.array(
                 z
                   .object({
-                    blockType: z.string().optional(),
-                    name: z.string().optional(),
-                    type: z.any().optional(),
-                    id: z.string().optional(),
-                    linkUrl: z.string().optional(),
+                    blockType: z.string().nullable().optional(),
+                    name: z.string().nullable().optional(),
+                    type: z.any().nullable().optional(),
+                    id: z.string().nullable().optional(),
+                    linkUrl: z.string().nullable().optional(),
                   })
+                  .nullable()
                   .optional(),
               ),
             })
+            .nullable()
             .optional(),
         ),
         slimLink: z.array(
           z
             .object({
-              blockType: z.string().optional(),
-              name: z.string().optional(),
-              page: z.any().optional(),
-              id: z.string().optional(),
-              linkUrl: z.string().optional(),
+              blockType: z.string().nullable().optional(),
+              name: z.string().nullable().optional(),
+              page: z.any().nullable().optional(),
+              id: z.string().nullable().optional(),
+              linkUrl: z.string().nullable().optional(),
             })
             .optional(),
         ),

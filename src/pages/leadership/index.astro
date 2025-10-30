@@ -1,13 +1,15 @@
 ---
-import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import CollectionItemList from "@/components/CollectionItemList.astro";
-import payloadFetch from "@/utilities/payload-fetch";
-import { leadershipMapper } from "@/utilities/contentMapper";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
-import { createPagingStaticPath } from "@/utilities/staticPath";
+import {
+  createPagingStaticPath,
+  fetchCollection,
+  leadershipMapper,
+} from "@/utilities/fetch";
+import type { CollectionEntry } from "astro:content";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -15,11 +17,9 @@ const { page } = Astro.params;
 const currentPage = parseInt(page) || 1;
 
 const collectionName = "leadership";
-let people: CollectionEntry<typeof collectionName>["data"][];
-const preview = import.meta.env.PREVIEW_MODE;
-const response = await payloadFetch(`${collectionName}?draft=${preview}`);
-const responseData = await response.json();
-people = responseData.docs;
+const data = await fetchCollection(collectionName);
+const people: CollectionEntry<typeof collectionName>["data"][] =
+  data?.docs || [];
 
 const sortedLeadership = people.sort((a, b) => {
   const dateA = new Date(a.createdAt);
