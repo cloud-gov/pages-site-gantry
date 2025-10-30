@@ -6,28 +6,37 @@ import Menu from "@/components/Menu.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Footer from "@/components/Footer.astro";
 import Config from "@/config.astro";
-import payloadFetch from "@/utilities/payload-fetch";
 import { getMediaUrl } from "@/utilities/media";
 import "../styles/index.scss";
-import { fetchSiteConfig } from "@/utilities/queries";
 import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
+import {
+  fetchSiteConfig,
+  fetchMenu,
+  fetchPreFooter,
+  preFooterMapper,
+} from "@/utilities/fetch";
+import { type PreFooterModel } from "@/env";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
-const menuEndpoint = "globals/menu";
+const preFooterCollectionName = "preFooter";
 
 let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 let menu: CollectionEntry<typeof menuCollectionName>["data"];
+let preFooterResponseData: CollectionEntry<
+  typeof preFooterCollectionName
+>["data"];
+let preFooter: PreFooterModel;
 
 if (!Astro.isPrerendered) {
   siteConfig = await fetchSiteConfig();
-
-  const menuResponse = await payloadFetch(`${menuEndpoint}?draft=true`);
-  const menuResponseData = await menuResponse.json();
-  menu = menuResponseData;
+  menu = await fetchMenu();
+  preFooterResponseData = await fetchPreFooter();
 } else {
   const siteConfigResponseData = await getCollection(siteConfigCollectionName);
   const menuResponseData = await getCollection(menuCollectionName);
+  const preFooterResponse = await getCollection(preFooterCollectionName);
+  preFooterResponseData = preFooterResponse[0]?.data;
 
   siteConfig = {
     agencyName:
@@ -42,6 +51,8 @@ if (!Astro.isPrerendered) {
     items: menuResponseData[0]?.data?.items || [],
   };
 }
+
+preFooter = preFooterMapper(preFooterResponseData);
 
 // TODO: Add meta title and description to site config
 const { title, description, socialImage, canonical } = Astro.props;
@@ -88,7 +99,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <main id="main-content">
       <slot />
     </main>
-    <Footer />
+    <Footer preFooter={preFooter} />
     {
       siteConfig.dapAgencyCode && (
         <DigitalAnalytics

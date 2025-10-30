@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
-import { formatDate } from "./formatting";
-import { parseDateParts, type DateParts } from "./dates";
+import { formatDate } from "../formatting";
+import { parseDateParts, type DateParts } from "../dates";
 import type { CollectionCategoryProps } from "@/env";
 
 type Category = {

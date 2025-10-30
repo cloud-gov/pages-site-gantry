@@ -121,27 +121,27 @@ export interface HomePage {
 }
 
 export interface LinkModel {
-  text: string;
-  url: string;
+  text?: string;
+  url?: string;
   externalLink?: boolean;
 }
 
 export interface SocialLink {
-  platform: string;
-  url: string;
+  platform?: string;
+  url?: string;
 }
 
 export interface Identifiers {
-  siteDomain: string;
-  identifierLinks: LinkItem[];
-  identifierName: string;
-  identifierUrl: string;
+  siteDomain?: string;
+  identifierLinks?: LinkItem[];
+  identifierName?: string;
+  identifierUrl?: string;
 }
 
 export interface PreFooterSlimModel {
-  contactTelephone: string;
-  contactEmail: string;
-  footerLinks: LinkModel[];
+  contactTelephone?: string;
+  contactEmail?: string;
+  footerLinks?: LinkModel[];
 }
 
 export const CONNECT_SECTION_RIGHT = "right";
@@ -171,32 +171,32 @@ export enum SocialPlatform {
 }
 
 export interface ContactCenter {
-  name: string;
-  phone: string;
-  email: string;
+  name?: string;
+  phone?: string;
+  email?: string;
 }
 
 export interface ConnectSectionModel {
-  contactCenter: ContactCenter;
-  socialLinks: SocialLink[];
+  contactCenter?: ContactCenter;
+  socialLinks?: SocialLink[];
 }
 
 export interface LinkGroup {
-  name: string;
-  links: LinkModel[];
+  name?: string;
+  links?: LinkModel[];
 }
 
 export type ConnectSectionLocation = "right" | "bottom";
 
 export interface PreFooterBigConfiguration {
-  connectSectionLocation: ConnectSectionLocation;
-  columnsInLinkGroup: number;
+  connectSectionLocation?: ConnectSectionLocation;
+  columnsInLinkGroup?: number;
 }
 
 export interface PreFooterBigModel {
   linkGroups?: LinkGroup[];
   connectSection?: ConnectSectionModel;
-  configuration: PreFooterBigConfiguration;
+  configuration?: PreFooterBigConfiguration;
 }
 
 export const PRE_FOOTER_TYPE_BIG = "big";
@@ -208,11 +208,11 @@ export type PreFooterType = "big" | "slim" | "none";
 export type PreFooterData = PreFooterBigModel | PreFooterSlimModel;
 
 export interface PreFooterModel {
-  preFooterType: PreFooterType;
-  preFooterData: PreFooterData;
+  preFooterType?: PreFooterType;
+  preFooterData?: PreFooterData;
 }
 
 export interface PageModel {
   title?: string;
-  slug?: string;
+  slug?: string | null;
 }

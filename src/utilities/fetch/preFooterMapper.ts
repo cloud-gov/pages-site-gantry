@@ -7,26 +7,24 @@ import {
   type PreFooterBigModel,
   type PreFooterModel,
   type PreFooterSlimModel,
+  type PreFooterType,
   type SocialLink,
   SocialPlatform,
 } from "@/env";
-import { getPreFooter } from "@/components/Footer.testData";
-import payloadFetch from "@/utilities/payload-fetch";
 import { cleanConfiguration } from "@/utilities/preFooterBig";
-import { type CollectionEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
-const preFooterEndpoint = "globals/pre-footer";
 const preFooterCollectionName = "preFooter";
 
-export function buildPageUrl(page: PageModel) {
+export function mapPageUrl(page: PageModel) {
   return page?.slug ? `/${page?.slug}` : null;
 }
 
-export function buildCollectionUrl(page: string) {
+export function mapCollectionUrl(page: string) {
   return page ? `/${page}` : null;
 }
 
-export function buildSocialLinks(response: any): SocialLink[] {
+export function mapSocialLinks(response: any): SocialLink[] {
   const result = [
     {
       platform: SocialPlatform.FACEBOOK,
@@ -52,7 +50,7 @@ export function buildSocialLinks(response: any): SocialLink[] {
   return result;
 }
 
-export function buildContactCenter(response: any) {
+export function mapContactCenter(response: any) {
   return {
     name: response?.contactCenter?.[0]?.name,
     phone: response?.contactCenter?.[0]?.phone,
@@ -60,40 +58,40 @@ export function buildContactCenter(response: any) {
   };
 }
 
-export function buildPreFooterBigConfiguration(response: any) {
+export function mapPreFooterBigConfiguration(response: any) {
   return cleanConfiguration({
     connectSectionLocation: response?.connectSectionLocation,
     columnsInLinkGroup: response?.groupCol,
   });
 }
 
-export function buildLinkGroups(response: any) {
+export function mapLinkGroups(response: any) {
   return response?.linkGroup?.map((linkGroup) => {
     const builtLinkGroup: LinkGroup = {
       name: linkGroup?.groupName,
       links: linkGroup?.link?.map((l) => {
-        return buildLink(l);
+        return mapLink(l);
       }),
     };
     return builtLinkGroup;
   });
 }
 
-export function buildPreFooterBig(
+export function mapPreFooterBig(
   response: CollectionEntry<typeof preFooterCollectionName>["data"],
 ): PreFooterBigModel {
   const result: PreFooterBigModel = {
-    configuration: buildPreFooterBigConfiguration(response),
+    configuration: mapPreFooterBigConfiguration(response),
     connectSection: {
-      contactCenter: buildContactCenter(response),
-      socialLinks: buildSocialLinks(response),
+      contactCenter: mapContactCenter(response),
+      socialLinks: mapSocialLinks(response),
     },
-    linkGroups: buildLinkGroups(response),
+    linkGroups: mapLinkGroups(response),
   };
   return result;
 }
 
-export function buildLink(link): LinkModel {
+export function mapLink(link): LinkModel {
   let result: LinkModel = null;
   switch (link?.blockType) {
     case "slimExternalLink":
@@ -108,7 +106,7 @@ export function buildLink(link): LinkModel {
     case "pageLink":
       result = {
         text: link?.name,
-        url: buildPageUrl(link?.page),
+        url: mapPageUrl(link?.page),
         externalLink: false,
       };
       break;
@@ -116,7 +114,7 @@ export function buildLink(link): LinkModel {
     case "collectionLink":
       result = {
         text: link?.name,
-        url: buildCollectionUrl(link?.page),
+        url: mapCollectionUrl(link?.page),
         externalLink: false,
       };
       break;
@@ -124,13 +122,13 @@ export function buildLink(link): LinkModel {
   return result;
 }
 
-export function buildPreFooterSlim(
+export function mapPreFooterSlim(
   response: CollectionEntry<typeof preFooterCollectionName>["data"],
 ): PreFooterSlimModel {
   let contactTelephone = response?.contactCenter?.[0]?.phone;
   const contactEmail = response?.contactCenter?.[0]?.email;
   const footerLinks = response?.slimLink?.map((link) => {
-    return buildLink(link);
+    return mapLink(link);
   });
   const result: PreFooterSlimModel = {
     contactTelephone: contactTelephone,
@@ -140,18 +138,17 @@ export function buildPreFooterSlim(
   return result;
 }
 
-export function buildPreFooter(response) {
-  let responseData: CollectionEntry<typeof preFooterCollectionName>["data"] =
-    response;
-
+export function preFooterMapper(
+  data: CollectionEntry<typeof preFooterCollectionName>["data"],
+): PreFooterModel {
   let preFooterData: PreFooterSlimModel | PreFooterBigModel;
-  let type = response?.type;
+  let type: PreFooterType | any = data?.type;
   switch (type) {
     case PRE_FOOTER_TYPE_BIG:
-      preFooterData = buildPreFooterBig(responseData);
+      preFooterData = mapPreFooterBig(data);
       break;
     case PRE_FOOTER_TYPE_SLIM:
-      preFooterData = buildPreFooterSlim(responseData);
+      preFooterData = mapPreFooterSlim(data);
       break;
     default:
       type = null;
@@ -162,17 +159,4 @@ export function buildPreFooter(response) {
     preFooterType: type,
   };
   return preFooter;
-}
-
-export async function fetchPreFooter() {
-  const preFooterResponse = await payloadFetch(
-    `${preFooterEndpoint}?draft=true`,
-  );
-  const response = preFooterResponse ? await preFooterResponse.json() : null;
-  return buildPreFooter(response);
-}
-
-export async function fetchPreFooterTest(): Promise<PreFooterModel> {
-  const data: PreFooterModel = getPreFooter();
-  return Promise.resolve(data);
 }
