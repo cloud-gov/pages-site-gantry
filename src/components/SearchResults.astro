@@ -1,18 +1,79 @@
 ---
-import { fetchSiteConfig } from "@/utilities/fetch";
-import type { CollectionEntry } from "astro:content";
-const siteConfigCollectionName = "siteConfig";
-let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
-siteConfig = await fetchSiteConfig();
+interface Props {
+  apiKey?: string;
+  searchAffiliate?: string;
+}
 
-const apiKey = siteConfig?.searchAccessKey || "";
+const { apiKey = "", searchAffiliate } = Astro.props;
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? "/"
+  : (import.meta.env.BASEURL || "") + "/";
 ---
 
-<div id="results-count"></div>
-<div id="search-results" data-search-gov={apiKey}></div>
+<div class="desktop:grid-col-7 tablet:grid-col-12">
+  <div class="bg-base-lightest padding-2 margin-bottom-4">
+    <section aria-label="Search component">
+      <form
+        id="search_form"
+        class="usa-search usa-search--small"
+        action=`${baseUrl}search`
+        accept-charset="UTF-8"
+        method="get"
+      >
+        <div class="form-group">
+          <label for="search-field">Enter a keyword, phrase, or question</label>
+          <div class="input-button-group">
+            <input
+              class="usa-input"
+              id="search-field"
+              type="search"
+              name="query"
+            />
+            <input name="affiliate" type="hidden" value={searchAffiliate} />
+            <button class="usa-button" type="submit">
+              <span class="usa-search__submit-text">Search </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
 
-<script type="module">
-  export function highlightKeyword(string) {
+  <div id="results-count"></div>
+  <div id="recommended"></div>
+  <div id="search-results" data-search-gov={apiKey}></div>
+  <hr class="margin-bottom-3 margin-top-3" />
+  <div id="pagination"></div>
+</div>
+<script>
+  import { searchState } from "../utilities/state.js";
+  import { searchPagination } from "../utilities/pagination.ts";
+  import { countResults } from "../utilities/searchResultsClient.ts";
+
+  searchState.listen(() => {
+    renderSearchResults(searchState.offset);
+  });
+
+  const paginationContainer = document.getElementById("pagination");
+  paginationContainer?.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const link = target.closest(".page-number") as HTMLAnchorElement;
+
+    if (link) {
+      event.preventDefault();
+
+      const pageValue = link.dataset.page;
+      if (pageValue !== undefined) {
+        searchState.offset = parseInt(pageValue, 10);
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    }
+  });
+
+  function highlightKeyword(string) {
     return string
       .replace(/\uE000/g, "<strong>")
       .replace(/\uE001/g, "</strong>");
@@ -26,7 +87,7 @@ const apiKey = siteConfig?.searchAccessKey || "";
           throw new Error(`HTTP error. status: ${response.status}`);
         return await response.json();
       } catch (error) {
-        console.warn(`Attempt ${ATTEMPT + 1} failed: ${error.message}`);
+        console.warn(`Attempt ${attempt + 1} failed: ${error.message}`);
         if (attempt < retries) {
           await new Promise((resolve) =>
             setTimeout(resolve, delay * Math.pow(2, attempt)),
@@ -38,53 +99,87 @@ const apiKey = siteConfig?.searchAccessKey || "";
     }
   }
 
-  export async function renderSearchResults() {
+  export async function renderSearchResults(pageValueOffset = null) {
+    const recommendedContainer = document.getElementById("recommended");
     const resultsContainer = document.getElementById("search-results");
     const countContainer = document.getElementById("results-count");
+    const paginationContainer = document.getElementById("pagination");
 
     const apiKey = resultsContainer?.dataset.searchGov || null;
+    const limit = 20;
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("query") || "";
+    const affiliate = params.get("affiliate") || "";
 
-    const query =
-      new URLSearchParams(window.location.search).get("query") || "";
-    const affiliate =
-      new URLSearchParams(window.location.search).get("affiliate") || "";
+    var offset = null;
+
+    if (pageValueOffset) {
+      offset = pageValueOffset;
+    } else {
+      offset = params.get("offset");
+    }
 
     if (!query || !resultsContainer || !countContainer) return;
 
-    const apiUrl = `https://api.gsa.gov/technology/searchgov/v2/results/i14y?affiliate=${affiliate}&access_key=${apiKey}&query=${encodeURIComponent(query)}`;
+    const apiUrl = `https://api.gsa.gov/technology/searchgov/v2/results/i14y?affiliate=${affiliate}&limit=${limit}&offset=${offset}&access_key=${apiKey}&facets_enabled=true&query=${encodeURIComponent(query)}`;
+
+    if (query) {
+      const searchField = document.getElementById(
+        "search-field",
+      ) as HTMLFormElement;
+      const extendedSearchFieldSmall = document.getElementById(
+        "extended-search-field-small",
+      ) as HTMLFormElement;
+      searchField.value = query;
+      extendedSearchFieldSmall.value = query;
+    }
 
     try {
       const data = await fetchWithRetry(apiUrl);
       const results = data.web?.results ?? [];
-      countContainer.textContent = `${results.length} results`;
+      const recommended = data?.text_best_bets ?? [];
+
+      if (recommended.length != 0) {
+        recommendedContainer.innerHTML =
+          "<h3>Our top recommendations for you</h3>";
+        recommendedContainer.innerHTML += recommended
+          .map((recommend) =>
+            resultHtml(recommend.url, recommend.title, recommend.description),
+          )
+          .join("");
+        recommendedContainer.innerHTML +=
+          '<hr class="margin-bottom-3 margin-top-3" />';
+      }
+
+      if (offset) {
+        recommendedContainer.innerHTML = "";
+      }
+
+      if (results) {
+        countContainer.innerHTML = `<p>${countResults(data.web?.total, results.length, offset, query)}</p>`;
+        countContainer.innerHTML += `<hr class="margin-bottom-3 margin-top-3" />`;
+      }
 
       if (results.length === 0) {
-        resultsContainer.innerHTML = `<li>No results found.</li>`;
+        resultsContainer.innerHTML = ``;
         return;
       }
 
       resultsContainer.innerHTML = results
-        .map(
-          (result) => `
-        <div class="grid-container result search-result-item">
-          <div class="grid-row grid-gap-md result-meta-grid-wrapper">
-            <div class="grid-col result-meta-data">
-              <div class="result-title">
-                <h2 class="result-title-label">
-                  <a href="${result.url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(result.title)}</a>
-                </h2>
-              </div>
-              <div class="result-desc">
-                <p>${highlightKeyword(result.snippet)}</p>
-                <div class="result-url-text">${result.url}</div>
-              </div>
-            </div>
-          </div>
-          <div class="grid-row row-mobile-divider"></div>
-        </div>
-      `,
-        )
+        .map((result) => resultHtml(result.url, result.title, result.snippet))
         .join("");
+
+      // Pagination
+      const totalPages = Math.ceil(data.web?.total / limit);
+      const currentPage = offset === null ? 1 : Math.floor(offset / limit) + 1;
+
+      if (data.web?.total > limit) {
+        paginationContainer.innerHTML = searchPagination(
+          totalPages,
+          currentPage,
+          limit,
+        );
+      }
     } catch (error) {
       resultsContainer.innerHTML = `<li>Error fetching results: ${error.message}</li>`;
       countContainer.textContent = "0 results";
@@ -92,38 +187,54 @@ const apiKey = siteConfig?.searchAccessKey || "";
   }
 
   renderSearchResults();
+
+  function resultHtml(url: string, title: string, text: string) {
+    return `
+      <div class="grid-container result search-result-item padding-left-0 padding-right-3">
+        <div class="grid-row grid-gap-md result-meta-grid-wrapper">
+          <div class="grid-col result-meta-data">
+            <div class="result-title">
+              <h2 class="result-title-label margin-bottom-1 margin-top-1">
+                <a href="${url}" target="_blank" rel="noopener noreferrer" class="usa-link">${highlightKeyword(title)}</a>
+              </h2>
+            </div>
+            <div class="result-desc">
+              <p class="text-ls-1 margin-bottom-1 margin-top-1">${highlightKeyword(text)}</p>
+              <div class="result-url-text">${url}</div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-row row-mobile-divider"></div>
+      </div>
+    `;
+  }
 </script>
 <style is:global>
+  #recommended h3 {
+    font-size: 1rem;
+  }
+  .usa-search .form-group {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .usa-search .input-button-group {
+    display: flex;
+    gap: 0;
+    width: 100%;
+  }
   .search-result-item-wrapper {
     margin-top: 1.5rem;
   }
 
-  .search-result-item {
-    /* margin-top: 3rem; */
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-  }
-
   .search-result-item .result-title-label {
-    /* color: #005EA2; */
-    font-size: 1.375rem;
+    font-size: 1rem;
     font-weight: 400;
-    margin-bottom: 0.35rem;
-    margin-top: 0.35rem;
   }
 
-  .search-result-item .result-desc p {
-    color: #1b1b1b;
-    font-size: 1rem;
-    letter-spacing: 0.25px;
-    line-height: 26px;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-    word-wrap: break-word;
-    max-width: none;
-  }
   .search-result-item .result-desc .result-url-text {
-    color: #446443;
+    color: #4b6346;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

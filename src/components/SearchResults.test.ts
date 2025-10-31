@@ -11,12 +11,20 @@ vi.mock("astro:content", () => ({
 }));
 
 const mockResults = {
+  query: "search highlighted",
   web: {
+    total: 5,
+    next_offset: 2,
     results: [
       {
         title: "Example \uE000Search\uE001 Result",
         snippet: "This is a \uE000highlighted\uE001 snippet.",
         url: "https://example.com",
+      },
+      {
+        title: "Second search result",
+        snippet: "This is another \uE000highlighted\uE001 snippet",
+        url: "https://example.com/2",
       },
     ],
   },
@@ -24,7 +32,7 @@ const mockResults = {
 
 describe("searchResultsClient", () => {
   beforeEach(() => {
-    document.body.innerHTML = ` <div id="results-count"></div> <div id="search-results"></div> `;
+    document.body.innerHTML = ` <div id="results-count"></div> <div id="search-results"></div> <div id="pagination"></div> `;
 
     vi.stubGlobal(
       "fetch",
@@ -41,15 +49,20 @@ describe("searchResultsClient", () => {
       query: "search",
       affiliate: "test-affiliate",
       apiKey: "test-key",
+      pageValueOffset: null,
+      limit: 2,
     });
 
     const count = document.getElementById("results-count");
     const results = document.getElementById("search-results");
+    const pagination = document.getElementById("pagination");
 
-    expect(count?.textContent).toBe("1 results");
+    expect(count?.textContent).toBe('Showing 1-2 of 5 results for "search"');
+    expect(count?.innerHTML).toContain("results");
     expect(results?.innerHTML).toContain("<strong>Search</strong>");
     expect(results?.innerHTML).toContain("<strong>highlighted</strong>");
     expect(results?.innerHTML).toContain("https://example.com");
+    expect(pagination.innerHTML).toContain("Next");
   });
 
   it("returns empty message when no results", async () => {
@@ -59,7 +72,7 @@ describe("searchResultsClient", () => {
         Promise.resolve({
           json: () =>
             Promise.resolve({
-              web: { results: [] },
+              web: { total: 0, results: [] },
             }),
         }),
       ),
@@ -69,10 +82,16 @@ describe("searchResultsClient", () => {
       query: "empty",
       affiliate: "test-affiliate",
       apiKey: "test-key",
+      pageValueOffset: null,
     });
 
+    const count = document.getElementById("results-count");
     const results = document.getElementById("search-results");
+
     expect(results?.innerHTML).toContain("<li>No results found.</li>");
+    expect(count?.innerHTML).toContain(
+      'We didn\'t find any results for "<strong>empty</strong>."',
+    );
   });
 
   it("highlightKeyword wraps markers with <strong>", () => {
