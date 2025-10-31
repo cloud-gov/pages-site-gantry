@@ -35,6 +35,7 @@ export const buildThemeStyle = async (
     `globals/site-config?draft=${preview === "true"}`,
     payloadAPIKey,
   );
+
   const data: {
     primaryColor?: string;
     secondaryColor?: string;

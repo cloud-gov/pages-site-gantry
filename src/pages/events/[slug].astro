@@ -5,7 +5,6 @@ import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import RichText from "@/components/RichText.astro";
 import Tags from "@/components/Tags.astro";
-import PreviewReload from "@/components/PreviewReload.astro";
 import type { CollectionEntry } from "astro:content";
 
 const { slug } = Astro.params;
@@ -148,5 +147,3 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     }
   </PagesSection>
 </Layout>
-
-<PreviewReload />
