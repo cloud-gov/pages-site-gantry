@@ -1,11 +1,20 @@
 ---
-
+const serverURL = import.meta.env.EDITOR_APP_URL || "http://localhost:3000";
+const PREVIEW_MODE = import.meta.env.PREVIEW_MODE;
 ---
 
+<div
+  id="previewVars"
+  data-server-url={serverURL}
+  data-preview-mode={PREVIEW_MODE}
+>
+</div>
 <script>
   import { ready, subscribe } from "@payloadcms/live-preview";
-  const serverURL = import.meta.env.EDITOR_APP_URL || "http://localhost:3000";
-  const PREVIEW_MODE = import.meta.env.PREVIEW_MODE;
+  const previewVar = document.getElementById("previewVars");
+  const serverURL = previewVar.getAttribute("data-server-url");
+  const previewModeStr = previewVar.getAttribute("data-preview-mode");
+  const PREVIEW_MODE = previewModeStr === "true";
 
   if (window.self !== window.top && PREVIEW_MODE === true) {
     subscribe({
