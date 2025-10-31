@@ -6,7 +6,6 @@ import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
-import PreviewReload from "@/components/PreviewReload.astro";
 
 const { slug } = Astro.params;
 const collectionName = "news";
@@ -43,5 +42,3 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <RichText content={data.content} />
   </PagesSection>
 </Layout>
-
-<PreviewReload />

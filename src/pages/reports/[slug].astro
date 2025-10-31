@@ -8,9 +8,8 @@ import {
 } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
-import Tags, { type Tag } from "@/components/Tags.astro";
+import Tags from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
-import PreviewReload from "@/components/PreviewReload.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 
 const { slug } = Astro.params;
@@ -56,5 +55,3 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <Fragment slot="sidebar"></Fragment>
   </PagesSection>
 </Layout>
-
-<PreviewReload />
