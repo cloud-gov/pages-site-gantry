@@ -1,0 +1,126 @@
+---
+import Link from "./Link.astro";
+
+interface NavItem {
+  id: string;
+  label: string;
+  href: string;
+  children?: NavItem[];
+}
+
+interface Props {
+  items: NavItem[];
+  currentPath?: string;
+  title?: string;
+  id?: string;
+}
+
+const {
+  items = [],
+  currentPath = "",
+  title = "Page Navigation",
+  id = "sidenav",
+} = Astro.props;
+
+// Helper function to check if a path is active
+const isActive = (href: string) => {
+  if (href === currentPath) return true;
+  if (currentPath.startsWith(href + "/")) return true;
+  return false;
+};
+
+// Helper function to check if any child is active
+const hasActiveChild = (item: NavItem): boolean => {
+  if (isActive(item.href)) return true;
+  if (item.children) {
+    return item.children.some((child) => hasActiveChild(child));
+  }
+  return false;
+};
+---
+
+<nav class="usa-sidenav" aria-label={title} id={id}>
+  <ul class="usa-sidenav__list">
+    {
+      items.map((item) => {
+        const isItemActive = isActive(item.href);
+        const hasActiveChildren = item.children ? hasActiveChild(item) : false;
+
+        return (
+          <li class="usa-sidenav__item">
+            {item.children && item.children.length > 0 ? (
+              // Dropdown parent - not clickable but shows active state
+              <span
+                className={`usa-sidenav__link ${hasActiveChildren ? "usa-current" : ""}`}
+              >
+                {item.label}
+              </span>
+            ) : (
+              // Regular link - clickable
+              <Link
+                href={item.href}
+                className={`usa-sidenav__link ${isItemActive ? "usa-current" : ""}`}
+                aria-current={isItemActive ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            )}
+
+            {item.children && item.children.length > 0 && (
+              <ul class="usa-sidenav__sublist">
+                {item.children.map((child) => {
+                  const isChildActive = isActive(child.href);
+                  return (
+                    <li class="usa-sidenav__item">
+                      <Link
+                        href={child.href}
+                        className={`usa-sidenav__link ${isChildActive ? "usa-current" : ""}`}
+                        aria-current={isChildActive ? "page" : undefined}
+                      >
+                        {child.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<style>
+  .usa-sidenav {
+    position: sticky;
+    top: 0;
+    height: fit-content;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .usa-sidenav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .usa-sidenav__item {
+    margin: 0;
+  }
+
+  /* Dropdown parent styling - looks like link but not clickable */
+  .usa-sidenav__item > span.usa-sidenav__link {
+    cursor: default;
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+  }
+
+  /* Hide side navigation on mobile */
+  @media (max-width: 768px) {
+    .usa-sidenav {
+      display: none;
+    }
+  }
+</style>
