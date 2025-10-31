@@ -4,9 +4,10 @@
 
 <script>
   import { ready, subscribe } from "@payloadcms/live-preview";
-  const serverURL = "http://localhost:3000";
+  const serverURL = import.meta.env.EDITOR_APP_URL || "http://localhost:3000";
+  const PREVIEW_MODE = import.meta.env.PREVIEW_MODE;
 
-  if (window.self !== window.top) {
+  if (window.self !== window.top && PREVIEW_MODE === true) {
     subscribe({
       callback: () => {
         window.location.reload();
