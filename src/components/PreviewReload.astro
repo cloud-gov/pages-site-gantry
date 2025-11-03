@@ -12,7 +12,8 @@ const PREVIEW_MODE = import.meta.env.PREVIEW_MODE;
 <script>
   import { ready, subscribe } from "@payloadcms/live-preview";
   const previewVar = document.getElementById("previewVars");
-  const serverURL = previewVar.getAttribute("data-server-url");
+  // const serverURL = previewVar.getAttribute("data-server-url");
+  const serverURL = "http://localhost:3000";
   const previewModeStr = previewVar.getAttribute("data-preview-mode");
   const PREVIEW_MODE = previewModeStr === "true";
 
