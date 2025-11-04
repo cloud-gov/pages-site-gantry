@@ -81,9 +81,21 @@ app.use(async (req, res, next) => {
 app.use(async function (req, res) {
   const data = await fetch(path.join(process.env.ASTRO_ENDPOINT, req.path));
   text = await data.text();
-  for (const header of data.headers.entries()) {
-    res.setHeader(...header);
+  // Copy headers from Astro, but skip X-Frame-Options and Content-Security-Policy
+  // which we set earlier to allow iframing
+  for (const [key, value] of data.headers.entries()) {
+    const lowerKey = key.toLowerCase();
+    if (lowerKey !== 'x-frame-options' && lowerKey !== 'content-security-policy') {
+      res.setHeader(key, value);
+    }
   }
+  
+  // Ensure our iframe-friendly headers are set (overrides any from Astro)
+  res.setHeader("X-Frame-Options", "ALLOWALL");
+  res.setHeader(
+    "Content-Security-Policy",
+    `frame-ancestors ${process.env.EDITOR_APP_URL}`,
+  );
 
   res.send(text);
 });
