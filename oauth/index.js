@@ -85,11 +85,14 @@ app.use(async function (req, res) {
   // which we set earlier to allow iframing
   for (const [key, value] of data.headers.entries()) {
     const lowerKey = key.toLowerCase();
-    if (lowerKey !== 'x-frame-options' && lowerKey !== 'content-security-policy') {
+    if (
+      lowerKey !== "x-frame-options" &&
+      lowerKey !== "content-security-policy"
+    ) {
       res.setHeader(key, value);
     }
   }
-  
+
   // Ensure our iframe-friendly headers are set (overrides any from Astro)
   res.setHeader("X-Frame-Options", "ALLOWALL");
   res.setHeader(
