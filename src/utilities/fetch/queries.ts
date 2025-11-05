@@ -1,5 +1,5 @@
 import type { HomePage, SiteConfig } from "@/env";
-import { payloadFetch } from "./payload-fetch";
+import { payloadFetch, safeJsonParse } from "./payload-fetch";
 
 // globals
 
@@ -23,7 +23,7 @@ export async function fetchPreFooter() {
 
 export async function fetchCollection(collectionName: string) {
   const response = await payloadFetch(`${collectionName}?limit=0`);
-  return await response.json();
+  return await safeJsonParse(response);
 }
 
 // slugs
@@ -36,12 +36,12 @@ export async function fetchSlug(collectionName: string, slug: string) {
   const response = await payloadFetch(
     `${collectionName}?where[slug][equals]=${slug}`,
   );
-  return processFetchResponse(await response.json());
+  return processFetchResponse(await safeJsonParse(response));
 }
 
 export async function fetchPageSlug(collectionName: string, slug: string) {
   const response = await payloadFetch(
     `${collectionName}?where[slug][equals]=${slug}&depth=1`,
   );
-  return processFetchResponse(await response.json());
+  return processFetchResponse(await safeJsonParse(response));
 }

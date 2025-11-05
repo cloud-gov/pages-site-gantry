@@ -1,0 +1,208 @@
+---
+import SideNav from "./SideNav.astro";
+import { payloadFetch } from "@/utilities/fetch/payload-fetch";
+import {
+  createNavFromPages,
+  organizeNavItems,
+  convertMenuToSideNav,
+} from "@/utilities/navigation";
+
+interface NavItem {
+  id: string;
+  label: string;
+  href: string;
+  children?: NavItem[];
+}
+
+interface Props {
+  heading?: string;
+  classes?: string;
+  id?: string;
+  color?: string;
+  align?: "center" | "left";
+  showSideNav?: boolean;
+  sideNavItems?: NavItem[];
+  currentPath?: string;
+  navTitle?: string;
+  sideNavId?: string;
+}
+
+const {
+  heading = false,
+  color = "white",
+  align = "left",
+  classes = "",
+  id = false,
+  showSideNav = true,
+  sideNavItems = [],
+  currentPath = Astro.url.pathname,
+  navTitle = "Page Navigation",
+  sideNavId = null,
+} = Astro.props;
+
+// Fetch navigation items from CMS if not provided
+let navItems = sideNavItems;
+let sideNavEnabled = showSideNav;
+let sideNavTitle = navTitle;
+
+if (showSideNav && sideNavItems.length === 0) {
+  try {
+    let sideNavResponse;
+
+    if (sideNavId) {
+      // Fetch specific page menu by ID
+      sideNavResponse = await payloadFetch(`page-menus/${sideNavId}`);
+    } else {
+      // Fallback to global side navigation
+      sideNavResponse = await payloadFetch("globals/side-navigation");
+    }
+
+    if (sideNavResponse.ok) {
+      const sideNavData = await sideNavResponse.json();
+
+      // Check if page menu is enabled
+      sideNavEnabled = sideNavData.enabled !== false;
+      sideNavTitle = sideNavData.title || "Page Navigation";
+
+      if (sideNavEnabled && sideNavData.items && sideNavData.items.length > 0) {
+        // Convert page menu items to nav format
+        navItems = convertMenuToSideNav(sideNavData.items);
+      } else if (sideNavEnabled && sideNavData.fallbackToAllPages) {
+        // Fallback to auto-generated navigation if enabled
+        const response = await payloadFetch(
+          "pages?limit=100&depth=0&sort=title",
+        );
+        if (response.ok) {
+          const { docs: pages } = await response.json();
+          const rawNavItems = createNavFromPages(pages);
+          navItems = organizeNavItems(rawNavItems);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Could not fetch page menu configuration:", error);
+  }
+}
+---
+
+<section
+  class={`usa-section section section--${color} align-${align} ${classes}`}
+>
+  <div class="grid-container">
+    <div class="section__container">
+      {
+        sideNavEnabled && navItems.length > 0 ? (
+          <div class="page-with-sidenav">
+            <aside class="sidenav-container">
+              <SideNav
+                items={navItems}
+                currentPath={currentPath}
+                title={sideNavTitle}
+                id="sidenav"
+              />
+            </aside>
+            <main class="main-content">
+              <div class="section__intro">
+                {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+              </div>
+              <div class="section__slot">
+                <slot />
+              </div>
+            </main>
+          </div>
+        ) : (
+          <>
+            <div class="section__intro">
+              {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+            </div>
+            <div class="section__slot">
+              <slot />
+            </div>
+          </>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .usa-section {
+    padding-top: 2rem;
+  }
+
+  .page-with-sidenav {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    min-height: 400px;
+  }
+
+  .sidenav-container {
+    position: sticky;
+    top: 2rem;
+    z-index: 10;
+  }
+
+  .main-content {
+    min-width: 0; /* Prevents grid blowout */
+    max-width: none;
+  }
+
+  .section__slot {
+    padding: 1rem 0;
+  }
+
+  /* Responsive design */
+  @media (max-width: 1024px) {
+    .page-with-sidenav {
+      grid-template-columns: 240px 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-with-sidenav {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .sidenav-container {
+      position: static;
+      order: 2;
+    }
+
+    .main-content {
+      order: 1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-with-sidenav {
+      gap: 1rem;
+    }
+  }
+
+  /* Align styles */
+  &.align-left .section__container {
+    text-align: left;
+    justify-items: start;
+  }
+
+  &.align-center .section__container {
+    .section__intro,
+    .section__content,
+    .section__slot,
+    .section__outro {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      justify-items: center;
+    }
+  }
+
+  /* Ensure proper spacing */
+  .section__intro h1 {
+    margin-top: 0;
+  }
+</style>
