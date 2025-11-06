@@ -80,6 +80,7 @@ const events = defineCollection({
       registrationUrl: z.string(),
       content: z.any(),
       reviewReady: z.boolean(),
+      showInPageNav: z.boolean().optional(),
       updatedAt: z.string().datetime(),
       createdAt: z.string().datetime(),
       _status: z.enum(["draft", "published"]),
@@ -120,6 +121,7 @@ const news = defineCollection({
       content: z.any(), // content is a lexical object
       site: z.any(),
       reviewReady: z.boolean(),
+      showInPageNav: z.boolean().optional(),
       publishedAt: z.string().datetime(),
       slug: z.string(),
       slugLock: z.boolean(),
@@ -142,6 +144,7 @@ const posts = defineCollection({
       site: z.any(),
       content: z.any(), // content is a lexical object
       reviewReady: z.boolean(),
+      showInPageNav: z.boolean().optional(),
       authors: z.any(),
       populatedAuthors: z.any(),
       publishedAt: z.string().datetime(),
@@ -181,6 +184,7 @@ const reports = defineCollection({
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
+      showInPageNav: z.boolean().optional(),
       publishedAt: z.string().datetime(),
       updatedAt: z.string().datetime().optional(),
       createdAt: z.string().datetime().optional(),
@@ -210,6 +214,7 @@ const resources = defineCollection({
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
+      showInPageNav: z.boolean().optional(),
       publishedAt: z.string().datetime(),
       updatedAt: z.string().datetime().optional(),
       createdAt: z.string().datetime().optional(),

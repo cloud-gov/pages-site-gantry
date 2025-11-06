@@ -17,6 +17,19 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
   return {
     ...defaultConverters,
     upload: ({ node }) => upload({ node }),
+    heading: ({ node }) => {
+      const getTextContent = (child) => {
+        if (child.text) return child.text;
+        if (child.children) return child.children.map(getTextContent).join("");
+        return "";
+      };
+      const text = node.children?.map(getTextContent).join("") || "";
+      const id = text
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+      return `<${node.tag} id="${id}">${text}</${node.tag}>`;
+    },
   };
 };
 ---
@@ -52,6 +65,12 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
         img: ["src", "alt"],
         use: ["href"],
         svg: ["class", "aria-hidden", "focusable", "role", "img"],
+        h1: ["id"],
+        h2: ["id"],
+        h3: ["id"],
+        h4: ["id"],
+        h5: ["id"],
+        h6: ["id"],
       },
     },
   )}

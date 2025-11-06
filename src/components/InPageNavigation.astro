@@ -1,0 +1,57 @@
+---
+interface Props {
+  minimumHeadingCount?: number;
+  show?: boolean;
+  titleText?: string;
+  mainContentSelector?: string;
+}
+
+const {
+  minimumHeadingCount = 2,
+  show = true,
+  titleText = "On this page",
+  mainContentSelector = "#main-content",
+} = Astro.props;
+---
+
+{
+  show && (
+    <>
+      <aside
+        class="usa-in-page-nav"
+        data-title-text={titleText}
+        data-title-heading-level="h4"
+        data-main-content-selector={mainContentSelector}
+        data-minimum-heading-count={minimumHeadingCount}
+        data-root-margin="0px 0px -80% 0px"
+        data-threshold="0"
+      />
+      <script is:inline>
+        {`(function() {
+          function renameAnchorIds() {
+            setTimeout(function() {
+              var anchors = document.querySelectorAll('.usa-anchor[id$="-2"]');
+              var nav = document.querySelector('.usa-in-page-nav');
+              anchors.forEach(function(anchor) {
+                var oldId = anchor.id;
+                var newId = oldId.replace(/-2$/, '-link');
+                anchor.id = newId;
+                if (nav) {
+                  var links = nav.querySelectorAll('a[href="#' + oldId + '"]');
+                  links.forEach(function(link) {
+                    link.setAttribute('href', '#' + newId);
+                  });
+                }
+              });
+            }, 1500);
+          }
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renameAnchorIds);
+          } else {
+            renameAnchorIds();
+          }
+        })();`}
+      </script>
+    </>
+  )
+}

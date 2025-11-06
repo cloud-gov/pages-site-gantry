@@ -73,6 +73,7 @@ export function eventsMapper(data: any) {
   return {
     ...mapped,
     description: data.description || data.excerpt || "",
+    showInPageNav: data.showInPageNav ?? true,
   };
 }
 
@@ -89,19 +90,27 @@ export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {
 }
 
 export function newsMapper(data: CollectionEntry<"news">["data"]) {
-  return contentMapper(data, {
+  const mapped = contentMapper(data, {
     baseUrl: "/news",
     dateField: "newsDate",
     fileField: "newsFiles",
   });
+  return {
+    ...mapped,
+    showInPageNav: data.showInPageNav ?? true,
+  };
 }
 
 export function postsMapper(data: CollectionEntry<"posts">["data"]) {
-  return contentMapper(data, {
+  const mapped = contentMapper(data, {
     baseUrl: "/posts",
     dateField: "postsDate",
     fileField: "postsFiles",
   });
+  return {
+    ...mapped,
+    showInPageNav: data.showInPageNav ?? true,
+  };
 }
 
 export function reportMapper(data: CollectionEntry<"reports">["data"]) {
@@ -119,6 +128,7 @@ export function reportMapper(data: CollectionEntry<"reports">["data"]) {
       label: c.title,
       url: `/reports?category=${c.slug}`,
     })),
+    showInPageNav: data.showInPageNav ?? true,
   };
 }
 
@@ -137,5 +147,6 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
       label: c.title,
       url: `/resources?category=${c.slug}`,
     })),
+    showInPageNav: data.showInPageNav ?? true,
   };
 }

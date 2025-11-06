@@ -11,6 +11,7 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
+import InPageNavigation from "@/components/InPageNavigation.astro";
 
 const { slug } = Astro.params;
 const collectionName = "reports";
@@ -31,7 +32,14 @@ const report = reportMapper(data);
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={report.title}>
+<Layout title={report.title} useInPageNav={report.showInPageNav}>
+  {
+    report.showInPageNav && (
+      <Fragment slot="in-page-nav">
+        <InPageNavigation />
+      </Fragment>
+    )
+  }
   <PagesSection>
     <div class="flex-column margin-bottom-5">
       <h1 set:text={report.title} />
@@ -45,6 +53,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       </ul>
     </div>
     <RichText content={report.content} />
+    <Fragment slot="sidebar"></Fragment>
   </PagesSection>
 </Layout>
 
