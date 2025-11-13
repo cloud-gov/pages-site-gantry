@@ -1,7 +1,7 @@
-import type { CollectionEntry } from "astro:content";
+import { type CollectionEntry } from "astro:content";
 import { formatDate } from "../formatting";
-import { parseDateParts, type DateParts } from "../dates";
-import type { CollectionCategoryProps } from "@/env";
+import { type DateParts, parseDateParts } from "../dates";
+import { type AlertModel, type CollectionCategoryProps } from "@/env";
 
 type Category = {
   title: string;
@@ -149,4 +149,30 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
     })),
     showInPageNav: data.showInPageNav ?? true,
   };
+}
+
+export function shouldDisplay(a: any, currentDate: Date): boolean {
+  const publishDate = new Date(a?.publishDate);
+  return (
+    !!a?.isActive &&
+    (isNaN(publishDate.getTime()) || publishDate <= currentDate)
+  );
+}
+
+export function alertsMapper(
+  responseData: any,
+  preRendered: boolean = false,
+): AlertModel[] {
+  const getData = (a) => (preRendered ? a?.data : a);
+  return (
+    responseData
+      ?.filter((a) => shouldDisplay(getData(a), new Date()))
+      ?.map((a) => ({
+        title: getData(a).title,
+        type: getData(a).type,
+        content: getData(a).content,
+        icon: getData(a).icon,
+        slim: getData(a).slim,
+      })) ?? []
+  );
 }

@@ -1,6 +1,6 @@
 import { payloadFetch, safeJsonParse } from "./payload-fetch";
 
-export function collectionLoader(apiPath: string) {
+export function collectionLoader(apiPath: string, slug: boolean = true) {
   return async () => {
     const response = await payloadFetch(`${apiPath}?limit=0`);
     const data = await safeJsonParse(response);
@@ -13,10 +13,12 @@ export function collectionLoader(apiPath: string) {
         return [];
       }
       return data.docs
-        .filter((doc) => doc.slug) // we have issues without a slug
-        .map((doc) => {
-          return { ...doc, id: doc.slug };
-        });
+        .filter((doc) => !slug || doc.slug) // we have issues without a slug
+        .map((doc) => ({
+          ...doc,
+          id: slug ? doc.slug : String(doc.id),
+          ...(slug ? {} : { description: doc.title }),
+        }));
     }
   };
 }

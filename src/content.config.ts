@@ -51,6 +51,28 @@ const cCustom = z.custom<CollectionCategoryProps>(
 
 // Site Collections
 
+const alerts = defineCollection({
+  loader: collectionLoader("alerts", false),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string(),
+      type: z.enum(["info", "warning", "success", "error", "emergency"]),
+      isActive: z.boolean(),
+      content: z.any(),
+      slim: z.boolean(),
+      icon: z.boolean(),
+      site: z.any(),
+      publishDate: z.string().datetime(),
+      reviewReady: z.boolean(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
 const events = defineCollection({
   loader: collectionLoader("events"),
   schema: makeAllKeysNullable(
@@ -517,6 +539,7 @@ const sideNavigations = defineCollection({
 
 export const collections = {
   // site collections
+  alerts,
   events,
   news,
   leadership,

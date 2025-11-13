@@ -1,0 +1,29 @@
+---
+import type { AlertModel } from "@/env";
+import RichText from "@/components/RichText.astro";
+import { cleanAlerts } from "@/utilities/alerts";
+
+const { alertsData } = Astro.props;
+const alerts: AlertModel[] = cleanAlerts(alertsData);
+---
+
+<>
+  {
+    alerts?.map(
+      (a: AlertModel) =>
+        a?.type && (
+          <div
+            class={`usa-alert margin-y-0 usa-alert--${a.type} 
+            ${a?.icon ? " " : "usa-alert--no-icon "} 
+            ${a?.slim ? "usa-alert--slim " : " "}`}
+            role="alert"
+          >
+            <div class="usa-alert__body">
+              {a?.title && <h4 class="usa-alert__heading">{a?.title}</h4>}
+              {a?.content && <RichText content={a?.content} alert={true} />}
+            </div>
+          </div>
+        ),
+    )
+  }
+</>

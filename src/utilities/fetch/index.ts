@@ -24,4 +24,5 @@ export {
   reportMapper,
   leadershipMapper,
   resourceMapper,
+  alertsMapper,
 } from "./contentMapper";
