@@ -216,3 +216,11 @@ export interface PageModel {
   title?: string;
   slug?: string | null;
 }
+
+export interface AlertModel {
+  title?: string;
+  type?: "info" | "warning" | "success" | "error" | "emergency";
+  content?: any;
+  icon?: boolean;
+  slim?: boolean;
+}

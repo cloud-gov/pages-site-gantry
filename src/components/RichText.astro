@@ -7,7 +7,7 @@ import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
 import sanitizeHtml from "sanitize-html";
 import upload from "./RichTextConverers/upload";
 
-const { content } = Astro.props;
+const { content, alert = false } = Astro.props;
 
 type NodeTypes = DefaultNodeTypes;
 
@@ -35,7 +35,7 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
 ---
 
 <section
-  class="usa-prose"
+  class={`usa-prose ${alert ? "alert-prose margin-y-0" : ""}`}
   set:html={sanitizeHtml(
     convertLexicalToHTML({ data: content, converters: htmlConverters }),
     {
@@ -75,3 +75,15 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
     },
   )}
 />
+
+<style>
+  :global(.alert-prose p) {
+    max-width: 100%;
+  }
+</style>
+
+<script>
+  document.querySelectorAll(".alert-prose a").forEach((a) => {
+    a.classList.add("usa-link");
+  });
+</script>

@@ -13,28 +13,37 @@ import {
   fetchSiteConfig,
   fetchMenu,
   fetchPreFooter,
+  fetchCollection,
   preFooterMapper,
+  alertsMapper,
 } from "@/utilities/fetch";
-import { type PreFooterModel } from "@/env";
+import { type PreFooterModel, type AlertModel } from "@/env";
+import Alerts from "@/components/Alerts.astro";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
 const preFooterCollectionName = "preFooter";
+const alertsCollectionName = "alerts";
 
 let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 let menu: CollectionEntry<typeof menuCollectionName>["data"];
 let preFooterResponseData: CollectionEntry<
   typeof preFooterCollectionName
 >["data"];
-let preFooter: PreFooterModel;
+let alertsResponseData;
 
+let alerts: AlertModel[];
 if (!Astro.isPrerendered) {
   siteConfig = await fetchSiteConfig();
   menu = await fetchMenu();
   preFooterResponseData = await fetchPreFooter();
+  alertsResponseData = await fetchCollection(alertsCollectionName);
+  alerts = alertsMapper(alertsResponseData?.docs);
 } else {
   const siteConfigResponseData = await getCollection(siteConfigCollectionName);
   const menuResponseData = await getCollection(menuCollectionName);
+  alertsResponseData = await getCollection(alertsCollectionName);
+  alerts = alertsMapper(alertsResponseData, true);
   const preFooterResponse = await getCollection(preFooterCollectionName);
   preFooterResponseData = preFooterResponse[0]?.data;
 
@@ -52,7 +61,7 @@ if (!Astro.isPrerendered) {
   };
 }
 
-preFooter = preFooterMapper(preFooterResponseData);
+const preFooter: PreFooterModel = preFooterMapper(preFooterResponseData);
 
 // TODO: Add meta title and description to site config
 const {
@@ -95,6 +104,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
   <body>
     <Config />
     <GovIdentifier />
+    <Alerts alertsData={alerts} />
     <Menu
       title={siteConfig.agencyName}
       items={menu?.items || []}
