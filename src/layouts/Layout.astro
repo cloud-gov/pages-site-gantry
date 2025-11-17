@@ -70,6 +70,8 @@ const {
   socialImage,
   canonical,
   useInPageNav = false,
+  currentPage,
+  totalPages,
 } = Astro.props;
 const metaTitle = title
   ? `${title} | ${siteConfig.agencyName || "Agency Homepage"}`
@@ -111,7 +113,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
       searchAccessKey={siteConfig?.searchAccessKey}
       searchAffiliate={siteConfig.searchAffiliate}
     />
-    <Breadcrumb />
+    <Breadcrumb currentPage={currentPage} totalPages={totalPages} />
     {
       useInPageNav ? (
         <div class="usa-in-page-nav-container">

@@ -27,7 +27,7 @@ export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "resources");
 export const prerender = true;
 ---
 
-<Layout title="Resources">
+<Layout title="Resources" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection heading="Resources" color="gray-10">
     <CollectionItemList items={items} />
     {
