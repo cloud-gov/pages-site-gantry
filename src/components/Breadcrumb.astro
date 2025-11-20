@@ -1,6 +1,14 @@
 ---
 import Link from "./Link.astro";
 
+interface Props {
+  currentPage?: number;
+  totalPages?: number;
+}
+
+const { currentPage: currentPageProp, totalPages: totalPagesProp } =
+  Astro.props;
+
 const currentPath = Astro.url.pathname;
 let cleanPath = currentPath;
 
@@ -12,13 +20,27 @@ if (baseUrl && baseUrl !== "/") {
   cleanPath = currentPath.replace(baseUrl, "");
 }
 
-// Remove preview/branch segments if they exist; remove page segment
+// Detect pagination and extract page number from URL
+let currentPage: number | null = currentPageProp || null;
+let totalPages: number | null = totalPagesProp || null;
+
+// Extract page number from URL if not provided as prop (e.g., /resources/page/2)
+if (!currentPage) {
+  const pageMatch = cleanPath.match(/\/page\/(\d+)/);
+  if (pageMatch) {
+    currentPage = parseInt(pageMatch[1]);
+  }
+}
+
+// Remove preview/branch segments if they exist; remove page segment and number
 if (branch) {
   cleanPath = cleanPath
     .replace(`/preview/${branch}`, "")
     .replace("/page/", "/");
 }
-cleanPath = cleanPath.replace(/^\/preview\/[^\/]+/, "").replace("/page/", "/");
+cleanPath = cleanPath
+  .replace(/^\/preview\/[^\/]+/, "")
+  .replace(/\/page\/\d+/, ""); // Remove /page/2, /page/3, etc.
 
 // Split path into segments
 const pathSegments = cleanPath.split("/").filter(Boolean);
@@ -41,6 +63,12 @@ const buildBreadcrumbs = () => {
   let currentUrl = "";
   for (let i = 0; i < pathSegments.length; i++) {
     const segment = pathSegments[i];
+
+    // Skip numeric segments (they're likely page numbers that weren't cleaned)
+    if (/^\d+$/.test(segment)) {
+      continue;
+    }
+
     currentUrl += `/${segment}`;
 
     // Generate page title from URL segment
@@ -64,7 +92,7 @@ const buildBreadcrumbs = () => {
       breadcrumbs.push({
         text: collectionTitle,
         url: currentUrl,
-        isCurrent: i === pathSegments.length - 1,
+        isCurrent: i === pathSegments.length - 1 && !currentPage,
       });
       continue;
     }
@@ -72,7 +100,25 @@ const buildBreadcrumbs = () => {
     breadcrumbs.push({
       text: pageTitle,
       url: currentUrl,
-      isCurrent: i === pathSegments.length - 1,
+      isCurrent: i === pathSegments.length - 1 && !currentPage,
+    });
+  }
+
+  // Check if URL contains /page/ segment (indicates user navigated via pagination)
+  const hasPageSegment = /\/page\/\d+/.test(currentPath);
+
+  // Add "Page x of x" if on paginated page
+  if (currentPage && hasPageSegment) {
+    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+    if (lastBreadcrumb) {
+      lastBreadcrumb.isCurrent = false;
+    }
+    breadcrumbs.push({
+      text: totalPages
+        ? `Page ${currentPage} of ${totalPages}`
+        : `Page ${currentPage}`,
+      url: currentPath,
+      isCurrent: true,
     });
   }
 

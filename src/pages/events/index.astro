@@ -27,7 +27,7 @@ export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "events");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title="events">
+<Layout title="events" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection heading="Events">
     <CollectionItemList showEvent hideDate={true} items={items} />
     {
