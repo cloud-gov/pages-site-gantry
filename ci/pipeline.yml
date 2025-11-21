@@ -138,6 +138,7 @@ jobs:
               _: #@ template.replace(data.values.env_cf_editor)
               CF_APP_NAME: site-preview_((.:site.slug))
               CF_PATH: src
+              HOSTNAME: ((.:site.slug))
               S3_SERVICE_INSTANCE_NAME: pages-editor-((deploy-env))-s3
               S3_SITE_CONFIG_KEY: _sites/deleted/((.:site.slug)).json
 
