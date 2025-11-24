@@ -151,6 +151,36 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
   };
 }
 
+/**
+ * Mapper for custom collection pages
+ * @param data - The custom collection page data
+ * @param collectionSlug - The URL slug for the custom collection (from collectionConfig)
+ */
+export function customCollectionPageMapper(data: any, collectionSlug: string) {
+  const mapped = contentMapper(data, {
+    baseUrl: `/${collectionSlug}`,
+    dateField: data.contentDate ? "contentDate" : "publishedAt",
+    fileField: "files",
+  });
+
+  return {
+    ...mapped,
+    date: data.contentDate
+      ? formatDate(data.contentDate)
+      : formatDate(data.publishedAt || ""),
+    description: data.excerpt || "",
+    showInPageNav: data.showInPageNav ?? true,
+  };
+}
+
+/**
+ * Creates a customCollectionPageMapper with a specific collection slug
+ * Use this when you need to map custom collection pages with the correct URL slug
+ */
+export function createCustomCollectionPageMapper(collectionSlug: string) {
+  return (data: any) => customCollectionPageMapper(data, collectionSlug);
+}
+
 export function shouldDisplay(a: any, currentDate: Date): boolean {
   const publishDate = new Date(a?.publishDate);
   return (

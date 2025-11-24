@@ -45,3 +45,30 @@ export async function fetchPageSlug(collectionName: string, slug: string) {
   );
   return processFetchResponse(await safeJsonParse(response));
 }
+
+// Custom Collections
+export async function fetchCustomCollectionBySlug(slug: string) {
+  const response = await payloadFetch(
+    `custom-collections?where[slug][equals]=${slug}&limit=1`,
+  );
+  const data = await safeJsonParse(response);
+  return data?.docs?.[0] || null;
+}
+
+export async function fetchCustomCollectionPages(collectionConfigId: string | number) {
+  const response = await payloadFetch(
+    `custom-collection-pages?where[collectionConfig][equals]=${collectionConfigId}&limit=0`,
+  );
+  return await safeJsonParse(response);
+}
+
+export async function fetchCustomCollectionPageBySlug(
+  collectionConfigId: string | number,
+  pageSlug: string
+) {
+  const response = await payloadFetch(
+    `custom-collection-pages?where[and][0][collectionConfig][equals]=${collectionConfigId}&where[and][1][slug][equals]=${pageSlug}&limit=1`,
+  );
+  const data = await safeJsonParse(response);
+  return data?.docs?.[0] || null;
+}

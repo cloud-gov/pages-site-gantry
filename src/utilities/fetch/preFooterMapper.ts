@@ -118,6 +118,13 @@ export function mapLink(link): LinkModel {
         externalLink: false,
       };
       break;
+    case "customCollectionLink":
+      result = {
+        text: link?.name,
+        url: mapCollectionUrl(link?.customCollection?.slug),
+        externalLink: false,
+      };
+      break;
   }
   return result;
 }
