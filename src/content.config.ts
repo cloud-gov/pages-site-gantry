@@ -398,6 +398,15 @@ const siteConfig = defineCollection({
         searchAffiliate: z.any().optional(),
         dapAgencyCode: z.string().optional(),
         dapSubAgencyCode: z.string().optional(),
+        collectionDisplayNames: z
+          .array(
+            z.object({
+              collectionSlug: z.string(),
+              displayName: z.string(),
+              customSlug: z.string().optional(),
+            }),
+          )
+          .optional(),
       })
       .partial(),
   ),
@@ -501,6 +510,91 @@ const preFooter = defineCollection({
   ),
 });
 
+const general = defineCollection({
+  loader: collectionLoader("general"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      excerpt: z.string().optional(),
+      image: mvCustom.optional(),
+      files: z
+        .array(
+          z.object({
+            id: z.string(),
+            file: mvCustom,
+            label: z.string().optional(),
+          }),
+        )
+        .optional(),
+      slug: z.string(),
+      slugLock: z.boolean().optional(),
+      contentDate: z.string().datetime().optional(),
+      location: z.string().optional(),
+      categories: z.array(cCustom.optional()).optional(),
+      site: z.any(),
+      content: z.any().optional(), // richText
+      reviewReady: z.boolean().optional(),
+      showInPageNav: z.boolean().optional(),
+      publishedAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
+const customCollections = defineCollection({
+  loader: collectionLoader("custom-collections"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      slug: z.string(),
+      description: z.string().optional(),
+      site: z.any(),
+      reviewReady: z.boolean().optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
+const customCollectionPages = defineCollection({
+  loader: collectionLoader("custom-collection-pages"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      collectionConfig: z.any(), // relationship to custom-collections
+      title: z.string(),
+      excerpt: z.string().optional(),
+      image: mvCustom.optional(),
+      files: z
+        .array(
+          z.object({
+            id: z.string(),
+            file: mvCustom,
+            label: z.string().optional(),
+          }),
+        )
+        .optional(),
+      slug: z.string(),
+      slugLock: z.boolean().optional(),
+      contentDate: z.string().datetime().optional(),
+      categories: z.array(cCustom.optional()).optional(),
+      site: z.any(),
+      content: z.any().optional(), // richText
+      reviewReady: z.boolean().optional(),
+      showInPageNav: z.boolean().optional(),
+      publishedAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
 const sideNavigations = defineCollection({
   loader: collectionLoader("page-menus"),
   schema: makeAllKeysNullable(
@@ -588,6 +682,8 @@ export const collections = {
   posts,
   reports,
   resources,
+  customCollections,
+  customCollectionPages,
   sideNavigations,
   // site globals
   homepage,
