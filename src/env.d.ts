@@ -155,6 +155,11 @@ export interface SiteConfig {
   primaryFont?: string;
   favicon?: any;
   logo?: any;
+  collectionDisplayNames?: {
+    collectionSlug: string;
+    displayName: string;
+    customSlug?: string;
+  }[];
 }
 
 export enum SocialPlatform {
