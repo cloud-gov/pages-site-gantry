@@ -4,7 +4,7 @@ export function getPreFooterSlim(): PreFooterSlimModel {
   return {
     contactTelephone: "1-800-555-GOVT",
     contactEmail: "contact@agency.gov",
-    footerLinks: [
+    links: [
       {
         text: "First link text",
         url: "#url1",

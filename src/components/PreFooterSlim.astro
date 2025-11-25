@@ -1,22 +1,31 @@
 ---
 import Link from "./Link.astro";
-import { type LinkModel, type PreFooterSlimModel } from "@/env";
+import { type LinkModel, type PreFooterColors } from "@/env";
 import { cleanPreFooterSlim } from "@/utilities/preFooterSlim";
 
-let { preFooter } = Astro.props;
+interface Props {
+  preFooter?: any;
+  colors: PreFooterColors;
+}
+
+let { preFooter, colors } = Astro.props;
 preFooter = cleanPreFooterSlim(preFooter);
+const bkgColor = colors?.bkgColorLightest;
 ---
 
 {
   preFooter && (
     <>
-      <div class="usa-footer__primary-section" id="pre-footer-slim">
+      <div
+        class={`usa-footer__primary-section bg-${bkgColor}`}
+        id="pre-footer-slim"
+      >
         <div class="usa-footer__primary-container grid-row">
           <div class="mobile-lg:grid-col-8">
             <nav class="usa-footer__nav" aria-label="Footer navigation,">
-              {preFooter.footerLinks && (
+              {preFooter.links && (
                 <ul class="grid-row grid-gap">
-                  {preFooter.footerLinks.map((l: LinkModel) => (
+                  {preFooter.links.map((l: LinkModel) => (
                     <li class="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
                       {!l?.externalLink && (
                         <Link className="usa-footer__primary-link" href={l.url}>

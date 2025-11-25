@@ -1,7 +1,15 @@
 import { type CollectionEntry } from "astro:content";
 import { formatDate } from "../formatting";
 import { type DateParts, parseDateParts } from "../dates";
-import { type AlertModel, type CollectionCategoryProps } from "@/env";
+import {
+  type AlertModel,
+  type CollectionCategoryProps,
+  type FooterModel,
+  type LinkModel,
+  type LogoModel,
+  type PageModel,
+} from "@/env";
+import { preFooterMapper } from "@/utilities/fetch/preFooterMapper.ts";
 
 type Category = {
   title: string;
@@ -175,4 +183,69 @@ export function alertsMapper(
         slim: getData(a).slim,
       })) ?? []
   );
+}
+
+export function pageUrlMapper(page: PageModel) {
+  return page?.slug ? `/${page?.slug}` : null;
+}
+
+export function collectionUrlMapper(page: string) {
+  return page ? `/${page}` : null;
+}
+
+export function linkMapper(link): LinkModel {
+  let result: LinkModel = null;
+  switch (link?.blockType) {
+    case "slimExternalLink":
+    case "externalLink":
+      result = {
+        text: link?.name,
+        url: link?.url,
+        externalLink: true,
+      };
+      break;
+    case "slimPageLink":
+    case "pageLink":
+      result = {
+        text: link?.name,
+        url: pageUrlMapper(link?.page),
+        externalLink: false,
+      };
+      break;
+    case "slimCollectionLink":
+    case "collectionLink":
+      result = {
+        text: link?.name,
+        url: collectionUrlMapper(link?.page),
+        externalLink: false,
+      };
+      break;
+  }
+  return result;
+}
+
+export function logoMapper(logo): LogoModel {
+  const result = {
+    media: { ...logo?.image, altText: logo?.image?.altText || `Logo` },
+    url: logo?.url,
+  };
+  return result;
+}
+
+export function footerMapper(i: any, pf: any): FooterModel {
+  return {
+    preFooter: preFooterMapper(pf),
+    identifier: {
+      siteDomain: i?.domain,
+      logos: i?.logos?.map((l) => logoMapper(l)),
+      content: i?.content,
+      links: i?.link?.map((l) => linkMapper(l)),
+      colorFamilies: {
+        identifier: i?.identifierColor,
+        identityDomain: i?.identityDomainColor,
+        primaryLink: i?.primaryLinkColor,
+        secondaryLink: i?.secondaryLinkColor,
+      },
+    },
+  };
 }

@@ -22,9 +22,14 @@ describe("Footer", () => {
   it("renders PreFooterBig", async () => {
     const result = await container.renderToString(Footer, {
       props: {
-        preFooter: {
-          preFooterType: PRE_FOOTER_TYPE_BIG,
-          preFooterData: getPreFooterBig(),
+        footer: {
+          preFooter: {
+            preFooterType: PRE_FOOTER_TYPE_BIG,
+            preFooterData: getPreFooterBig(),
+          },
+          footer: {
+            identifier: {},
+          },
         },
       },
     });
@@ -36,9 +41,11 @@ describe("Footer", () => {
   it("renders PreFooterSlim", async () => {
     const result = await container.renderToString(Footer, {
       props: {
-        preFooter: {
-          preFooterType: PRE_FOOTER_TYPE_SLIM,
-          preFooterData: getPreFooterSlim(),
+        footer: {
+          preFooter: {
+            preFooterType: PRE_FOOTER_TYPE_SLIM,
+            preFooterData: getPreFooterSlim(),
+          },
         },
       },
     });
@@ -78,58 +85,5 @@ describe("Footer", () => {
   it("renders the return to top link", async () => {
     const result = await container.renderToString(Footer);
     expect(result).toContain("Return to top");
-  });
-
-  it("renders the site identifier content from given props", async () => {
-    const identifierName = "U.S. Agency Name";
-    const identifierUrl = "https://domain.gov";
-    const siteDomain = "Domain.gov";
-    const identifierLinks = [
-      {
-        text: "About This Agency",
-        url: "https://www.agency.gov/about-us",
-      },
-      {
-        text: "Agency Statement",
-        url: "https://www.agency.gov/statement",
-      },
-    ];
-
-    const container = await AstroContainer.create();
-    const result = await container.renderToString(Footer, {
-      props: {
-        identifiers: {
-          identifierName,
-          identifierUrl,
-          siteDomain,
-          identifierLinks,
-        },
-      },
-    });
-
-    // Check that the Identifier renders given content
-    expect(result).toContain("An official website of the");
-    expect(result).toContain("> U.S. Agency Name<");
-    expect(result).toContain('href="https://domain.gov"');
-    expect(result).toContain(">Domain.gov<");
-
-    // identifierLogoImg isn't yet passed in, but update this test when it is
-    expect(result).toContain("usa-identifier__logo-img");
-    expect(result).toContain('alt="Domain.gov"');
-
-    // renders first identifier link
-    expect(result).toContain("> About This Agency <");
-    expect(result).toContain('href="https://www.agency.gov/about-us"');
-
-    // renders second identifier link
-    expect(result).toContain("> Agency Statement <");
-    expect(result).toContain('href="https://www.agency.gov/statement"');
-
-    // Renders USA.gov required content
-    expect(result).toContain(
-      "Looking for U.S. government information and services?",
-    );
-    expect(result).toContain('href="https://www.usa.gov/"');
-    expect(result).toContain("Visit USA.gov");
   });
 });

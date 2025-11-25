@@ -1,0 +1,108 @@
+---
+import { type IdentifierColors, type IdentifierModel } from "@/env";
+import RichText from "@/components/RichText.astro";
+import { getMediaUrl } from "@/utilities/media.ts";
+
+interface Props {
+  identifier?: IdentifierModel;
+  colors: IdentifierColors;
+}
+const { identifier, colors } = Astro.props;
+
+const siteDomain = identifier?.siteDomain;
+const links = identifier?.links;
+const logos = identifier?.logos;
+const content = identifier?.content;
+
+const bkgColor = colors?.bkgColor;
+const identityDomainColor = colors?.identityDomainColor;
+const primaryLinkColor = colors?.primaryLinkColor;
+const secondaryLinkColor = colors?.secondaryLinkColor;
+
+const richTextIdentifier = {
+  textColor: "--" + identityDomainColor,
+  linkColor: "--" + primaryLinkColor,
+};
+---
+
+<div class={`usa-identifier bg-${bkgColor}`}>
+  <section
+    class="usa-identifier__section usa-identifier__section--masthead"
+    aria-label="Agency identifier"
+  >
+    <div class="usa-identifier__container">
+      {
+        logos &&
+          logos.map((logo) => (
+            <div class="usa-identifier__logos">
+              <a
+                href={logo?.url}
+                class={`usa-identifier__logo usa-identifier__required-link text-${secondaryLinkColor}`}
+              >
+                <img
+                  src={getMediaUrl(logo?.media)}
+                  class={`usa-identifier__logo-img text-${secondaryLinkColor}`}
+                  alt={logo?.media?.altText}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+            </div>
+          ))
+      }
+      <section class="usa-identifier__identity" aria-label="Agency description">
+        <p
+          class={`usa-identifier__identity-domain bg-${bkgColor} text-${secondaryLinkColor}`}
+        >
+          {siteDomain}
+        </p>
+        <p class="usa-identifier__identity-disclaimer">
+          {
+            content && (
+              <RichText content={content} identifier={richTextIdentifier} />
+            )
+          }
+        </p>
+      </section>
+    </div>
+    <nav
+      class="usa-identifier__section usa-identifier__section--required-links"
+      aria-label="Important links"
+    >
+      <div class="usa-identifier__container">
+        <ul class="usa-identifier__required-links-list">
+          {
+            links &&
+              links.map((link) => (
+                <li class="usa-identifier__required-links-item">
+                  <a
+                    href={link.url}
+                    class={`usa-identifier__required-link usa-link text-${secondaryLinkColor}`}
+                  >
+                    {link.text}
+                  </a>
+                </li>
+              ))
+          }
+        </ul>
+      </div>
+    </nav>
+    <section
+      class="usa-identifier__section usa-identifier__section--usagov"
+      aria-label="Government information and services"
+    >
+      <div class="usa-identifier__container">
+        <div
+          class={`usa-identifier__usagov-description text-${identityDomainColor}`}
+        >
+          Looking for U.S. government information and services?
+        </div>
+        <a
+          href="https://www.usa.gov/"
+          class={`usa-link--external text-${primaryLinkColor}`}
+          >&nbsp;Visit USA.gov</a
+        >
+      </div>
+    </section>
+  </section>
+</div>

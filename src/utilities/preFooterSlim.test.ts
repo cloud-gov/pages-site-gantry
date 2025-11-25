@@ -56,7 +56,7 @@ describe("PreFooterBig Utilities", () => {
       {
         contactEmail: " ",
         contactTelephone: " ",
-        footerLinks: [{ text: " ", url: " ", externalLink: true }],
+        links: [{ text: " ", url: " ", externalLink: true }],
       },
       null,
     );
@@ -64,48 +64,48 @@ describe("PreFooterBig Utilities", () => {
       {
         contactEmail: "  ",
         contactTelephone: "(123)-456-7890",
-        footerLinks: [{ text: "name", url: "url", externalLink: true }],
+        links: [{ text: "name", url: "url", externalLink: true }],
       },
       {
         contactEmail: null,
         contactTelephone: "(123)-456-7890",
-        footerLinks: [{ text: "name", url: "url", externalLink: true }],
+        links: [{ text: "name", url: "url", externalLink: true }],
       },
     );
     test(
       {
         contactEmail: "email@gsa.gov",
         contactTelephone: "  ",
-        footerLinks: [{ text: "name", url: "url", externalLink: true }],
+        links: [{ text: "name", url: "url", externalLink: true }],
       },
       {
         contactEmail: "email@gsa.gov",
         contactTelephone: null,
-        footerLinks: [{ text: "name", url: "url", externalLink: true }],
+        links: [{ text: "name", url: "url", externalLink: true }],
       },
     );
     test(
       {
         contactEmail: "email@gsa.gov",
         contactTelephone: "(123)-456-7890",
-        footerLinks: [],
+        links: [],
       },
       {
         contactEmail: "email@gsa.gov",
         contactTelephone: "(123)-456-7890",
-        footerLinks: [],
+        links: [],
       },
     );
     test(
       {
         contactEmail: "email@gsa.gov",
         contactTelephone: "(123)-456-7890",
-        footerLinks: [{ text: "name", url: "url", externalLink: true }],
+        links: [{ text: "name", url: "url", externalLink: true }],
       },
       {
         contactEmail: "email@gsa.gov",
         contactTelephone: "(123)-456-7890",
-        footerLinks: [{ text: "name", url: "url", externalLink: true }],
+        links: [{ text: "name", url: "url", externalLink: true }],
       },
     );
   });

@@ -1,11 +1,7 @@
-import type { PageModel } from "@/env";
 import { describe, expect, it, vi } from "vitest";
 import {
-  mapCollectionUrl,
   mapContactCenter,
-  mapLink,
   mapLinkGroups,
-  mapPageUrl,
   preFooterMapper,
   mapPreFooterBig,
   mapPreFooterBigConfiguration,
@@ -60,7 +56,7 @@ const slimPreFooterResponseData = {
 const slimPreFooterBuilt = {
   contactEmail: "email@gsa.gov",
   contactTelephone: "(123)-456-7890",
-  footerLinks: [{ text: "name", url: "url", externalLink: true }],
+  links: [{ text: "name", url: "url", externalLink: true }],
 };
 
 const bigPreFooterResponseData = {
@@ -132,123 +128,6 @@ const bigPreFooterBuilt = {
   ],
 };
 describe("PreFooter Data Fetch Utility", () => {
-  it("maps page url", () => {
-    function test(page: PageModel | any) {
-      let url = mapPageUrl(page);
-      expect(url).toBeNull;
-    }
-    test({});
-    test(null);
-    test(undefined);
-    test({ slug: null });
-    test({ slug: undefined });
-    test("url");
-
-    expect(mapPageUrl({ slug: "page-slug" })).toEqual("/page-slug");
-  });
-
-  it("maps collection url", () => {
-    function test(page: PageModel | any) {
-      let url = mapCollectionUrl(page);
-      expect(url).toBeNull;
-    }
-    test({});
-    test(null);
-    test(undefined);
-
-    expect(mapCollectionUrl("page-slug")).toEqual("/page-slug");
-  });
-
-  it("maps link", () => {
-    expect(mapLink(null)).toEqual(null);
-    expect(mapLink(undefined)).toEqual(null);
-    expect(mapLink({})).toEqual(null);
-    expect(mapLink({ blockType: null })).toEqual(null);
-    expect(mapLink({ blockType: undefined })).toEqual(null);
-
-    expect(
-      mapLink({
-        blockType: "externalLink",
-      }),
-    ).toEqual({ text: undefined, url: undefined, externalLink: true });
-    expect(
-      mapLink({
-        blockType: "externalLink",
-        name: "name",
-        url: "url",
-      }),
-    ).toEqual({ text: "name", url: "url", externalLink: true });
-
-    expect(
-      mapLink({
-        blockType: "slimExternalLink",
-      }),
-    ).toEqual({ text: undefined, url: undefined, externalLink: true });
-    expect(
-      mapLink({
-        blockType: "slimExternalLink",
-        name: "name",
-        url: "url",
-      }),
-    ).toEqual({ text: "name", url: "url", externalLink: true });
-
-    expect(
-      mapLink({
-        blockType: "pageLink",
-      }),
-    ).toEqual({ text: undefined, url: null, externalLink: false });
-    expect(
-      mapLink({
-        blockType: "pageLink",
-        name: "name",
-        page: {
-          slug: "page-slug",
-        },
-      }),
-    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
-
-    expect(
-      mapLink({
-        blockType: "slimPageLink",
-      }),
-    ).toEqual({ text: undefined, url: null, externalLink: false });
-    expect(
-      mapLink({
-        blockType: "slimPageLink",
-        name: "name",
-        page: {
-          slug: "page-slug",
-        },
-      }),
-    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
-
-    expect(
-      mapLink({
-        blockType: "collectionLink",
-      }),
-    ).toEqual({ text: undefined, url: null, externalLink: false });
-    expect(
-      mapLink({
-        blockType: "collectionLink",
-        name: "name",
-        page: "page-slug",
-      }),
-    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
-
-    expect(
-      mapLink({
-        blockType: "slimCollectionLink",
-      }),
-    ).toEqual({ text: undefined, url: null, externalLink: false });
-    expect(
-      mapLink({
-        blockType: "slimCollectionLink",
-        name: "name",
-        page: "page-slug",
-      }),
-    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
-  });
-
   it("maps slim pre-footer", () => {
     function test(response, expected) {
       expect(mapPreFooterSlim(response)).toEqual(expected);
@@ -258,19 +137,19 @@ describe("PreFooter Data Fetch Utility", () => {
     test(null, {
       contactEmail: undefined,
       contactTelephone: undefined,
-      footerLinks: undefined,
+      links: undefined,
     });
     test(undefined, {
       contactEmail: undefined,
       contactTelephone: undefined,
-      footerLinks: undefined,
+      links: undefined,
     });
     test(
       { contactCenter: null, slimLink: null },
       {
         contactEmail: undefined,
         contactTelephone: undefined,
-        footerLinks: undefined,
+        links: undefined,
       },
     );
     test(
@@ -278,7 +157,7 @@ describe("PreFooter Data Fetch Utility", () => {
       {
         contactEmail: undefined,
         contactTelephone: undefined,
-        footerLinks: undefined,
+        links: undefined,
       },
     );
     test(
@@ -286,7 +165,7 @@ describe("PreFooter Data Fetch Utility", () => {
       {
         contactEmail: undefined,
         contactTelephone: undefined,
-        footerLinks: [null],
+        links: [null],
       },
     );
     test(
@@ -297,7 +176,7 @@ describe("PreFooter Data Fetch Utility", () => {
       {
         contactEmail: undefined,
         contactTelephone: undefined,
-        footerLinks: [null],
+        links: [null],
       },
     );
     test(
@@ -308,7 +187,7 @@ describe("PreFooter Data Fetch Utility", () => {
       {
         contactEmail: null,
         contactTelephone: null,
-        footerLinks: [null],
+        links: [null],
       },
     );
     test(slimPreFooterResponseData, slimPreFooterBuilt);

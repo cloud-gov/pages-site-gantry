@@ -1,0 +1,137 @@
+@use "sass:map";
+@use "sass:meta";
+@use "sass:string";
+@use "sass:list";
+@use "uswds-core" as uswds;
+
+$uswds-vars: meta.module-variables("uswds");
+// @debug $uswds-vars;
+
+@function build-token($color-family, $grade) {
+  $parts: string.split($color-family, "-");
+  $count: list.length($parts);
+  $last: list.nth($parts, $count);
+  $is-vivid: $last == "vivid";
+
+  $base-family: "";
+  @for $i from 1 through $count {
+    @if $is-vivid and $i == $count {
+      // skip the "vivid" part
+    } @else {
+      $part: list.nth($parts, $i);
+      $base-family: if($base-family == "", $part, "#{$base-family}-#{$part}");
+    }
+  }
+
+  @if $is-vivid {
+    @return "#{$base-family}-#{$grade}v";
+  } @else {
+    @return "#{$base-family}-#{$grade}";
+  }
+}
+
+$color-families: (
+        "blue-cool",
+        "blue-cool-vivid",
+        "blue",
+        "blue-vivid",
+        "blue-warm",
+        "blue-warm-vivid",
+        "cyan",
+        "cyan-vivid",
+        "gold",
+        "gold-vivid",
+        "gray-cool",
+        "gray",
+        "gray-warm",
+        "green-cool",
+        "green-cool-vivid",
+        "green",
+        "green-vivid",
+        "green-warm",
+        "green-warm-vivid",
+        "indigo-cool",
+        "indigo-cool-vivid",
+        "indigo",
+        "indigo-vivid",
+        "indigo-warm",
+        "indigo-warm-vivid",
+        "magenta",
+        "magenta-vivid",
+        "mint-cool",
+        "mint-cool-vivid",
+        "mint",
+        "mint-vivid",
+        "orange",
+        "orange-vivid",
+        "orange-warm",
+        "orange-warm-vivid",
+        "red-cool",
+        "red-cool-vivid",
+        "red",
+        "red-vivid",
+        "red-warm",
+        "red-warm-vivid",
+        "violet",
+        "violet-vivid",
+        "violet-warm",
+        "violet-warm-vivid",
+        "white",
+        "yellow",
+        "yellow-vivid",
+);
+
+$grades: (5, 10, 20, 30, 40, 50, 60, 70, 80, 90);
+
+
+$tokens: ();
+@each $color-family in $color-families {
+  @each $grade in $grades {
+    $token: build-token($color-family, $grade);
+    $tokens: list.append($tokens, $token);
+  }
+}
+
+// @debug $extended-color-$tokens;
+
+$skipped-color-tokens: ();
+@if map.has-key($uswds-vars, 'all-color-shortcodes') {
+  $all-color-shortcodes: map.get($uswds-vars, 'all-color-shortcodes');
+  // @debug $all-color-shortcodes;
+
+  @each $token in $tokens {
+    $value: map.get($all-color-shortcodes, $token);
+    @if $value != null and $value != false and meta.type-of($value) == "color" {
+      .text-#{$token} {
+        color: uswds.color(string.unquote($token)) !important;
+      }
+      .bg-#{$token} {
+        background-color: uswds.color(string.unquote($token)) !important;
+      }
+    } @else {
+      $skipped-color-tokens: list.append($skipped-color-tokens, $token);
+      // @warn "Skipping invalid color token: #{$token}";
+    }
+  }
+}
+
+// @debug $skipped-color-tokens;
+
+// --- Resolve USWDS color variables ---
+@if map.has-key($uswds-vars, 'all-color-shortcodes') {
+  $allTokens: map.get($uswds-vars, 'all-color-shortcodes');
+
+  :root {
+    @each $token in $tokens {
+      $val: map.get($allTokens, $token);
+
+      @if $val != null and $val != false and meta.type-of($val) == "color" {
+        --#{$token}: #{$val};
+       } @else {
+        // @warn "Skipping USWDS color: #{$token}";
+      }
+    }
+  }
+}
+
+// @debug list.length($color-families);

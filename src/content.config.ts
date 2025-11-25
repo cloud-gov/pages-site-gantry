@@ -469,7 +469,7 @@ const preFooter = defineCollection({
                     name: z.string().nullable().optional(),
                     type: z.any().nullable().optional(),
                     id: z.string().nullable().optional(),
-                    linkUrl: z.string().nullable().optional(),
+                    url: z.string().nullable().optional(),
                   })
                   .nullable()
                   .optional(),
@@ -485,7 +485,7 @@ const preFooter = defineCollection({
               name: z.string().nullable().optional(),
               page: z.any().nullable().optional(),
               id: z.string().nullable().optional(),
-              linkUrl: z.string().nullable().optional(),
+              url: z.string().nullable().optional(),
             })
             .optional(),
         ),
@@ -537,6 +537,45 @@ const sideNavigations = defineCollection({
   ),
 });
 
+const footer = defineCollection({
+  loader: collectionLoader("globals/footer"),
+  schema: makeAllKeysNullable(
+    z
+      .object({
+        domain: z.string().nullable().optional(),
+        content: z.any().nullable().optional(),
+        logos: z.array(
+          z
+            .object({
+              image: z.any().nullable().optional(),
+              url: z.string().nullable().optional(),
+            })
+            .optional(),
+        ),
+        identifierColor: z.string().nullable().optional(),
+        identityDomainColor: z.string().nullable().optional(),
+        primaryLinkColor: z.string().nullable().optional(),
+        secondaryLinkColor: z.string().nullable().optional(),
+        link: z.array(
+          z
+            .object({
+              blockType: z.string().nullable().optional(),
+              name: z.string().nullable().optional(),
+              page: z.any().nullable().optional(),
+              id: z.string().nullable().optional(),
+              url: z.string().nullable().optional(),
+            })
+            .optional(),
+        ),
+        _status: z.enum(["draft", "published"]),
+        updatedAt: z.string().datetime(),
+        createdAt: z.string().datetime(),
+        globalType: z.string(),
+      })
+      .partial(),
+  ),
+});
+
 export const collections = {
   // site collections
   alerts,
@@ -552,4 +591,5 @@ export const collections = {
   menu,
   siteConfig,
   preFooter,
+  footer,
 };

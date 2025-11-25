@@ -13,16 +13,9 @@ import {
 } from "@/env";
 import { cleanConfiguration } from "@/utilities/preFooterBig";
 import type { CollectionEntry } from "astro:content";
+import { linkMapper } from "@/utilities/fetch/contentMapper.ts";
 
 const preFooterCollectionName = "preFooter";
-
-export function mapPageUrl(page: PageModel) {
-  return page?.slug ? `/${page?.slug}` : null;
-}
-
-export function mapCollectionUrl(page: string) {
-  return page ? `/${page}` : null;
-}
 
 export function mapSocialLinks(response: any): SocialLink[] {
   const result = [
@@ -70,7 +63,7 @@ export function mapLinkGroups(response: any) {
     const builtLinkGroup: LinkGroup = {
       name: linkGroup?.groupName,
       links: linkGroup?.link?.map((l) => {
-        return mapLink(l);
+        return linkMapper(l);
       }),
     };
     return builtLinkGroup;
@@ -91,49 +84,18 @@ export function mapPreFooterBig(
   return result;
 }
 
-export function mapLink(link): LinkModel {
-  let result: LinkModel = null;
-  switch (link?.blockType) {
-    case "slimExternalLink":
-    case "externalLink":
-      result = {
-        text: link?.name,
-        url: link?.url,
-        externalLink: true,
-      };
-      break;
-    case "slimPageLink":
-    case "pageLink":
-      result = {
-        text: link?.name,
-        url: mapPageUrl(link?.page),
-        externalLink: false,
-      };
-      break;
-    case "slimCollectionLink":
-    case "collectionLink":
-      result = {
-        text: link?.name,
-        url: mapCollectionUrl(link?.page),
-        externalLink: false,
-      };
-      break;
-  }
-  return result;
-}
-
 export function mapPreFooterSlim(
   response: CollectionEntry<typeof preFooterCollectionName>["data"],
 ): PreFooterSlimModel {
   let contactTelephone = response?.contactCenter?.[0]?.phone;
   const contactEmail = response?.contactCenter?.[0]?.email;
-  const footerLinks = response?.slimLink?.map((link) => {
-    return mapLink(link);
+  const links = response?.slimLink?.map((link) => {
+    return linkMapper(link);
   });
   const result: PreFooterSlimModel = {
     contactTelephone: contactTelephone,
     contactEmail: contactEmail,
-    footerLinks: footerLinks,
+    links: links,
   };
   return result;
 }
