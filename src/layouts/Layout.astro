@@ -14,19 +14,21 @@ import {
   fetchMenu,
   fetchPreFooter,
   fetchCollection,
-  preFooterMapper,
   alertsMapper,
 } from "@/utilities/fetch";
-import { type PreFooterModel, type AlertModel } from "@/env";
+import { type AlertModel, type FooterModel } from "@/env";
 import Alerts from "@/components/Alerts.astro";
+import { fetchFooter, footerMapper } from "@/utilities/fetch";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
+const footerCollectionName = "footer";
 const preFooterCollectionName = "preFooter";
 const alertsCollectionName = "alerts";
 
 let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
 let menu: CollectionEntry<typeof menuCollectionName>["data"];
+let footerResponseData: CollectionEntry<typeof footerCollectionName>["data"];
 let preFooterResponseData: CollectionEntry<
   typeof preFooterCollectionName
 >["data"];
@@ -36,6 +38,7 @@ let alerts: AlertModel[];
 if (!Astro.isPrerendered) {
   siteConfig = await fetchSiteConfig();
   menu = await fetchMenu();
+  footerResponseData = await fetchFooter();
   preFooterResponseData = await fetchPreFooter();
   alertsResponseData = await fetchCollection(alertsCollectionName);
   alerts = alertsMapper(alertsResponseData?.docs);
@@ -44,6 +47,8 @@ if (!Astro.isPrerendered) {
   const menuResponseData = await getCollection(menuCollectionName);
   alertsResponseData = await getCollection(alertsCollectionName);
   alerts = alertsMapper(alertsResponseData, true);
+  const footerResponse = await getCollection(footerCollectionName);
+  footerResponseData = footerResponse[0]?.data;
   const preFooterResponse = await getCollection(preFooterCollectionName);
   preFooterResponseData = preFooterResponse[0]?.data;
 
@@ -61,7 +66,10 @@ if (!Astro.isPrerendered) {
   };
 }
 
-const preFooter: PreFooterModel = preFooterMapper(preFooterResponseData);
+const footer: FooterModel = footerMapper(
+  footerResponseData,
+  preFooterResponseData,
+);
 
 // TODO: Add meta title and description to site config
 const {
@@ -128,7 +136,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
         </main>
       )
     }
-    <Footer preFooter={preFooter} />
+    <Footer footer={footer} />
     {
       siteConfig.dapAgencyCode && (
         <DigitalAnalytics

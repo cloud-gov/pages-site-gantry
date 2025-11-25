@@ -1,96 +1,41 @@
 ---
-import { Image } from "astro:assets";
-import identifierLogoImg from "@/assets/gsa-logo.svg"; // get this from site data
-import { PRE_FOOTER_TYPE_BIG, PRE_FOOTER_TYPE_SLIM } from "@/env";
+import {
+  type FooterColors,
+  type FooterModel,
+  PRE_FOOTER_TYPE_BIG,
+  PRE_FOOTER_TYPE_SLIM,
+} from "@/env";
 import { cleanPreFooter, getUsaFooterClass } from "@/utilities/preFooter.ts";
 import PreFooterSlim from "@/components/PreFooterSlim.astro";
 import PreFooterBig from "@/components/PreFooterBig.astro";
-import { getIdentifiers } from "@/components/Footer.testData.ts";
+import Identifier from "@/components/Identifier.astro";
+import { getFooterColors } from "@/utilities/identifier.ts";
 
-const { preFooter, identifiers = getIdentifiers() } = Astro.props;
+interface Props {
+  footer?: FooterModel;
+}
+const { footer } = Astro.props;
 
-const { siteDomain, identifierLinks, identifierName, identifierUrl } =
-  identifiers;
-
-const { preFooterType, preFooterData } = cleanPreFooter(preFooter);
+const { preFooterType, preFooterData } = cleanPreFooter(footer?.preFooter);
 let usaFooterClass = await getUsaFooterClass(preFooterType);
+const colors: FooterColors = getFooterColors(footer?.identifier?.colorFamilies);
 ---
 
 <footer class={`usa-footer ${usaFooterClass}`}>
   <div class="grid-container usa-footer__return-to-top">
     <a href="#">Return to top</a>
   </div>
+
   {
     preFooterType === PRE_FOOTER_TYPE_BIG && (
-      <PreFooterBig preFooter={preFooterData} />
+      <PreFooterBig preFooter={preFooterData} colors={colors?.preFooter} />
     )
   }
   {
     preFooterType === PRE_FOOTER_TYPE_SLIM && (
-      <PreFooterSlim preFooter={preFooterData} />
+      <PreFooterSlim preFooter={preFooterData} colors={colors?.preFooter} />
     )
   }
-</footer>
 
-<div class="usa-identifier">
-  <section
-    class="usa-identifier__section usa-identifier__section--masthead"
-    aria-label="Agency identifier"
-  >
-    <div class="usa-identifier__container">
-      <div class="usa-identifier__logos">
-        <a href={identifierUrl} class="usa-identifier__logo">
-          <Image
-            src={identifierLogoImg}
-            class="usa-identifier__logo-img"
-            alt={siteDomain}
-            loading="lazy"
-            decoding="async"
-          />
-        </a>
-      </div>
-      <section class="usa-identifier__identity" aria-label="Agency description">
-        <p class="usa-identifier__identity-domain">{siteDomain}</p>
-        <p class="usa-identifier__identity-disclaimer">
-          An official website of the
-          <a href={identifierUrl}> {identifierName}</a>
-        </p>
-      </section>
-    </div>
-    <nav
-      class="usa-identifier__section usa-identifier__section--required-links"
-      aria-label="Important links"
-    >
-      <div class="usa-identifier__container">
-        <ul class="usa-identifier__required-links-list">
-          {
-            identifierLinks &&
-              identifierLinks.map((link) => (
-                <li class="usa-identifier__required-links-item">
-                  <a
-                    href={link.url}
-                    class="usa-identifier__required-link usa-link"
-                  >
-                    {link.text}
-                  </a>
-                </li>
-              ))
-          }
-        </ul>
-      </div>
-    </nav>
-    <section
-      class="usa-identifier__section usa-identifier__section--usagov"
-      aria-label="Government information and services"
-    >
-      <div class="usa-identifier__container">
-        <div class="usa-identifier__usagov-description">
-          Looking for U.S. government information and services?
-        </div>
-        <a href="https://www.usa.gov/" class="usa-link--external"
-          >&nbsp;Visit USA.gov</a
-        >
-      </div>
-    </section>
-  </section>
-</div>
+  <Identifier identifier={footer?.identifier} colors={colors?.identifier} />
+</footer>

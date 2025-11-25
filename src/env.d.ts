@@ -1,3 +1,5 @@
+import type { Media } from "@/payload-types.ts";
+
 export interface MediaValueProps {
   id: number;
   altText: string;
@@ -131,17 +133,10 @@ export interface SocialLink {
   url?: string;
 }
 
-export interface Identifiers {
-  siteDomain?: string;
-  identifierLinks?: LinkItem[];
-  identifierName?: string;
-  identifierUrl?: string;
-}
-
 export interface PreFooterSlimModel {
   contactTelephone?: string;
   contactEmail?: string;
-  footerLinks?: LinkModel[];
+  links?: LinkModel[];
 }
 
 export const CONNECT_SECTION_RIGHT = "right";
@@ -223,4 +218,45 @@ export interface AlertModel {
   content?: any;
   icon?: boolean;
   slim?: boolean;
+}
+
+export interface IdentifierColorFamilies {
+  identifier: string;
+  identityDomain: string;
+  primaryLink: string;
+  secondaryLink: string;
+}
+
+export interface LogoModel {
+  media: Media;
+  url: string;
+}
+
+export interface IdentifierModel {
+  siteDomain?: string;
+  logos?: MediaModel[];
+  content?: any;
+  links?: LinkModel[];
+  colorFamilies?: IdentifierColorFamilies;
+}
+
+export interface FooterModel {
+  preFooter?: PreFooterModel;
+  identifier?: IdentifierModel;
+}
+
+export interface PreFooterColors {
+  bkgColorLightest: string;
+}
+
+export interface FooterColors {
+  identifier: IdentifierColors;
+  preFooter: PreFooterColors;
+}
+
+export interface IdentifierColors {
+  bkgColor?: string;
+  identityDomainColor?: string;
+  primaryLinkColor?: string;
+  secondaryLinkColor?: string;
 }

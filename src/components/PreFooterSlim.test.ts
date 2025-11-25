@@ -10,7 +10,7 @@ describe("PreFooterSlim", () => {
   const preFooter: PreFooterSlimModel = {
     contactEmail: "you@agency.gov",
     contactTelephone: "1-800-CALL-USA",
-    footerLinks: [
+    links: [
       {
         text: "First link text",
         url: "url-test-1",
@@ -28,7 +28,7 @@ describe("PreFooterSlim", () => {
     container = await AstroContainer.create();
   });
 
-  it("renders a list of links when footerLinks are provided", async () => {
+  it("renders a list of links when links are provided", async () => {
     const result = await container.renderToString(PreFooterSlim, {
       props: { preFooter },
     });

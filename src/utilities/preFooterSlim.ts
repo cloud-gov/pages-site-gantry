@@ -5,13 +5,13 @@ export function cleanPreFooterSlim(
 ): PreFooterSlimModel {
   const contactTelephone = clean(preFooter?.contactTelephone);
   const contactEmail = clean(preFooter?.contactEmail);
-  const footerLinks = cleanLinks(preFooter?.footerLinks);
+  const links = cleanLinks(preFooter?.links);
 
-  if (contactTelephone || contactEmail || footerLinks?.length > 0) {
+  if (contactTelephone || contactEmail || links?.length > 0) {
     return {
       contactTelephone,
       contactEmail,
-      footerLinks,
+      links,
     };
   }
 

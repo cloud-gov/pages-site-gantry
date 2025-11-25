@@ -1,6 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
-import { alertsMapper } from "@/utilities/fetch";
-import { shouldDisplay } from "@/utilities/fetch/contentMapper";
+import { alertsMapper, footerMapper } from "@/utilities/fetch";
+import {
+  collectionUrlMapper,
+  linkMapper,
+  logoMapper,
+  pageUrlMapper,
+  shouldDisplay,
+} from "@/utilities/fetch/contentMapper";
+import type { FooterModel, PageModel } from "@/env";
 
 vi.mock("astro:content", () => ({
   getCollection: vi.fn(),
@@ -8,7 +15,7 @@ vi.mock("astro:content", () => ({
   // Add other exports if needed
 }));
 
-describe("Content Mapper Utility", () => {
+describe("Content Mapper Utility maps Alerts", () => {
   it("does not throw errors if no data", () => {
     expect(alertsMapper(null)).toEqual([]);
     expect(alertsMapper(undefined)).toEqual([]);
@@ -210,5 +217,235 @@ describe("Content Mapper Utility", () => {
         slim: false,
       },
     ]);
+  });
+});
+
+describe("Content Mapper Utility maps links", () => {
+  it("maps page url", () => {
+    function test(page: PageModel | any) {
+      let url = pageUrlMapper(page);
+      expect(url).toBeNull;
+    }
+    test({});
+    test(null);
+    test(undefined);
+    test({ slug: null });
+    test({ slug: undefined });
+    test("url");
+
+    expect(pageUrlMapper({ slug: "page-slug" })).toEqual("/page-slug");
+  });
+
+  it("maps collection url", () => {
+    function test(page: PageModel | any) {
+      let url = collectionUrlMapper(page);
+      expect(url).toBeNull;
+    }
+    test({});
+    test(null);
+    test(undefined);
+
+    expect(collectionUrlMapper("page-slug")).toEqual("/page-slug");
+  });
+
+  it("maps link", () => {
+    expect(linkMapper(null)).toEqual(null);
+    expect(linkMapper(undefined)).toEqual(null);
+    expect(linkMapper({})).toEqual(null);
+    expect(linkMapper({ blockType: null })).toEqual(null);
+    expect(linkMapper({ blockType: undefined })).toEqual(null);
+
+    expect(
+      linkMapper({
+        blockType: "externalLink",
+      }),
+    ).toEqual({ text: undefined, url: undefined, externalLink: true });
+    expect(
+      linkMapper({
+        blockType: "externalLink",
+        name: "name",
+        url: "url",
+      }),
+    ).toEqual({ text: "name", url: "url", externalLink: true });
+
+    expect(
+      linkMapper({
+        blockType: "slimExternalLink",
+      }),
+    ).toEqual({ text: undefined, url: undefined, externalLink: true });
+    expect(
+      linkMapper({
+        blockType: "slimExternalLink",
+        name: "name",
+        url: "url",
+      }),
+    ).toEqual({ text: "name", url: "url", externalLink: true });
+
+    expect(
+      linkMapper({
+        blockType: "pageLink",
+      }),
+    ).toEqual({ text: undefined, url: null, externalLink: false });
+    expect(
+      linkMapper({
+        blockType: "pageLink",
+        name: "name",
+        page: {
+          slug: "page-slug",
+        },
+      }),
+    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
+
+    expect(
+      linkMapper({
+        blockType: "slimPageLink",
+      }),
+    ).toEqual({ text: undefined, url: null, externalLink: false });
+    expect(
+      linkMapper({
+        blockType: "slimPageLink",
+        name: "name",
+        page: {
+          slug: "page-slug",
+        },
+      }),
+    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
+
+    expect(
+      linkMapper({
+        blockType: "collectionLink",
+      }),
+    ).toEqual({ text: undefined, url: null, externalLink: false });
+    expect(
+      linkMapper({
+        blockType: "collectionLink",
+        name: "name",
+        page: "page-slug",
+      }),
+    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
+
+    expect(
+      linkMapper({
+        blockType: "slimCollectionLink",
+      }),
+    ).toEqual({ text: undefined, url: null, externalLink: false });
+    expect(
+      linkMapper({
+        blockType: "slimCollectionLink",
+        name: "name",
+        page: "page-slug",
+      }),
+    ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
+  });
+});
+
+describe("Content Mapper Utility, Footer", () => {
+  it("does not throw errors if no data", () => {
+    const emptyFooter = {
+      identifier: {
+        colorFamilies: {
+          identifier: undefined,
+          identityDomain: undefined,
+          primaryLink: undefined,
+          secondaryLink: undefined,
+        },
+        content: undefined,
+        links: undefined,
+        logos: undefined,
+        siteDomain: undefined,
+      },
+      preFooter: {
+        preFooterData: undefined,
+        preFooterType: null,
+      },
+    };
+
+    expect(footerMapper(null, null)).toEqual(emptyFooter);
+    expect(footerMapper(undefined, null)).toEqual(emptyFooter);
+    expect(footerMapper({}, null)).toEqual(emptyFooter);
+  });
+
+  it("processes footer response", () => {
+    const content = {
+      root: {
+        type: "root",
+        format: "",
+        indent: 0,
+        version: 1,
+        children: [
+          {
+            type: "paragraph",
+            format: "",
+            indent: 0,
+            version: 1,
+            children: [
+              {
+                mode: "normal",
+                text: "Footer Text",
+                type: "text",
+                style: "",
+                detail: 0,
+                format: 0,
+                version: 1,
+              },
+            ],
+            direction: "ltr",
+            textStyle: "",
+            textFormat: 0,
+          },
+        ],
+        direction: "ltr",
+      },
+    };
+    const footer = footerMapper(
+      {
+        domain: "site domain",
+        logos: [
+          {
+            image: { altText: "logo altText" },
+            url: "test url",
+          },
+        ],
+        content: content,
+        links: [
+          {
+            blockType: "externalLink",
+            name: "link name",
+            url: "link url",
+            externalLink: true,
+          },
+        ],
+        identifierColor: "identifierColor",
+        identityDomainColor: "identityDomain",
+        primaryLinkColor: "primaryLink",
+        secondaryLinkColor: "secondaryLink",
+      },
+      null,
+    );
+    expect(footer).toEqual({
+      identifier: {
+        siteDomain: "site domain",
+        logos: [
+          {
+            url: "test url",
+            media: {
+              altText: "logo altText",
+            },
+          },
+        ],
+        content: content,
+        links: undefined,
+        colorFamilies: {
+          identifier: "identifierColor",
+          identityDomain: "identityDomain",
+          primaryLink: "primaryLink",
+          secondaryLink: "secondaryLink",
+        },
+      },
+      preFooter: {
+        preFooterData: undefined,
+        preFooterType: null,
+      },
+    });
   });
 });

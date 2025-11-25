@@ -9,9 +9,15 @@ import {
   type PreFooterBigModel,
   type LinkGroup,
   type PreFooterBigConfiguration,
+  type PreFooterColors,
 } from "@/env";
 
-const { preFooter } = Astro.props;
+interface Props {
+  preFooter?: any;
+  colors: PreFooterColors;
+}
+
+const { preFooter, colors } = Astro.props;
 
 const cleanedPreFooter: PreFooterBigModel = cleanPreFooterBig(preFooter);
 const linkGroups: LinkGroup[] = cleanedPreFooter?.linkGroups;
@@ -41,6 +47,8 @@ const connectSectionCol = 3;
 
 const linkGroupsGridColClass = `grid-col-12 tablet:grid-col-${linkGroupsCol}`;
 const connectSectionGridColClass = `grid-col-12 tablet:grid-col-${connectSectionCol}`;
+
+const bkgColor = colors?.bkgColorLightest;
 ---
 
 {
@@ -48,7 +56,7 @@ const connectSectionGridColClass = `grid-col-12 tablet:grid-col-${connectSection
     <>
       {linkGroups && (
         <div
-          class="usa-footer__primary-section"
+          class={`usa-footer__primary-section bg-${bkgColor}`}
           style={`--columns: ${configuration.columnsInLinkGroup};`}
           id="pre-footer-big-link-groups"
         >

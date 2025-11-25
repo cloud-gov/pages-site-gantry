@@ -19,6 +19,10 @@ export async function fetchPreFooter() {
   return fetchCollection("globals/pre-footer");
 }
 
+export async function fetchFooter() {
+  return fetchCollection("globals/footer");
+}
+
 // collections
 
 export async function fetchCollection(collectionName: string) {

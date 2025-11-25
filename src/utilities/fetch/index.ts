@@ -5,6 +5,7 @@ export {
   fetchPageSlug,
   fetchSlug,
   fetchCollection,
+  fetchFooter,
   fetchPreFooter,
 } from "./queries";
 export { getPaginatedCollectionData } from "./collectionDataFetch";
@@ -25,4 +26,5 @@ export {
   leadershipMapper,
   resourceMapper,
   alertsMapper,
+  footerMapper,
 } from "./contentMapper";
