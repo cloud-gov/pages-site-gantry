@@ -7,7 +7,7 @@ import {
   type FooterModel,
   type LinkModel,
   type LogoModel,
-  type PageModel
+  type PageModel,
 } from "@/env";
 import { preFooterMapper } from "@/utilities/fetch/preFooterMapper.ts";
 
@@ -233,7 +233,6 @@ export function logoMapper(logo): LogoModel {
 }
 
 export function footerMapper(i: any, pf: any): FooterModel {
-
   return {
     preFooter: preFooterMapper(pf),
     identifier: {
