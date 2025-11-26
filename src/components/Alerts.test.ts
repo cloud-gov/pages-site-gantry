@@ -17,7 +17,7 @@ describe("Alerts", () => {
         props: { alertsData },
       });
 
-      expect(result).toContain('<div class="usa-alert__body"');
+      expect(result).toContain('class="usa-alert__body');
       expect(result).toContain('<div class="usa-alert margin-y-0 ' + className);
       expect(result).toContain("Alert Title</h4>");
     }

@@ -103,62 +103,6 @@ describe("Content Mapper Utility maps Alerts", () => {
     ]);
   });
 
-  it("filters out alerts based on publish date", () => {
-    expect(
-      shouldDisplay(
-        { isActive: true, publishDate: "2025-11-06T20:00:00.000Z" },
-        new Date("Thu Nov 06 2025 13:59:00 GMT-0600"),
-      ),
-    ).toEqual(false);
-    expect(
-      shouldDisplay(
-        { isActive: true, publishDate: "2025-11-06T20:00:00.000Z" },
-        new Date("Thu Nov 06 2025 14:00:00 GMT-0600"),
-      ),
-    ).toEqual(true);
-    expect(
-      shouldDisplay(
-        { isActive: true, publishDate: "2025-11-06T20:00:00.000Z" },
-        new Date("Thu Nov 06 2025 14:01:00 GMT-0600"),
-      ),
-    ).toEqual(true);
-  });
-
-  it("considers alert published if there is no published date", () => {
-    expect(
-      shouldDisplay({ isActive: true, publishDate: null }, new Date()),
-    ).toEqual(true);
-    expect(
-      shouldDisplay({ isActive: true, publishDate: undefined }, new Date()),
-    ).toEqual(true);
-    expect(
-      shouldDisplay({ isActive: true, publishDate: "" }, new Date()),
-    ).toEqual(true);
-  });
-
-  it("displays alert if both publish date and active flag criteria are met", () => {
-    expect(shouldDisplay(undefined, new Date())).toEqual(false);
-    expect(shouldDisplay(null, new Date())).toEqual(false);
-    expect(shouldDisplay({}, new Date())).toEqual(false);
-    expect(shouldDisplay(undefined, null)).toEqual(false);
-    expect(
-      shouldDisplay({ isActive: true, publishDate: null }, new Date()),
-    ).toEqual(true);
-    expect(
-      shouldDisplay(
-        { isActive: true, publishDate: "2025-11-06T20:00:00.000Z" },
-        new Date("Thu Nov 06 2025 14:00:00 GMT-0600"),
-      ),
-    ).toEqual(true);
-    expect(
-      shouldDisplay(
-        { isActive: false, publishDate: "2025-11-06T20:00:00.000Z" },
-        new Date("Thu Nov 06 2025 14:00:00 GMT-0600"),
-      ),
-    ).toEqual(false);
-    expect(shouldDisplay({ isActive: true }, new Date())).toEqual(true);
-  });
-
   it("processes alerts response in static mode", () => {
     const content = {
       root: {

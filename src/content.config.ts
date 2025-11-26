@@ -55,20 +55,23 @@ const alerts = defineCollection({
   loader: collectionLoader("alerts", false),
   schema: makeAllKeysNullable(
     z.object({
-      id: z.string(),
-      title: z.string(),
-      description: z.string(),
-      type: z.enum(["info", "warning", "success", "error", "emergency"]),
-      isActive: z.boolean(),
-      content: z.any(),
-      slim: z.boolean(),
-      icon: z.boolean(),
-      site: z.any(),
-      publishDate: z.string().datetime(),
-      reviewReady: z.boolean(),
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
-      _status: z.enum(["draft", "published"]),
+      id: z.string().nullable().optional(),
+      title: z.string().nullable().optional().nullable().optional(),
+      description: z.string().nullable().optional(),
+      type: z
+        .enum(["info", "warning", "success", "error", "emergency"])
+        .nullable()
+        .optional(),
+      alignment: z.enum(["left", "center"]).nullable().optional(),
+      isActive: z.boolean().nullable().optional(),
+      content: z.any().nullable().optional(),
+      slim: z.boolean().nullable().optional(),
+      icon: z.boolean().nullable().optional(),
+      site: z.any().nullable().optional(),
+      reviewReady: z.boolean().nullable().optional(),
+      updatedAt: z.string().datetime().nullable().optional(),
+      createdAt: z.string().datetime().nullable().optional(),
+      _status: z.enum(["draft", "published"]).nullable().optional(),
     }),
   ),
 });
