@@ -1,4 +1,5 @@
 instances: 1
+editor_app_url: https://publisher-staging.cloud.gov
 env: staging
 log_level: verbose
 node_env: development
