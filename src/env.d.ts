@@ -218,6 +218,7 @@ export interface AlertModel {
   content?: any;
   icon?: boolean;
   slim?: boolean;
+  alignment?: "left" | "center";
 }
 
 export interface IdentifierColorFamilies {
