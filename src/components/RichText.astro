@@ -5,7 +5,9 @@ import {
 } from "@payloadcms/richtext-lexical/html";
 import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
 import sanitizeHtml from "sanitize-html";
-import upload from "./RichTextConverers/upload";
+import upload from "./RichTextConverters/upload";
+import { getTextContent } from "./RichTextConverters/helpers";
+import { table, tablerow, tablecell } from "./RichTextConverters/table";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
@@ -17,13 +19,10 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
 }) => {
   return {
     ...defaultConverters,
+
     upload: ({ node }) => upload({ node }),
+
     heading: ({ node }) => {
-      const getTextContent = (child) => {
-        if (child.text) return child.text;
-        if (child.children) return child.children.map(getTextContent).join("");
-        return "";
-      };
       const text = node.children?.map(getTextContent).join("") || "";
       const id = text
         .toLowerCase()
@@ -31,51 +30,69 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
         .replace(/[^a-z0-9-]/g, "");
       return `<${node.tag} id="${id}">${text}</${node.tag}>`;
     },
+
+    table: ({ node }) => table({ node }),
+
+    tablerow: ({ node }) => tablerow({ node }),
+
+    tablecell: ({ node }) => tablecell({ node }),
   };
 };
+
+// Convert Lexical to HTML with our converters
+let rawHTML = convertLexicalToHTML({
+  data: content,
+  converters: htmlConverters,
+});
 ---
 
 <section
   class={`usa-prose ${alert && "alert-prose margin-y-0"} ${identifier && "identifier-prose margin-y-0"}`}
   style={`--textColor: var(${textColor}); --linkColor: var(${linkColor});`}
-  set:html={sanitizeHtml(
-    convertLexicalToHTML({ data: content, converters: htmlConverters }),
-    {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        "img",
-        "svg",
-        "use",
-      ]),
-      allowedClasses: {
-        a: false,
-        div: false,
-        h1: false,
-        h2: false,
-        h3: false,
-        h4: false,
-        h5: false,
-        h6: false,
-        img: false,
-        li: false,
-        ol: false,
-        p: false,
-        span: false,
-        ul: false,
-      },
-      allowedAttributes: {
-        a: ["href", "name", "target", "download"],
-        img: ["src", "alt"],
-        use: ["href"],
-        svg: ["class", "aria-hidden", "focusable", "role", "img"],
-        h1: ["id"],
-        h2: ["id"],
-        h3: ["id"],
-        h4: ["id"],
-        h5: ["id"],
-        h6: ["id"],
-      },
+  set:html={sanitizeHtml(rawHTML, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+      "img",
+      "svg",
+      "use",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+    ]),
+    allowedClasses: {
+      a: false,
+      table: ["usa-table", "usa-table--striped"],
+      div: false,
+      h1: false,
+      h2: false,
+      h3: false,
+      h4: false,
+      h5: false,
+      h6: false,
+      img: false,
+      li: false,
+      ol: false,
+      p: false,
+      span: false,
+      ul: false,
     },
-  )}
+    allowedAttributes: {
+      a: ["href", "name", "target", "download"],
+      img: ["src", "alt"],
+      use: ["href"],
+      svg: ["class", "aria-hidden", "focusable", "role", "img"],
+      h1: ["id"],
+      h2: ["id"],
+      h3: ["id"],
+      h4: ["id"],
+      h5: ["id"],
+      h6: ["id"],
+      th: ["scope"],
+      table: ["class"],
+    },
+  })}
 />
 
 <style lang="scss">
