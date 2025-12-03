@@ -15,4 +15,11 @@ describe("Payload Fetch Utility", () => {
     expect(getDraftOption(undefined, "false")).toEqual("&draft=false");
     expect(getDraftOption(undefined, undefined)).toEqual("&draft=false");
   });
+
+  it("treats boolean true and string 'true' as true", () => {
+    expect(getDraftOption("server", true)).toEqual("&draft=true");
+    expect(getDraftOption("server", "true")).toEqual("&draft=true");
+    expect(getDraftOption("server", false)).toEqual("&draft=false");
+    expect(getDraftOption("server", "false")).toEqual("&draft=false");
+  });
 });

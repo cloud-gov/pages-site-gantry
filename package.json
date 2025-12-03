@@ -12,6 +12,7 @@
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,astro}\"",
     "oauth": "node oauth/index.js",
     "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build",
+    "start:preview": "PORT=4321 NODE_ENV=production astro build && astro preview",
     "test": "NODE_ENV=test vitest",
     "test:ui": "NODE_ENV=test vitest --ui",
     "test:run": "NODE_ENV=test vitest run"

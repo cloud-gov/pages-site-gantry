@@ -1,6 +1,6 @@
 // @ts-check
 import { loadEnv } from "vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import node from "@astrojs/node";
 import { buildThemeStyle } from "./scripts/setTheme";
 
@@ -77,5 +77,19 @@ export default defineConfig({
   },
   devToolbar: {
     enabled: false,
+  },
+  env: {
+    schema: {
+      PREVIEW_MODE: envField.string({
+        context: "client",
+        access: "public",
+        optional: true,
+      }),
+      EDITOR_APP_URL: envField.string({
+        context: "client",
+        access: "public",
+        default: "http://localhost:3000",
+      }),
+    },
   },
 });
