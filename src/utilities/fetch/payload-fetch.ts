@@ -1,7 +1,13 @@
 import path from "node:path";
 
-export function getDraftOption(renderMode: string, previewMode: string) {
-  return renderMode === "static" ? "" : `&draft=${previewMode === "true"}`;
+export function getDraftOption(
+  renderMode: string,
+  previewMode: string | boolean,
+) {
+  const previewModeString =
+    typeof previewMode === "boolean" ? previewMode.toString() : previewMode;
+  const isPreviewMode = previewModeString === "true";
+  return renderMode === "static" ? "" : `&draft=${isPreviewMode}`;
 }
 
 export async function payloadFetch(endpoint: string) {
@@ -9,11 +15,13 @@ export async function payloadFetch(endpoint: string) {
     import.meta.env.RENDER_MODE,
     import.meta.env.PREVIEW_MODE,
   );
+
   const url = path.join(
     import.meta.env.EDITOR_APP_URL || "",
     "api",
     `${endpoint}${draftOption}`,
   );
+
   return fetch(url, {
     headers: {
       Authorization: `users API-Key ${import.meta.env.PAYLOAD_API_KEY}`,

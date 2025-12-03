@@ -1,5 +1,6 @@
 instances: 1
+editor_app_url: https://pages-editor-dev.app.cloud.gov
 env: dev
 log_level: verbose
-node_env: development
+node_env: production
 preview_mode: true
