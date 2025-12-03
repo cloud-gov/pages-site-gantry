@@ -167,14 +167,25 @@ export function alertsMapper(
   return (
     responseData
       ?.filter((a) => !!getData(a)?.isActive)
-      ?.map((a) => ({
-        title: getData(a).title,
-        type: getData(a).type,
-        content: getData(a).content,
-        icon: getData(a).icon,
-        slim: getData(a).slim,
-        alignment: getData(a).alignment,
-      })) ?? []
+      ?.map((a) => {
+        const data = getData(a);
+        const result: AlertModel = {
+          title: data.title,
+          type: data.type,
+          content: data.content,
+        };
+        // Only include optional fields if they are defined
+        if (data.icon !== undefined) {
+          result.icon = data.icon;
+        }
+        if (data.slim !== undefined) {
+          result.slim = data.slim;
+        }
+        if (data.alignment !== undefined) {
+          result.alignment = data.alignment;
+        }
+        return result;
+      }) ?? []
   );
 }
 
