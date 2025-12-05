@@ -1,0 +1,40 @@
+---
+import type { MediaValueProps } from "@/env";
+import { formatBytes, formatMimeType, getUploadUrl } from "@/utilities/media";
+
+interface Props {
+  resourceFiles: Array<{
+    file?: MediaValueProps;
+  }>;
+}
+
+const { resourceFiles } = Astro.props;
+
+const url = (file: MediaValueProps) => {
+  const url = getUploadUrl({
+    url: file.url,
+    filename: file.filename,
+    bucket: file.site.bucket,
+  });
+  return url;
+};
+---
+
+<h4>Resources</h4>
+{
+  resourceFiles.map((resourceFile) => (
+    <div>
+      <p>
+        <a
+          class="usa-link usa-link--external"
+          href={url(resourceFile.file)}
+          download={resourceFile.file.filename}
+        >
+          {resourceFile.file.altText || resourceFile.file.filename} [
+          {formatMimeType(resourceFile.file.mimeType)} -{" "}
+          {formatBytes(resourceFile.file.filesize)}]
+        </a>
+      </p>
+    </div>
+  ))
+}

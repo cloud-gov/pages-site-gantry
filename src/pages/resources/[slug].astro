@@ -11,6 +11,7 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
+import ResourceFile from "@/components/ResourceFile.astro";
 
 const { slug } = Astro.params;
 const collectionName = "resources";
@@ -27,7 +28,6 @@ if (!Astro.isPrerendered) {
 export const getStaticPaths = createGetStaticPath("resources");
 
 const resource = resourceMapper(data);
-
 export const prerender = true;
 ---
 
@@ -44,12 +44,24 @@ export const prerender = true;
       <h1 set:text={resource.title} />
       {data.image && <Media media={data.image} />}
       <p class="font-sans-sm text-italic" set:text={resource.date} />
-      <ul
-        class="usa-collection__meta display-flex"
-        aria-label="More information"
-      >
-        <Tags tags={resource.tags} />
-      </ul>
+      {
+        data.reportFiles.length > 0 && (
+          <ResourceFile resourceFiles={data.reportFiles} />
+        )
+      }
+      {
+        resource.tags && (
+          <>
+            <h4 class="margin-bottom-2">Tags</h4>
+            <ul
+              class="usa-collection__meta display-flex"
+              aria-label="More information"
+            >
+              <Tags tags={resource.tags} />
+            </ul>
+          </>
+        )
+      }
     </div>
     <RichText content={resource.content} />
   </PagesSection>
