@@ -27,4 +27,5 @@ export {
   resourceMapper,
   alertsMapper,
   footerMapper,
+  relatedItemsMapper,
 } from "./contentMapper";

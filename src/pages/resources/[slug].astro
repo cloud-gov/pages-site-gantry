@@ -5,6 +5,7 @@ import {
   createGetStaticPath,
   fetchSlug,
   resourceMapper,
+  relatedItemsMapper,
 } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
@@ -12,6 +13,7 @@ import Tags, { type Tag } from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import ResourceFile from "@/components/ResourceFile.astro";
+import RelatedItems from "@/components/RelatedItems.astro";
 
 const { slug } = Astro.params;
 const collectionName = "resources";
@@ -28,6 +30,12 @@ if (!Astro.isPrerendered) {
 export const getStaticPaths = createGetStaticPath("resources");
 
 const resource = resourceMapper(data);
+
+// Map related items if they exist
+const relatedItems = data.relatedItems
+  ? relatedItemsMapper(data.relatedItems, resourceMapper)
+  : [];
+
 export const prerender = true;
 ---
 
@@ -64,5 +72,6 @@ export const prerender = true;
       }
     </div>
     <RichText content={resource.content} />
+    <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>

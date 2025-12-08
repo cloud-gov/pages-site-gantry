@@ -3,6 +3,7 @@ import {
   createGetStaticPath,
   fetchSlug,
   eventsMapper,
+  relatedItemsMapper,
 } from "@/utilities/fetch";
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
@@ -10,6 +11,7 @@ import Layout from "@/layouts/Layout.astro";
 import RichText from "@/components/RichText.astro";
 import Tags from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
+import RelatedItems from "@/components/RelatedItems.astro";
 import type { CollectionEntry } from "astro:content";
 
 const { slug } = Astro.params;
@@ -35,6 +37,11 @@ if (!Astro.isPrerendered) {
 const event = eventsMapper(data);
 const start = tryParseDateParts(data.startDate);
 const end = tryParseDateParts(data.endDate);
+
+// Map related items if they exist
+const relatedItems = data.relatedItems
+  ? relatedItemsMapper(data.relatedItems, eventsMapper)
+  : [];
 
 export const getStaticPaths = createGetStaticPath("events");
 
@@ -158,5 +165,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         </section>
       )
     }
+
+    <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>
