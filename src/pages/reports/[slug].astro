@@ -11,6 +11,7 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
+import ResourceFile from "@/components/ResourceFile.astro";
 
 const { slug } = Astro.params;
 const collectionName = "reports";
@@ -44,12 +45,24 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       <h1 set:text={report.title} />
       {data.image && <Media media={data.image} />}
       <p class="font-sans-sm text-italic" set:text={report.date} />
-      <ul
-        class="usa-collection__meta display-flex"
-        aria-label="More information"
-      >
-        <Tags tags={report.tags} />
-      </ul>
+      {
+        data.reportFiles.length > 0 && (
+          <ResourceFile resourceFiles={data.reportFiles} />
+        )
+      }
+      {
+        report.tags && (
+          <>
+            <h4 class="margin-bottom-2">Tags</h4>
+            <ul
+              class="usa-collection__meta display-flex"
+              aria-label="More information"
+            >
+              <Tags tags={report.tags} />
+            </ul>
+          </>
+        )
+      }
     </div>
     <RichText content={report.content} />
     <Fragment slot="sidebar"></Fragment>

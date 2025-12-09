@@ -17,10 +17,6 @@ const upload = ({ node }: { node: SerializedUploadNode }): string => {
     bucket: value.site.bucket,
   });
 
-  const fileIcon = `
-    <img src="${filePresent.src}" width="${filePresent.width}" height="${filePresent.height}" alt="download file" />
-  `;
-
   const container = (slot) => `
     <div class="maxw-tablet">
       ${slot}
@@ -33,24 +29,10 @@ const upload = ({ node }: { node: SerializedUploadNode }): string => {
   }
 
   return container(`
-    <div class="usa-alert usa-alert--info usa-alert--slim usa-alert--no-icon">
-    <div class="usa-alert__body">
-      <h4 class="usa-alert__heading display-flex flex-row flex-align-center">
-        ${fileIcon} Download File
-      </h4>
-      <p class="usa-alert__text">
-        <a class="usa-link" href="${url}" download="true">
-          ${value.altText || value.filename}
-        </a>
-      </p>
-      <div class="usa-alert__text display-flex flex-column flex-align-end maxw-full">
-        <p class="usa-alert__text">
-          ${formatMimeType(value.mimeType)}
-          ${formatBytes(value.filesize)}
-        </p>
-      </div>
+    <div>
+      <p><a class="usa-link usa-link--external" href="${url}" download="${value.filename}">${value.altText || value.filename} [${formatMimeType(value.mimeType)} - ${formatBytes(value.filesize)}]</a>
     </div>
-  </div>`);
+  `);
 };
 
 export default upload;
