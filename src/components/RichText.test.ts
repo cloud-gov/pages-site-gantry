@@ -118,6 +118,7 @@ describe("RichText", () => {
               {
                 type: "block",
                 fields: {
+                  headingLevel: "h4",
                   items: [
                     {
                       body: {
@@ -235,6 +236,68 @@ describe("RichText", () => {
       expect(result).toContain("<li>Alpha</li>");
       expect(result).toContain("<li>Beta</li>");
       expect(result).toContain("Next paragraph");
+    });
+
+    it("renders processList items with chosen heading levels", async () => {
+      const richTextProps = {
+        content: {
+          root: {
+            children: [
+              {
+                type: "block",
+                fields: {
+                  headingLevel: "h3",
+                  blockType: "processList",
+                  items: [
+                    {
+                      fields: {
+                        heading: "H3 step",
+                        body: {
+                          root: {
+                            type: "root",
+                            children: [
+                              {
+                                type: "paragraph",
+                                children: [{ text: "Body A" }],
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      fields: {
+                        heading: "H5 step",
+                        body: {
+                          root: {
+                            type: "root",
+                            children: [
+                              {
+                                type: "paragraph",
+                                children: [{ text: "Body B" }],
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      };
+
+      const result = await container.renderToString(RichText, {
+        props: richTextProps,
+      });
+
+      expect(result).toContain(
+        '<h3 class="usa-process-list__heading">H3 step</h3>',
+      );
+      expect(result).toContain('<ol class="usa-process-list">');
+      expect(result).toContain('<li class="usa-process-list__item">');
     });
   });
 });
