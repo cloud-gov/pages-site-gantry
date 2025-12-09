@@ -8,15 +8,37 @@ import sanitizeHtml from "sanitize-html";
 import upload from "./RichTextConverters/upload";
 import { getTextContent } from "./RichTextConverters/helpers";
 import { table, tablerow, tablecell } from "./RichTextConverters/table";
+import { processListBlock } from "./RichTextConverters/processList";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
-
 type NodeTypes = DefaultNodeTypes;
 
 const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
   defaultConverters,
 }) => {
+  /*
+   * Converters used inside each process item body (nested rich text)
+   * Used to convert nested rich text inside Process List items without
+   * re-invoking block converters (avoids recursion while preserving
+   * heading/table/upload rules).
+   */
+  const nestedConverters: HTMLConvertersFunction<NodeTypes> = () => ({
+    ...defaultConverters,
+    upload: ({ node }) => upload({ node }),
+    heading: ({ node }) => {
+      const text = node.children?.map(getTextContent).join("") || "";
+      const id = text
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+      return `<${node.tag} id="${id}">${text}</${node.tag}>`;
+    },
+    table: ({ node }) => table({ node }),
+    tablerow: ({ node }) => tablerow({ node }),
+    tablecell: ({ node }) => tablecell({ node }),
+  });
+
   return {
     ...defaultConverters,
 
@@ -32,14 +54,21 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
     },
 
     table: ({ node }) => table({ node }),
-
     tablerow: ({ node }) => tablerow({ node }),
-
     tablecell: ({ node }) => tablecell({ node }),
+
+    blocks: {
+      processList: ({ node }) =>
+        processListBlock({
+          node,
+          htmlConverters: nestedConverters, // reuse pipeline for nested body
+        }),
+      // Add future blocks here:
+      // otherBlockSlug: ({ node }) => renderOtherBlock(node, nestedConverters),
+    },
   };
 };
 
-// Convert Lexical to HTML with our converters
 let rawHTML = convertLexicalToHTML({
   data: content,
   converters: htmlConverters,
@@ -68,12 +97,12 @@ let rawHTML = convertLexicalToHTML({
       h1: false,
       h2: false,
       h3: false,
-      h4: false,
+      h4: ["usa-process-list__heading"],
       h5: false,
       h6: false,
       img: false,
-      li: false,
-      ol: false,
+      li: ["usa-process-list__item"],
+      ol: ["usa-process-list"],
       p: false,
       span: false,
       ul: false,
@@ -86,11 +115,13 @@ let rawHTML = convertLexicalToHTML({
       h1: ["id"],
       h2: ["id"],
       h3: ["id"],
-      h4: ["id"],
+      h4: ["id", "class"],
       h5: ["id"],
       h6: ["id"],
       th: ["scope"],
       table: ["class"],
+      ol: ["class"],
+      li: ["class"],
     },
   })}
 />
