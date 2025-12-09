@@ -58,6 +58,8 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
                         subHref = `/${subitem.page.slug}`;
                       } else if (subitem.blockType === "collectionLink") {
                         subHref = `/${subitem.page}`;
+                      } else if (subitem.blockType === "customCollectionLink") {
+                        subHref = `/${subitem.customCollection?.slug || ""}`;
                       }
 
                       const isSubActive =
@@ -95,6 +97,9 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
               label = item.label;
             } else if (item.blockType === "collectionLink") {
               href = `/${item.page}`;
+              label = item.label;
+            } else if (item.blockType === "customCollectionLink") {
+              href = `/${item.customCollection?.slug || ""}`;
               label = item.label;
             }
 

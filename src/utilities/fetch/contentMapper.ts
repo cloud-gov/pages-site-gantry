@@ -159,6 +159,44 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
   };
 }
 
+/**
+ * Mapper for custom collection pages
+ * @param data - The custom collection page data
+ * @param collectionSlug - The URL slug for the custom collection (from collectionConfig)
+ */
+export function customCollectionPageMapper(data: any, collectionSlug: string) {
+  const mapped = contentMapper(data, {
+    baseUrl: `/${collectionSlug}`,
+    dateField: data.contentDate ? "contentDate" : "publishedAt",
+    fileField: "files",
+  });
+
+  return {
+    ...mapped,
+    date: data.contentDate
+      ? formatDate(data.contentDate)
+      : formatDate(data.publishedAt || ""),
+    description: data.excerpt || "",
+    showInPageNav: data.showInPageNav ?? true,
+  };
+}
+
+/**
+ * Creates a customCollectionPageMapper with a specific collection slug
+ * Use this when you need to map custom collection pages with the correct URL slug
+ */
+export function createCustomCollectionPageMapper(collectionSlug: string) {
+  return (data: any) => customCollectionPageMapper(data, collectionSlug);
+}
+
+export function shouldDisplay(a: any, currentDate: Date): boolean {
+  const publishDate = new Date(a?.publishDate);
+  return (
+    !!a?.isActive &&
+    (isNaN(publishDate.getTime()) || publishDate <= currentDate)
+  );
+}
+
 export function alertsMapper(
   responseData: any,
   preRendered: boolean = false,
@@ -167,14 +205,25 @@ export function alertsMapper(
   return (
     responseData
       ?.filter((a) => !!getData(a)?.isActive)
-      ?.map((a) => ({
-        title: getData(a).title,
-        type: getData(a).type,
-        content: getData(a).content,
-        icon: getData(a).icon,
-        slim: getData(a).slim,
-        alignment: getData(a).alignment,
-      })) ?? []
+      ?.map((a) => {
+        const data = getData(a);
+        const result: AlertModel = {
+          title: data.title,
+          type: data.type,
+          content: data.content,
+        };
+        // Only include optional fields if they are defined
+        if (data.icon !== undefined) {
+          result.icon = data.icon;
+        }
+        if (data.slim !== undefined) {
+          result.slim = data.slim;
+        }
+        if (data.alignment !== undefined) {
+          result.alignment = data.alignment;
+        }
+        return result;
+      }) ?? []
   );
 }
 
@@ -210,6 +259,13 @@ export function linkMapper(link): LinkModel {
       result = {
         text: link?.name,
         url: collectionUrlMapper(link?.page),
+        externalLink: false,
+      };
+      break;
+    case "customCollectionLink":
+      result = {
+        text: link?.name,
+        url: collectionUrlMapper(link?.customCollection?.slug),
         externalLink: false,
       };
       break;

@@ -7,6 +7,8 @@ export {
   fetchCollection,
   fetchFooter,
   fetchPreFooter,
+  fetchCustomCollectionPages,
+  fetchCustomCollectionPageBySlug,
 } from "./queries";
 export { getPaginatedCollectionData } from "./collectionDataFetch";
 export {
@@ -25,6 +27,8 @@ export {
   reportMapper,
   leadershipMapper,
   resourceMapper,
+  customCollectionPageMapper,
+  createCustomCollectionPageMapper,
   alertsMapper,
   footerMapper,
 } from "./contentMapper";
