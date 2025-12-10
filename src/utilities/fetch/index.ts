@@ -9,6 +9,7 @@ export {
   fetchPreFooter,
   fetchCustomCollectionPages,
   fetchCustomCollectionPageBySlug,
+  fetchNotFoundPage,
 } from "./queries";
 export { getPaginatedCollectionData } from "./collectionDataFetch";
 export {
