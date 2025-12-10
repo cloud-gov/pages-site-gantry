@@ -1,0 +1,34 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import RichText from "@/components/RichText.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import { fetchNotFoundPage } from "@/utilities/fetch";
+
+let notFoundData;
+if (!Astro.isPrerendered) {
+  notFoundData = await fetchNotFoundPage();
+} else {
+  const { getCollection } = await import("astro:content");
+  const collectionName = "notFoundPage";
+  const response = await getCollection(collectionName);
+  notFoundData = response[0]?.data;
+}
+
+const title = notFoundData?.title || "Page Not Found";
+const heading = notFoundData?.heading || "404 - Page Not Found";
+const content = notFoundData?.content;
+const showSearch = notFoundData?.showSearch ?? true;
+---
+
+<Layout title={title}>
+  <PagesSection>
+    <h1>{heading}</h1>
+    {content && <RichText content={content} />}
+    {
+      showSearch &&
+        {
+          /* Add search component here if you have one */
+        }
+    }
+  </PagesSection>
+</Layout>

@@ -673,6 +673,18 @@ const footer = defineCollection({
   ),
 });
 
+const notFoundPage = defineCollection({
+  loader: collectionLoader("globals/404"),
+  schema: makeAllKeysNullable(
+    z.object({
+      title: z.string(),
+      heading: z.string(),
+      content: z.any(), // richText
+      showSearch: z.boolean().optional(),
+    }),
+  ),
+});
+
 export const collections = {
   // site collections
   alerts,
