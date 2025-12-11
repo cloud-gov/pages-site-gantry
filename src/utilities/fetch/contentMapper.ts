@@ -8,6 +8,7 @@ import {
   type LinkModel,
   type LogoModel,
   type PageModel,
+  type MediaValueProps,
 } from "@/env";
 import { preFooterMapper } from "@/utilities/fetch/preFooterMapper.ts";
 
@@ -132,7 +133,7 @@ export function reportMapper(data: CollectionEntry<"reports">["data"]) {
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `/reports/${data.slug}`,
-    tags: data.categories.map((c) => ({
+    tags: (data.categories ?? []).map((c) => ({
       label: c.title,
       url: `/reports?category=${c.slug}`,
     })),
@@ -151,7 +152,7 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `/resources/${data.slug}`,
-    tags: data.categories.map((c) => ({
+    tags: (data.categories ?? []).map((c) => ({
       label: c.title,
       url: `/resources?category=${c.slug}`,
     })),
@@ -297,4 +298,62 @@ export function footerMapper(i: any, pf: any): FooterModel {
       },
     },
   };
+}
+
+export interface RelatedItem {
+  title: string;
+  description?: string;
+  link: string;
+  externalLink: boolean;
+  media?: MediaValueProps;
+  date?: DateParts | string;
+}
+
+export function relatedItemsMapper(
+  relatedItems: any[],
+  collectionMapper: (data: any) => any,
+): RelatedItem[] {
+  if (!relatedItems || relatedItems.length === 0) {
+    return [];
+  }
+
+  return relatedItems
+    .map((block): RelatedItem | null => {
+      // Handle external links
+      if (block.blockType === "externalLink") {
+        return {
+          title: block.title || "",
+          description: block.description || "",
+          link: block.url || "",
+          externalLink: true,
+        };
+      }
+
+      // Handle internal items
+      if (block.blockType === "internalItem" && block.item) {
+        const item =
+          typeof block.item === "object" && block.item !== null
+            ? block.item
+            : null;
+
+        if (!item) {
+          return null;
+        }
+
+        // Map the internal item using the provided mapper
+        const mapped = collectionMapper(item);
+        return {
+          title: mapped.title || item.title || "",
+          description: block.description || mapped.description || "",
+          link: mapped.link || "",
+          externalLink: false,
+          media: mapped.media,
+          date: mapped.date,
+        };
+      }
+
+      // Unknown block type
+      return null;
+    })
+    .filter((item): item is RelatedItem => item !== null); // Fixed: proper filter syntax
 }

@@ -8,18 +8,11 @@ const { items = [], showEvent = false } = Astro.props;
   {items.length === 0 && <p>No items found</p>}
   {
     items.length > 0 && (
-      <ol class="usa-collection-group measure-6">
+      <ul class="usa-collection measure-6">
         {items.map((n) => (
           <CollectionItem {...n} showEvent={showEvent} />
         ))}
-      </ol>
+      </ul>
     )
   }
 </>
-
-<style>
-  .usa-collection-group {
-    padding: 0;
-    margin: 0;
-  }
-</style>

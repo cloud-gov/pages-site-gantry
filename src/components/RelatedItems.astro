@@ -1,0 +1,65 @@
+---
+import CollectionItem from "@/components/CollectionItem.astro";
+import type { RelatedItem } from "@/utilities/fetch/contentMapper";
+import Media from "@/components/Media.astro";
+
+const { items = [] } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class="margin-top-6">
+      <h2 class="font-heading-lg margin-bottom-3">Related Items</h2>
+      <ul class="usa-collection measure-6">
+        {items.map((item: RelatedItem) => (
+          <li class="usa-collection__item maxw-tablet">
+            {item.media?.thumbnailURL && (
+              <Media className="usa-collection__img" media={item.media} />
+            )}
+            <div class="usa-collection__body">
+              <h3 class="usa-collection__heading font-body-lg">
+                {item.externalLink ? (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="usa-link usa-link--external"
+                  >
+                    {item.title}
+                    <span class="usa-sr-only"> (opens in new tab)</span>
+                  </a>
+                ) : (
+                  <a href={item.link} class="usa-link">
+                    {item.title}
+                  </a>
+                )}
+              </h3>
+              {item.description && (
+                <div class="usa-collection__description">
+                  <p set:html={item.description.replace(/\n/g, "<br>")} />
+                </div>
+              )}
+              {item.date && !item.externalLink && (
+                <ul class="usa-collection__meta" aria-label="More information">
+                  <li class="usa-collection__meta-item">
+                    <time
+                      datetime={
+                        typeof item.date === "string"
+                          ? item.date
+                          : item.date.raw.toISOString()
+                      }
+                    >
+                      {typeof item.date === "string"
+                        ? item.date
+                        : item.date.full}
+                    </time>
+                  </li>
+                </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
