@@ -9,6 +9,7 @@ import upload from "./RichTextConverters/upload";
 import { getTextContent } from "./RichTextConverters/helpers";
 import { table, tablerow, tablecell } from "./RichTextConverters/table";
 import { processListBlock } from "./RichTextConverters/processList";
+import { accordionBlock } from "./RichTextConverters/accordion";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
@@ -63,6 +64,11 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
           node,
           htmlConverters: nestedConverters, // reuse pipeline for nested body
         }),
+      accordion: ({ node }) =>
+        accordionBlock({
+          node,
+          htmlConverters: nestedConverters,
+        }),
       // Add future blocks here:
       // otherBlockSlug: ({ node }) => renderOtherBlock(node, nestedConverters),
     },
@@ -89,23 +95,30 @@ let rawHTML = convertLexicalToHTML({
       "tr",
       "th",
       "td",
+      "button",
     ]),
     allowedClasses: {
       a: false,
       table: ["usa-table", "usa-table--striped"],
-      div: false,
+      div: [
+        "usa-accordion__content",
+        "usa-prose",
+        "usa-accordion",
+        "usa-accordion--multiselectable",
+      ],
       h1: false,
-      h2: ["usa-process-list__heading"],
-      h3: ["usa-process-list__heading"],
-      h4: ["usa-process-list__heading"],
-      h5: ["usa-process-list__heading"],
-      h6: ["usa-process-list__heading"],
+      h2: ["usa-process-list__heading", "usa-accordion__heading"],
+      h3: ["usa-process-list__heading", "usa-accordion__heading"],
+      h4: ["usa-process-list__heading", "usa-accordion__heading"],
+      h5: ["usa-process-list__heading", "usa-accordion__heading"],
+      h6: ["usa-process-list__heading", "usa-accordion__heading"],
       img: false,
       li: ["usa-process-list__item"],
       ol: ["usa-process-list"],
       p: false,
       span: false,
       ul: false,
+      button: ["usa-accordion__button"],
     },
     allowedAttributes: {
       a: ["href", "name", "target", "download"],
@@ -122,6 +135,8 @@ let rawHTML = convertLexicalToHTML({
       table: ["class"],
       ol: ["class"],
       li: ["class"],
+      button: ["class", "type", "aria-expanded", "aria-controls"],
+      div: ["id", "data-allow-multiple"],
     },
   })}
 />
