@@ -1,0 +1,180 @@
+---
+import {
+  fetchCustomCollectionPageBySlug,
+  createCustomCollectionPageMapper,
+  fetchSlug,
+} from "@/utilities/fetch";
+import { tryParseDateParts } from "@/utilities/dates";
+import PagesSection from "@/components/PagesSection.astro";
+import Layout from "@/layouts/Layout.astro";
+import RichText from "@/components/RichText.astro";
+import Tags from "@/components/Tags.astro";
+import Media from "@/components/Media.astro";
+import InPageNavigation from "@/components/InPageNavigation.astro";
+import PreviewReload from "@/components/PreviewReload.astro";
+import { fetchCollection } from "@/utilities/fetch";
+
+const { collectionSlug, slug: pageSlug } = Astro.params;
+
+// Check if this slug matches a custom collection config
+const collectionConfig = await fetchSlug(
+  "custom-collections",
+  collectionSlug || "",
+);
+
+if (!collectionConfig) {
+  return Astro.redirect("/404");
+}
+
+// Fetch the specific page
+let data: any;
+
+if (!Astro.isPrerendered) {
+  data = await fetchCustomCollectionPageBySlug(
+    collectionConfig.id,
+    pageSlug || "",
+  );
+  if (!data) return Astro.redirect("/404");
+} else {
+  // @ts-expect-error
+  ({ data } = Astro.props);
+}
+
+// Map the page
+const mapper = createCustomCollectionPageMapper(collectionSlug || "");
+const item = mapper(data);
+const contentDate = data.contentDate
+  ? tryParseDateParts(data.contentDate)
+  : null;
+
+export async function getStaticPaths() {
+  // Fetch all custom collection configs and their pages to generate static paths
+  try {
+    const configsData = await fetchCollection("custom-collections");
+    const configs = configsData?.docs || [];
+
+    const paths: any[] = [];
+
+    for (const config of configs) {
+      const pagesData = await fetchCollection(
+        `custom-collection-pages?where[collectionConfig][equals]=${config.id}&limit=0`,
+      );
+      const pages = pagesData?.docs || [];
+
+      for (const page of pages) {
+        if (page.slug) {
+          paths.push({
+            params: {
+              collectionSlug: config.slug,
+              slug: page.slug,
+            },
+            props: { data: page, collectionConfig: config },
+          });
+        }
+      }
+    }
+
+    return paths;
+  } catch (error) {
+    console.warn(
+      "Could not generate static paths for custom collection pages:",
+      error,
+    );
+    return [];
+  }
+}
+
+export const prerender = import.meta.env.PREVIEW_MODE || false;
+---
+
+<Layout title={item.title} useInPageNav={item.showInPageNav}>
+  {
+    item.showInPageNav && (
+      <Fragment slot="in-page-nav">
+        <InPageNavigation />
+      </Fragment>
+    )
+  }
+  <PagesSection heading={data.title}>
+    <div class="flex-column margin-bottom-5">
+      {data.image && <Media media={data.image} />}
+      {item.date && <p class="font-sans-sm text-italic" set:text={item.date} />}
+      {
+        data.categories && data.categories.length > 0 && (
+          <ul
+            class="usa-collection__meta display-flex margin-top-2"
+            aria-label="More information"
+          >
+            <Tags
+              tags={data.categories.map((cat) => ({
+                label: cat.title,
+                url: `/${collectionSlug}?category=${cat.slug}`,
+              }))}
+            />
+          </ul>
+        )
+      }
+    </div>
+
+    {
+      contentDate && (
+        <div
+          class="usa-summary-box maxw-tablet margin-bottom-2"
+          role="region"
+          aria-labelledby={`content-details-${itemSlug}`}
+        >
+          <div class="usa-summary-box__body">
+            <h2
+              class="usa-summary-box__heading"
+              id={`content-details-${itemSlug}`}
+            >
+              Details
+            </h2>
+            <div class="usa-summary-box__text">
+              <ul class="usa-list">
+                {contentDate && (
+                  <li>
+                    <b>Date:</b> {contentDate.full}
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    {data.excerpt && <p class="margin-bottom-2">{data.excerpt}</p>}
+
+    {
+      data.content && (
+        <section class="margin-top-4">
+          <RichText content={data.content} />
+        </section>
+      )
+    }
+
+    {
+      data.files && data.files.length > 0 && (
+        <section class="margin-top-4">
+          <h3>Files</h3>
+          <ul class="usa-list">
+            {data.files.map((fileItem) => (
+              <li>
+                <a
+                  href={fileItem.file?.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {fileItem.label || fileItem.file?.filename || "Download"}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </PagesSection>
+</Layout>
+
+<PreviewReload />

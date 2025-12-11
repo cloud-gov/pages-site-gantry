@@ -1,0 +1,112 @@
+---
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import Layout from "@/layouts/Layout.astro";
+import PaginationNav from "@/components/PaginationNav.astro";
+import {
+  fetchCustomCollectionPages,
+  createCustomCollectionPageMapper,
+  fetchCollection,
+  fetchSlug,
+} from "@/utilities/fetch";
+import { paginate } from "@/utilities/pagination";
+
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
+const { collectionSlug, page } = Astro.params;
+const currentPage = parseInt(page) || 1;
+
+// Check if this slug matches a custom collection config
+const collectionConfig = await fetchSlug(
+  "custom-collections",
+  collectionSlug || "",
+);
+
+if (!collectionConfig) {
+  return Astro.redirect("/404");
+}
+
+// Fetch pages for this custom collection
+const collectionPagesData = await fetchCustomCollectionPages(
+  collectionConfig.id,
+);
+const collectionPages = collectionPagesData?.docs || [];
+
+// Sort by publishedAt
+const sorted = collectionPages.sort((a: any, b: any) => {
+  return (
+    new Date(b.publishedAt || 0).getTime() -
+    new Date(a.publishedAt || 0).getTime()
+  );
+});
+
+// Paginate
+const hasPaginationNav = sorted.length >= PAGE_SIZE;
+const { totalPages, paginatedItems } = paginate(sorted, currentPage, PAGE_SIZE);
+
+// Map items
+const mapper = createCustomCollectionPageMapper(collectionSlug || "");
+const items = paginatedItems.map(mapper);
+
+export async function getStaticPaths() {
+  // Fetch all custom collection configs to generate static paths
+  try {
+    const data = await fetchCollection("custom-collections");
+    const configs = data?.docs || [];
+
+    const paths: any[] = [];
+
+    for (const config of configs) {
+      const pagesData = await fetchCollection(
+        `custom-collection-pages?where[collectionConfig][equals]=${config.id}&limit=0`,
+      );
+      const pages = pagesData?.docs || [];
+      const totalPages = pages.length;
+      const totalPagesCount = Math.ceil(totalPages / PAGE_SIZE);
+
+      // Generate paths for each page
+      for (let i = 1; i <= totalPagesCount; i++) {
+        paths.push({
+          params: {
+            collectionSlug: config.slug,
+            page: String(i),
+          },
+        });
+      }
+    }
+
+    return paths;
+  } catch (error) {
+    console.warn(
+      "Could not generate static paths for custom collection pagination:",
+      error,
+    );
+    return [];
+  }
+}
+
+export const prerender = import.meta.env.PREVIEW_MODE || false;
+---
+
+<Layout
+  title={collectionConfig.title}
+  currentPage={currentPage}
+  totalPages={totalPages}
+>
+  <PagesSection heading={collectionConfig.title}>
+    {
+      collectionConfig.description && (
+        <p class="margin-bottom-3">{collectionConfig.description}</p>
+      )
+    }
+    <CollectionItemList items={items} />
+    {
+      hasPaginationNav && (
+        <PaginationNav
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath={`/${collectionSlug}/page`}
+        />
+      )
+    }
+  </PagesSection>
+</Layout>

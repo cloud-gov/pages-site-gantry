@@ -49,3 +49,23 @@ export async function fetchPageSlug(collectionName: string, slug: string) {
   );
   return processFetchResponse(await safeJsonParse(response));
 }
+
+// Custom Collections
+export async function fetchCustomCollectionPages(
+  collectionConfigId: string | number,
+) {
+  const response = await payloadFetch(
+    `custom-collection-pages?where[collectionConfig][equals]=${collectionConfigId}&limit=0`,
+  );
+  return await safeJsonParse(response);
+}
+
+export async function fetchCustomCollectionPageBySlug(
+  collectionConfigId: string | number,
+  pageSlug: string,
+) {
+  const response = await payloadFetch(
+    `custom-collection-pages?where[and][0][collectionConfig][equals]=${collectionConfigId}&where[and][1][slug][equals]=${pageSlug}&limit=1`,
+  );
+  return processFetchResponse(await safeJsonParse(response));
+}
