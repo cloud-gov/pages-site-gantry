@@ -19,6 +19,7 @@ import {
 import { type AlertModel, type FooterModel } from "@/env";
 import Alerts from "@/components/Alerts.astro";
 import { fetchFooter, footerMapper } from "@/utilities/fetch";
+import FiltersConfig from "@/components/FiltersConfig.astro";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -80,6 +81,7 @@ const {
   useInPageNav = false,
   currentPage,
   totalPages,
+  collectionFiltersConfig,
 } = Astro.props;
 const metaTitle = title
   ? `${title} | ${siteConfig.agencyName || "Agency Homepage"}`
@@ -110,6 +112,8 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <meta name="twitter:title" content={metaTitle} />
     {description && <meta name="twitter:description" content={description} />}
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+
+    <FiltersConfig collectionFiltersConfig={collectionFiltersConfig} />
   </head>
   <body>
     <Config />
@@ -145,9 +149,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
         />
       )
     }
-  </body>
-
-  <style>
+  </body><style>
     .usa-in-page-nav-container {
       position: relative;
       max-width: 75rem;

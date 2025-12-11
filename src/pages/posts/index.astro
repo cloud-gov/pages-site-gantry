@@ -28,7 +28,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title="posts" currentPage={currentPage} totalPages={totalPages}>
-  <PagesSection heading="Posts">
+  <PagesSection heading="Posts" filterCollectionName={collectionName}>
     <CollectionItemList items={items} />
     {
       hasPaginationNav >= PAGE_SIZE && (

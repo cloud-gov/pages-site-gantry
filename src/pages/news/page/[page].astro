@@ -28,7 +28,11 @@ export const prerender = true;
 ---
 
 <Layout title="News" currentPage={currentPage} totalPages={totalPages}>
-  <PagesSection heading="News" color="gray-10">
+  <PagesSection
+    heading="News"
+    filterCollectionName={collectionName}
+    color="gray-10"
+  >
     <CollectionItemList items={items} />
     {
       hasPaginationNav && (

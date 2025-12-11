@@ -6,6 +6,7 @@ import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
+import { getCollectionFiltersConfig } from "@/utilities/filters";
 
 const { slug } = Astro.params;
 const collectionName = "leadership";
@@ -24,7 +25,10 @@ export const getStaticPaths = createGetStaticPath("leadership");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={data.title}>
+<Layout
+  title={data.title}
+  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, data)}
+>
   <PagesSection>
     <div class="flex-column margin-bottom-2">
       <h1 set:text={data.title} />

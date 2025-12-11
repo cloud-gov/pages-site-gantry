@@ -3,9 +3,7 @@ import { alertsMapper, footerMapper } from "@/utilities/fetch";
 import {
   collectionUrlMapper,
   linkMapper,
-  logoMapper,
   pageUrlMapper,
-  shouldDisplay,
 } from "@/utilities/fetch/contentMapper";
 import type { FooterModel, PageModel } from "@/env";
 

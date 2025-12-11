@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro build && cp -r public/* _site/",
+    "index": "npm install && pagefind --site _site --verbose",
+    "local:index": "RENDER_MODE=static astro build && cp -r public/* _site/ && npm run index && rm -rf pagefind && cp -r _site/pagefind ./pagefind",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,astro}\"",
     "oauth": "node oauth/index.js",
-    "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build",
+    "pages": "ASTRO_TELEMETRY_DISABLED=1 RENDER_MODE=static npm run build && npm run index",
     "test": "NODE_ENV=test vitest",
     "test:ui": "NODE_ENV=test vitest --ui",
     "test:run": "NODE_ENV=test vitest run"
@@ -46,7 +48,8 @@
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "0.14.1",
     "sass-embedded": "^1.85.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "pagefind": "^1.4.0"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.40.0",

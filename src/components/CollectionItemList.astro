@@ -4,7 +4,7 @@ import CollectionItem from "@/components/CollectionItem.astro";
 const { items = [], showEvent = false } = Astro.props;
 ---
 
-<>
+<div id="results">
   {items.length === 0 && <p>No items found</p>}
   {
     items.length > 0 && (
@@ -15,7 +15,7 @@ const { items = [], showEvent = false } = Astro.props;
       </ol>
     )
   }
-</>
+</div>
 
 <style>
   .usa-collection-group {

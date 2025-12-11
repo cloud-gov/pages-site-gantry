@@ -40,7 +40,11 @@ export const prerender = true;
 ---
 
 <Layout title="Leadership" currentPage={currentPage} totalPages={totalPages}>
-  <PagesSection heading="Leadership" color="gray-10">
+  <PagesSection
+    heading="Leadership"
+    filterCollectionName={collectionName}
+    color="gray-10"
+  >
     <CollectionItemList items={items} />
     {
       people.length >= PAGE_SIZE && (

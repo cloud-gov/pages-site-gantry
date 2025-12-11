@@ -7,6 +7,7 @@ import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
+import { getCollectionFiltersConfig } from "@/utilities/filters";
 
 const { slug } = Astro.params;
 const collectionName = "news";
@@ -27,7 +28,11 @@ const newsItem = newsMapper(data);
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={newsItem.title} useInPageNav={newsItem.showInPageNav}>
+<Layout
+  title={newsItem.title}
+  useInPageNav={newsItem.showInPageNav}
+  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, newsItem)}
+>
   {
     newsItem.showInPageNav && (
       <Fragment slot="in-page-nav">

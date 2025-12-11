@@ -261,3 +261,13 @@ export interface IdentifierColors {
   primaryLinkColor?: string;
   secondaryLinkColor?: string;
 }
+
+export interface CollectionFiltersConfig {
+  collectionName: string;
+  filters: [
+    {
+      config: string;
+      content: string;
+    },
+  ];
+}

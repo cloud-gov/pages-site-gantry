@@ -1,4 +1,5 @@
 ---
+import Filters from "./Filters.astro";
 interface Button {
   label: string;
   url: string;
@@ -11,6 +12,7 @@ interface Props {
   id?: string;
   color?: string;
   align?: "center" | "left";
+  filterCollectionName?: string;
 }
 
 const {
@@ -19,6 +21,7 @@ const {
   align = "left",
   classes = "",
   id = false,
+  filterCollectionName,
 } = Astro.props;
 ---
 
@@ -38,8 +41,17 @@ const {
           </div>
         </div>
       </div>
-      <div class="grid-col-4">
-        <slot name="sidebar" />
+      <div class="grid-col-4 margin-top-4">
+        {
+          filterCollectionName && (
+            <div class="grid-row">
+              <Filters collectionName={filterCollectionName} />
+            </div>
+          )
+        }
+        <div class="grid-row">
+          <slot name="sidebar" />
+        </div>
       </div>
     </div>
   </div>

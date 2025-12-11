@@ -1,6 +1,6 @@
 import { type CollectionEntry } from "astro:content";
 import { formatDate } from "../formatting";
-import { type DateParts, parseDateParts } from "../dates";
+import { type DateParts, parseDateParts, getYear } from "../dates";
 import {
   type AlertModel,
   type CollectionCategoryProps,
@@ -52,6 +52,7 @@ export function contentMapper(
   const endSrc = (data as any).endDate;
   const files: File[] = fileField ? data[fileField] : [];
   const dateParts = parseDateParts(data[dateField] || data.publishedAt || "");
+  const year = getYear(data[dateField] || data.publishedAt || "");
 
   return {
     title: data.title,
@@ -67,6 +68,7 @@ export function contentMapper(
       label: c.title,
       url: `${baseUrl}?category=${c.slug}`,
     })),
+    yearTag: year,
   };
 }
 

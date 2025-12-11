@@ -74,8 +74,15 @@ export default defineConfig({
       ],
     },
     assetsInclude: ["**/*.png", "**/*.svg"],
+    build: {
+      rollupOptions: {
+        external: ["/pagefind/pagefind.js"],
+      },
+    },
   },
   devToolbar: {
     enabled: false,
   },
 });
+
+

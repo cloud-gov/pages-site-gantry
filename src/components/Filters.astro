@@ -1,0 +1,154 @@
+---
+import {
+  getDocumentTypeFilterName,
+  getYearFilterName,
+} from "@/utilities/filters";
+
+interface Props {
+  collectionName: string;
+}
+
+const { collectionName = "" } = Astro.props;
+---
+
+<aside class="sidenav-container">
+  <span
+    id="pagefind-data"
+    data-typefiltername={getDocumentTypeFilterName(collectionName)}
+    data-yearfiltername={getYearFilterName(collectionName)}
+    style="display:none"></span>
+  <nav
+    class="usa-sidenav"
+    aria-label="Filter by document type"
+    id="nav-document-type"
+  >
+    <div class="margin-top-4">
+      <label class="usa-label text-bold" for="select-document-type"
+        >Filter by document type</label
+      >
+      <select class="usa-select" id="select-document-type">
+        <option value="all">All</option>
+      </select>
+    </div>
+  </nav>
+  <nav
+    class="usa-sidenav"
+    aria-label="Filter by document year"
+    id="nav-document-year"
+  >
+    <div class="margin-top-4">
+      <label class="usa-label text-bold" for="select-year">Filter by year</label
+      >
+      <select class="usa-select oig-filter-onchange" id="select-year">
+        <option value="all">All</option>
+      </select>
+    </div>
+  </nav>
+  <nav class="usa-sidenav" aria-label="Search Results" id="nav-document-year">
+    <div id="results-count"></div>
+    <div id="recommended"></div>
+    <div id="search-results"></div>
+    <hr class="margin-bottom-3 margin-top-3" />
+    <div id="pagination"></div>
+  </nav>
+</aside>
+<script>
+  import { addFilters, getSearchOptions } from "../utilities/filters.ts";
+
+  const pagefind = await import("/pagefind/pagefind.js");
+  pagefind.init();
+  const filters = await pagefind.filters();
+
+  const pagefindDataElement = document.getElementById("pagefind-data");
+  const yearFilterName = pagefindDataElement?.dataset.yearfiltername;
+  const typeFilterName = pagefindDataElement?.dataset.typefiltername;
+
+  addFilters(
+    filters,
+    yearFilterName,
+    document.getElementById("select-year"),
+    document.getElementById("nav-document-year"),
+  );
+
+  addFilters(
+    filters,
+    typeFilterName,
+    document.getElementById("select-document-type"),
+    document.getElementById("nav-document-type"),
+  );
+
+  const typeSelect = document.getElementById("select-document-type");
+  const yearSelect = document.getElementById("select-year");
+  const resultsDiv = document.getElementById("search-results");
+
+  function renderResults(results) {
+    if (!results || results.length === 0) {
+      resultsDiv.innerHTML = "<p>No results found.</p>";
+      return;
+    }
+
+    const urls = results
+      .map((obj) => {
+        return obj?.url;
+      })
+      .filter(Boolean); // remove undefined
+
+    resultsDiv.innerHTML = urls
+      .map((url) => `<div><a href="${url}" target="_blank">${url}</a></div>`)
+      .join("");
+  }
+
+  // Function to call when either dropdown changes
+  async function handleFilterChange() {
+    const searchOptions = getSearchOptions(
+      yearSelect.value,
+      typeSelect.value,
+      yearFilterName,
+      typeFilterName,
+    );
+    let results = [];
+    if (searchOptions) {
+      const searchResults = await pagefind.search(null, searchOptions);
+      results = await Promise.all(searchResults.results.map((r) => r.data()));
+    }
+    renderResults(results);
+  }
+
+  // Attach change event listeners
+  typeSelect.addEventListener("change", handleFilterChange);
+  yearSelect.addEventListener("change", handleFilterChange);
+</script>
+
+<style is:global>
+  .usa-sidenav {
+    position: sticky;
+    top: 0;
+    height: fit-content;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .usa-sidenav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .usa-sidenav__item {
+    margin: 0;
+  }
+
+  /* Dropdown parent styling - looks like link but not clickable */
+  .usa-sidenav__item > span.usa-sidenav__link {
+    cursor: default;
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+  }
+
+  /* Hide side navigation on mobile */
+  @media (max-width: 768px) {
+    .usa-sidenav {
+      display: none;
+    }
+  }
+</style>

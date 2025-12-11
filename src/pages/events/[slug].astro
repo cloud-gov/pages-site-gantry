@@ -12,6 +12,7 @@ import Tags from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 import type { CollectionEntry } from "astro:content";
+import { getCollectionFiltersConfig } from "@/utilities/filters";
 
 const { slug } = Astro.params;
 
@@ -42,7 +43,11 @@ export const getStaticPaths = createGetStaticPath("events");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={event.title} useInPageNav={event.showInPageNav}>
+<Layout
+  title={event.title}
+  useInPageNav={event.showInPageNav}
+  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, event)}
+>
   {
     event.showInPageNav && (
       <Fragment slot="in-page-nav">

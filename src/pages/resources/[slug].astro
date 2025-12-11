@@ -11,6 +11,7 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
+import { getCollectionFiltersConfig } from "@/utilities/filters";
 
 const { slug } = Astro.params;
 const collectionName = "resources";
@@ -31,7 +32,11 @@ const resource = resourceMapper(data);
 export const prerender = true;
 ---
 
-<Layout title={resource.title} useInPageNav={resource.showInPageNav}>
+<Layout
+  title={resource.title}
+  useInPageNav={resource.showInPageNav}
+  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, resource)}
+>
   {
     resource.showInPageNav && (
       <Fragment slot="in-page-nav">

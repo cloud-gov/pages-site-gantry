@@ -41,3 +41,9 @@ export function tryParseDateParts(input?: string | number | Date) {
   if (Number.isNaN(d.getTime())) return null;
   return parseDateParts(d);
 }
+
+export function getYear(dateInput: string): string {
+  const date = new Date(dateInput);
+  let year = date.getFullYear();
+  return String(year);
+}

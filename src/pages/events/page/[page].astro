@@ -28,7 +28,7 @@ export const prerender = true;
 ---
 
 <Layout title="events" currentPage={currentPage} totalPages={totalPages}>
-  <PagesSection heading="Events">
+  <PagesSection heading="Events" filterCollectionName={collectionName}>
     <CollectionItemList showEvent hideDate={true} items={items} />
     {
       hasPaginationNav && (
