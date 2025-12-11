@@ -8,6 +8,8 @@ const escapeHTML = (str: string) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
+type HeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
+
 export const processListBlock = ({
   node,
   htmlConverters,
@@ -15,17 +17,21 @@ export const processListBlock = ({
   node: any;
   htmlConverters: Parameters<typeof convertLexicalToHTML>[0]["converters"];
 }): string => {
+  const headingLevel = node?.fields?.headingLevel as HeadingTag;
   const fields = node?.fields ?? node;
   const items = Array.isArray(fields?.items) ? fields.items : [];
 
   const liHTML = items
     .map((it: any) => {
       const itemFields = it?.fields ?? it;
-      const heading = itemFields?.heading ?? "";
+      const heading: string = itemFields?.heading ?? "";
       const body = itemFields?.body;
 
+      // Skip empty items
+      if (!heading && !body) return "";
+
       const headingHTML = heading
-        ? `<h4 class="usa-process-list__heading">${escapeHTML(heading)}</h4>`
+        ? `<${headingLevel} class="usa-process-list__heading">${escapeHTML(heading)}</${headingLevel}>`
         : "";
 
       const bodyHTML = body
@@ -34,6 +40,7 @@ export const processListBlock = ({
 
       return `<li class="usa-process-list__item">${headingHTML}${bodyHTML}</li>`;
     })
+    .filter(Boolean)
     .join("");
 
   return `<ol class="usa-process-list">${liHTML}</ol>`;
