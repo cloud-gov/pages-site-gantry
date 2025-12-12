@@ -9,13 +9,17 @@ interface Props {
 }
 
 const { collectionName = "" } = Astro.props;
----
 
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? "/"
+  : (import.meta.env.BASEURL || "") + "/";
+---
 <aside class="sidenav-container">
   <span
     id="pagefind-data"
     data-typefiltername={getDocumentTypeFilterName(collectionName)}
     data-yearfiltername={getYearFilterName(collectionName)}
+    data-baseurl={baseUrl}
     style="display:none"></span>
   <nav
     class="usa-sidenav"
@@ -55,13 +59,15 @@ const { collectionName = "" } = Astro.props;
 <script>
   import { addFilters, getSearchOptions } from "../utilities/filters.ts";
 
-  const pagefind = await import("/pagefind/pagefind.js");
-  pagefind.init();
-  const filters = await pagefind.filters();
-
   const pagefindDataElement = document.getElementById("pagefind-data");
   const yearFilterName = pagefindDataElement?.dataset.yearfiltername;
   const typeFilterName = pagefindDataElement?.dataset.typefiltername;
+  const baseUrl = pagefindDataElement?.dataset.baseurl;
+
+  const pagefindUrl = baseUrl + "pagefind/pagefind.js";
+  const pagefind = await import(pagefindUrl);
+  pagefind.init();
+  const filters = await pagefind.filters();
 
   addFilters(
     filters,
