@@ -8,6 +8,8 @@ const escapeHTML = (str: string) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
+type HeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
+
 export const accordionBlock = ({
   node,
   htmlConverters,
@@ -15,6 +17,7 @@ export const accordionBlock = ({
   node: any;
   htmlConverters: Parameters<typeof convertLexicalToHTML>[0]["converters"];
 }): string => {
+  const headingLevel = node?.fields?.headingLevel as HeadingTag;
   const fields = node?.fields ?? node;
   const items = Array.isArray(fields?.items) ? fields.items : [];
 
@@ -22,21 +25,22 @@ export const accordionBlock = ({
     .map((it: any, index: number) => {
       const itemFields = it?.fields ?? it;
       const heading = itemFields?.heading ?? "";
+      const accordionId = itemFields?.id ?? "";
       const content = itemFields?.content;
       const controlIndex = `a${index + 1}`;
 
       const headingHTML = heading
-        ? `<h4 class="usa-accordion__heading">
+        ? `<${headingLevel} class="usa-accordion__heading">
             <button
               type="button"
               class="usa-accordion__button"
               aria-expanded=${controlIndex === "a1" ? true : false}
-              aria-controls="${controlIndex}"
-            >${escapeHTML(heading)}</button></h4>`
+              aria-controls="${controlIndex}${accordionId}"
+            >${escapeHTML(heading)}</button></${headingLevel}>`
         : "";
 
       const contentHTML = content
-        ? `<div id="${controlIndex}" class="usa-accordion__content usa-prose">
+        ? `<div id="${controlIndex}${accordionId}" class="usa-accordion__content usa-prose">
             ${convertLexicalToHTML({ data: content, converters: htmlConverters })}
            </div>
         `

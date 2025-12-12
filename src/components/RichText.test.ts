@@ -371,7 +371,7 @@ describe("RichText", () => {
                           direction: null,
                         },
                       },
-                      heading: "Start a process",
+                      heading: "Institutional Guidelines",
                     },
                     {
                       content: {
@@ -390,10 +390,59 @@ describe("RichText", () => {
                           ],
                         },
                       },
-                      heading: "Proceed to the second step",
+                      heading: "Policy procedures",
                     },
                   ],
                   blockType: "accordion",
+                  headingLevel: "h4",
+                },
+                format: "",
+              },
+              {
+                type: "block",
+                fields: {
+                  items: [
+                    {
+                      content: {
+                        root: {
+                          type: "root",
+                          children: [
+                            {
+                              type: "paragraph",
+                              children: [
+                                {
+                                  text: "Next paragraph",
+                                  type: "text",
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                      heading: "Operating procedures",
+                    },
+                    {
+                      content: {
+                        root: {
+                          type: "root",
+                          children: [
+                            {
+                              type: "paragraph",
+                              children: [
+                                {
+                                  text: "Next paragraph",
+                                  type: "text",
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                      heading: "Meeting guidelines",
+                    },
+                  ],
+                  blockType: "accordion",
+                  headingLevel: "h3",
                 },
                 format: "",
               },
@@ -412,6 +461,8 @@ describe("RichText", () => {
         '<div class="usa-accordion usa-accordion--multiselectable" data-allow-multiple>',
       );
       expect(result).toContain('<h4 class="usa-accordion__heading">');
+      expect(result).toContain('<h3 class="usa-accordion__heading">');
+
       expect(result).toContain(
         '<button type="button" class="usa-accordion__button" aria-expanded="true" aria-controls="a1">',
       );
