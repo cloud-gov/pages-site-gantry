@@ -266,7 +266,7 @@ export interface CollectionFiltersConfig {
   collectionName: string;
   filters: [
     {
-      config: string;
+      atrributeValue: string;
       content: string;
     },
   ];

@@ -1,25 +1,47 @@
 import type { CollectionFiltersConfig } from "@/env";
+import type { FiltersConfig } from "@/utilities/filtersConfig.ts";
 
-export function getYearFilterName(collectionName: string): string {
-  return `${collectionName}_year`;
+export const UNSPECIFIED_FILTER = "Unspecified";
+
+export type FilterMapEntry = {
+  filterName: string;
+  pagefindfilter: string;
+  filterElement: any;
+  navElement: any;
+};
+
+export function getPagefindFilterName(
+  collectionName: string,
+  filterName: string,
+): string {
+  return `${collectionName}_${filterName}`;
 }
-export function getDocumentTypeFilterName(collectionName: string): string {
-  return `${collectionName}_tag`;
+
+function getYear(collectionItem: any) {
+  return collectionItem?.yearTag ? collectionItem.yearTag : "Unspecified";
 }
+
+const isValid = (v) =>
+  v !== undefined &&
+  v !== null &&
+  !Number.isNaN(v) &&
+  (typeof v !== "string" || v.trim() !== "");
 
 export function getCollectionFiltersConfig(
   collectionName: string,
   collectionItem: any,
 ): CollectionFiltersConfig | any {
-  const tags = collectionItem?.tags?.map((tag) => {
-    return {
-      config: `${getDocumentTypeFilterName(collectionName)}[content]`,
-      content: tag?.label?.toUpperCase(),
-    };
-  });
+  const tags = collectionItem?.tags
+    ?.filter((tag) => isValid(tag))
+    .map((tag) => {
+      return {
+        atrributeValue: `${getPagefindFilterName(collectionName, "tag")}[content]`,
+        content: tag?.label?.toUpperCase(),
+      };
+    });
   const year = {
-    config: `${getYearFilterName(collectionName)}[content]`,
-    content: collectionItem?.yearTag,
+    atrributeValue: `${getPagefindFilterName(collectionName, "year")}[content]`,
+    content: getYear(collectionItem),
   };
 
   const filters = [...(tags ?? []), ...(year ? [year] : [])];
@@ -31,34 +53,45 @@ export function getCollectionFiltersConfig(
   return result;
 }
 
-export function addFilters(filters, filterName, selectElement, navElement) {
-  let hasOptions = false;
+export function extractCollectionFilters(filters, filterName) {
   const options = [];
   Object.entries(filters)
     .filter(([key, value]) => {
       return key.match(filterName);
     })
     .forEach(([key, value]) => {
-      Object.entries(value).filter(([key, value]) => {
-        options.push({ value: key, textContent: `${key} (${value})` });
-        hasOptions = true;
-      });
+      Object.entries(value)
+        .filter(([k, v]) => isValid(k) && isValid(v))
+        .forEach(([key, value]) => {
+          options.push({ value: key, textContent: `${key} (${value})` });
+        });
     });
-
+  if (options.length == 1 && options[0].value === UNSPECIFIED_FILTER) {
+    options.length = 0
+  }
   sortOptions(options);
+  return options;
+}
 
-  options.forEach((value, key) => {
-    const option = document.createElement("option");
-    option.value = value.value;
-    option.textContent = value.textContent;
-    selectElement.appendChild(option);
-  });
+export function getElement(filter): any {
+  const targetElement = document.getElementsByName(filter);
+  const el =
+    targetElement instanceof Element ? targetElement : targetElement?.[0];
+  return el;
+}
 
-  if (!hasOptions) {
-    selectElement.style.display = "none";
+export function addFilters(options, targetElement, navElement) {
+  if (targetElement instanceof HTMLSelectElement) {
+    // now el is HTMLUListElement
+    options.forEach((value, key) => {
+      const option = document.createElement("option");
+      option.value = value.value;
+      option.textContent = value.textContent;
+      targetElement.appendChild(option);
+    });
   }
 
-  if (!hasOptions) {
+  if (options.length == 0) {
     navElement.style.display = "none";
   }
 }
@@ -86,21 +119,74 @@ export function sortOptions(options: { value: string }[]) {
   });
 }
 
-export function getSearchOptions(
-  selectedYear: string,
-  selectedType: string,
-  yearFilterName: string,
-  typeFilterName: string,
-) {
+export function getSearchOptions(filtersMap: Record<string, FilterMapEntry>) {
   const filters: Record<string, string> = {};
 
-  if (selectedYear && selectedYear !== "all") {
-    filters[yearFilterName] = selectedYear;
-  }
+  Object.values(filtersMap).forEach(({ filterElement, pagefindfilter }) => {
+    if (!filterElement) return;
 
-  if (selectedType && selectedType !== "all") {
-    filters[typeFilterName] = selectedType;
-  }
+    // For HTMLSelectElement or HTMLInputElement
+    const value = (filterElement as HTMLInputElement | HTMLSelectElement).value;
+
+    if (value && value !== "all") {
+      filters[pagefindfilter] = value;
+    }
+  });
 
   return Object.keys(filters).length ? { filters } : null;
+}
+
+export function getFiltersDataAttributes(
+  filtersConfig: FiltersConfig[],
+  collectionName: string,
+) {
+  const dataAttributes: Record<string, string> = {};
+
+  filtersConfig?.forEach((filter) => {
+    const pageFindFilter = `data-pagefindfilter${filter.filterName}`;
+    const valueKey = `data-filter${filter.filterName}`;
+
+    dataAttributes[pageFindFilter] = getPagefindFilterName(
+      collectionName,
+      filter.filterName,
+    );
+    dataAttributes[valueKey] = filter.filterName || ""; // or some other value
+  });
+
+  return dataAttributes;
+}
+
+export function getFiltersFromElementData(el: HTMLElement) {
+  if (!el) return {};
+
+  const dataset = el.dataset;
+
+  // Reduce dataset entries into a map
+  return Object.entries(dataset)
+    .filter(([key]) => key.startsWith("pagefindfilter"))
+    .reduce<
+      Record<
+        string,
+        {
+          filterName: string;
+          pagefindfilter: string;
+          filterElement: HTMLElement | null;
+          navElement: HTMLElement | null;
+        }
+      >
+    >((acc, [key, pagefindValue]) => {
+      const filterNameKey = key.replace("pagefindfilter", "filter");
+      const filterName = dataset[filterNameKey];
+
+      if (filterName) {
+        acc[filterName] = {
+          filterName,
+          pagefindfilter: pagefindValue,
+          filterElement: null, // initialize empty
+          navElement: null,
+        };
+      }
+
+      return acc;
+    }, {});
 }

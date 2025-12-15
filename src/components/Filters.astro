@@ -1,8 +1,7 @@
 ---
-import {
-  getDocumentTypeFilterName,
-  getYearFilterName,
-} from "@/utilities/filters";
+import Filter from "./Filter.astro";
+import { filtersConfig } from "@/utilities/filtersConfig";
+import { getFiltersDataAttributes } from "@/utilities/filters";
 
 interface Props {
   collectionName: string;
@@ -13,78 +12,66 @@ const { collectionName = "" } = Astro.props;
 const baseUrl = import.meta.env.LOCAL_DEV
   ? "/"
   : (import.meta.env.BASEURL || "") + "/";
+
+const filtersDataAttributes = getFiltersDataAttributes(
+  filtersConfig,
+  collectionName,
+);
 ---
+
 <aside class="sidenav-container">
   <span
     id="pagefind-data"
-    data-typefiltername={getDocumentTypeFilterName(collectionName)}
-    data-yearfiltername={getYearFilterName(collectionName)}
     data-baseurl={baseUrl}
+    {...filtersDataAttributes}
     style="display:none"></span>
-  <nav
-    class="usa-sidenav"
-    aria-label="Filter by document type"
-    id="nav-document-type"
-  >
-    <div class="margin-top-4">
-      <label class="usa-label text-bold" for="select-document-type"
-        >Filter by document type</label
-      >
-      <select class="usa-select" id="select-document-type">
-        <option value="all">All</option>
-      </select>
-    </div>
-  </nav>
-  <nav
-    class="usa-sidenav"
-    aria-label="Filter by document year"
-    id="nav-document-year"
-  >
-    <div class="margin-top-4">
-      <label class="usa-label text-bold" for="select-year">Filter by year</label
-      >
-      <select class="usa-select oig-filter-onchange" id="select-year">
-        <option value="all">All</option>
-      </select>
-    </div>
-  </nav>
-  <nav class="usa-sidenav" aria-label="Search Results" id="nav-document-year">
-    <div id="results-count"></div>
-    <div id="recommended"></div>
-    <div id="search-results"></div>
-    <hr class="margin-bottom-3 margin-top-3" />
-    <div id="pagination"></div>
-  </nav>
+
+  {filtersConfig?.map((filter) => <Filter filter={filter} />)}
+
+  <div id="results-count"></div>
+  <div id="recommended"></div>
+  <div id="search-results"></div>
+  <hr class="margin-bottom-3 margin-top-3" />
+  <div id="pagination"></div>
 </aside>
 <script>
-  import { addFilters, getSearchOptions } from "../utilities/filters.ts";
+  import {
+    addFilters,
+    getSearchOptions,
+    extractCollectionFilters,
+    getElement,
+    getFiltersFromElementData,
+  } from "../utilities/filters.ts";
 
   const pagefindDataElement = document.getElementById("pagefind-data");
-  const yearFilterName = pagefindDataElement?.dataset.yearfiltername;
-  const typeFilterName = pagefindDataElement?.dataset.typefiltername;
   const baseUrl = pagefindDataElement?.dataset.baseurl;
 
-  const pagefindUrl = baseUrl + "pagefind/pagefind.js";
-  const pagefind = await import(pagefindUrl);
+  const filtersMap = getFiltersFromElementData(pagefindDataElement);
+  console.log(filtersMap);
+
+  const pagefind = await import(baseUrl + "pagefind/pagefind.js");
   pagefind.init();
-  const filters = await pagefind.filters();
+  const pagefindFilters = await pagefind.filters();
 
-  addFilters(
-    filters,
-    yearFilterName,
-    document.getElementById("select-year"),
-    document.getElementById("nav-document-year"),
-  );
+  Object.keys(filtersMap).forEach((filterKey) => {
+    const { filterName, pagefindfilter } = filtersMap[filterKey];
+    const el = getElement(filterName); // get DOM element
+    const navEl = document.getElementById("nav-" + filterName); // get DOM element
 
-  addFilters(
-    filters,
-    typeFilterName,
-    document.getElementById("select-document-type"),
-    document.getElementById("nav-document-type"),
-  );
+    if (el) {
+      // Add the element to the map entry
+      filtersMap[filterKey].filterElement = el;
+      filtersMap[filterKey].navElement = navEl;
 
-  const typeSelect = document.getElementById("select-document-type");
-  const yearSelect = document.getElementById("select-year");
+      // Apply the filter
+      addFilters(
+         extractCollectionFilters(pagefindFilters, pagefindfilter),
+        el,
+        navEl,
+      );
+    }
+  });
+
   const resultsDiv = document.getElementById("search-results");
 
   function renderResults(results) {
@@ -106,12 +93,7 @@ const baseUrl = import.meta.env.LOCAL_DEV
 
   // Function to call when either dropdown changes
   async function handleFilterChange() {
-    const searchOptions = getSearchOptions(
-      yearSelect.value,
-      typeSelect.value,
-      yearFilterName,
-      typeFilterName,
-    );
+    const searchOptions = getSearchOptions(filtersMap);
     let results = [];
     if (searchOptions) {
       const searchResults = await pagefind.search(null, searchOptions);
@@ -120,9 +102,14 @@ const baseUrl = import.meta.env.LOCAL_DEV
     renderResults(results);
   }
 
-  // Attach change event listeners
-  typeSelect.addEventListener("change", handleFilterChange);
-  yearSelect.addEventListener("change", handleFilterChange);
+  Object.keys(filtersMap).forEach((filterKey) => {
+    const { filterName, pagefindfilter, filterElement } = filtersMap[filterKey];
+    const el = getElement(filterName); // get DOM element
+
+    if (filterElement) {
+      filterElement.addEventListener("change", handleFilterChange);
+    }
+  });
 </script>
 
 <style is:global>

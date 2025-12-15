@@ -1,3 +1,5 @@
+import { UNSPECIFIED_FILTER } from "@/utilities/filters.ts";
+
 export interface DateParts {
   full: string;
   month: string;
@@ -42,8 +44,7 @@ export function tryParseDateParts(input?: string | number | Date) {
   return parseDateParts(d);
 }
 
-export function getYear(dateInput: string): string {
-  const date = new Date(dateInput);
-  let year = date.getFullYear();
-  return String(year);
+export function getYearTag(dateInput?: string): string {
+  const year = dateInput && new Date(dateInput).getFullYear();
+  return Number.isNaN(year) ? UNSPECIFIED_FILTER : String(year);
 }

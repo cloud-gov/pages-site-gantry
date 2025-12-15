@@ -1,5 +1,5 @@
 ---
-import type { CollectionFiltersConfig } from "../env";
+import type { CollectionFiltersConfig } from "@/env";
 
 interface Props {
   collectionFiltersConfig?: CollectionFiltersConfig;
@@ -12,7 +12,10 @@ const { collectionFiltersConfig } = Astro.props;
   collectionFiltersConfig?.filters?.map(
     (filter) =>
       filter && (
-        <meta data-pagefind-filter={filter?.config} content={filter?.content} />
+        <meta
+          data-pagefind-filter={filter?.atrributeValue}
+          content={filter?.content}
+        />
       ),
   )
 }
