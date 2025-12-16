@@ -1,11 +1,17 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { createGetStaticPath, fetchSlug, postsMapper } from "@/utilities/fetch";
+import {
+  createGetStaticPath,
+  fetchSlug,
+  postsMapper,
+  relatedItemsMapper,
+} from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
+import RelatedItems from "@/components/RelatedItems.astro";
 
 const { slug } = Astro.params;
 const collectionName = "posts";
@@ -22,6 +28,11 @@ if (!Astro.isPrerendered) {
 export const getStaticPaths = createGetStaticPath("posts");
 
 const post = postsMapper(data);
+
+// Map related items if they exist
+const relatedItems = data.relatedItems
+  ? relatedItemsMapper(data.relatedItems, postsMapper)
+  : [];
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
@@ -40,5 +51,6 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     </div>
     {data.image && <Media media={data.image} />}
     <RichText content={post.content} />
+    <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>
