@@ -1,11 +1,17 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { createGetStaticPath, fetchSlug, newsMapper } from "@/utilities/fetch";
+import {
+  createGetStaticPath,
+  fetchSlug,
+  newsMapper,
+  relatedItemsMapper,
+} from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
+import RelatedItems from "@/components/RelatedItems.astro";
 
 const { slug } = Astro.params;
 const collectionName = "news";
@@ -15,13 +21,17 @@ if (!Astro.isPrerendered) {
   data = await fetchSlug(collectionName, slug);
   if (!data) return Astro.redirect("/404");
 } else {
-  // @ts-expect-error
   ({ data } = Astro.props);
 }
 
 export const getStaticPaths = createGetStaticPath("news");
 
 const newsItem = newsMapper(data);
+
+// Map related items if they exist
+const relatedItems = data.relatedItems
+  ? relatedItemsMapper(data.relatedItems, newsMapper)
+  : [];
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
@@ -40,5 +50,6 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     </div>
     {data.image && <Media media={data.image} />}
     <RichText content={data.content} />
+    <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>

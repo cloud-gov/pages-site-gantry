@@ -31,4 +31,5 @@ export {
   createCustomCollectionPageMapper,
   alertsMapper,
   footerMapper,
+  relatedItemsMapper,
 } from "./contentMapper";
