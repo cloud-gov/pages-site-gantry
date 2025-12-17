@@ -768,6 +768,18 @@ const footer = defineCollection({
   ),
 });
 
+const notFoundPage = defineCollection({
+  loader: collectionLoader("globals/not-found-page"),
+  schema: makeAllKeysNullable(
+    z.object({
+      title: z.string(),
+      heading: z.string(),
+      content: z.any(), // richText
+      showSearch: z.boolean().optional(),
+    }),
+  ),
+});
+
 export const collections = {
   // site collections
   alerts,
@@ -786,4 +798,5 @@ export const collections = {
   siteConfig,
   preFooter,
   footer,
+  notFoundPage,
 };
