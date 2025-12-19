@@ -1,0 +1,13 @@
+---
+const isServerMode = !Astro.isPrerendered;
+const editorAppURL = import.meta.env.EDITOR_APP_URL || 'http://localhost:3000';
+const preview = import.meta.env.PREVIEW_MODE || 'false';
+---
+
+{isServerMode && (
+  <link 
+    rel="stylesheet" 
+    href={`/api/theme.css?editorUrl=${encodeURIComponent(editorAppURL)}&preview=${preview}`}
+  />
+)}
+

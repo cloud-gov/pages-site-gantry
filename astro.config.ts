@@ -15,7 +15,6 @@ if (MODE !== "static") {
   });
 }
 
-// Check if we're in a test environment or if required env vars are missing
 const isTestEnvironment =
   process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const hasRequiredEnvVars = env.EDITOR_APP_URL && env.PAYLOAD_API_KEY;
@@ -31,15 +30,19 @@ if (!isTestEnvironment && !hasRequiredEnvVars) {
 let theme;
 
 if (isTestEnvironment) {
-  // Mock theme for testing
   theme = "";
+} else if (MODE === "static") {
+  try {
+    theme = await buildThemeStyle(
+      env.EDITOR_APP_URL,
+      env.PAYLOAD_API_KEY,
+      env.PREVIEW_MODE,
+    );
+  } catch (error) {
+    theme = "";
+  }
 } else {
-  // Use API-fetched theme for production builds
-  theme = await buildThemeStyle(
-    env.EDITOR_APP_URL,
-    env.PAYLOAD_API_KEY,
-    env.PREVIEW_MODE,
-  );
+  theme = "";
 }
 
 export default defineConfig({

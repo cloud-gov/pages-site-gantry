@@ -9,7 +9,7 @@ if (!Astro.isPrerendered) {
   notFoundData = await fetchNotFoundPage();
 } else {
   try {
-    const { getCollection } = await import("astro:content");
+  const { getCollection } = await import("astro:content");
     const response = await getCollection("notFoundPage" as any);
     notFoundData = (response[0] as any)?.data;
   } catch {
