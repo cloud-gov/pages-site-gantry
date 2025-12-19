@@ -691,7 +691,7 @@ const customCollectionPages = defineCollection({
 });
 
 const sideNavigations = defineCollection({
-  loader: collectionLoader("page-menus"),
+  loader: collectionLoader("side-navigation"),
   schema: makeAllKeysNullable(
     z.object({
       id: z.string(),

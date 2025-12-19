@@ -50,8 +50,7 @@ if (showSideNav && sideNavItems.length === 0) {
     let sideNavResponse;
 
     if (sideNavId) {
-      // Fetch specific page menu by ID
-      sideNavResponse = await payloadFetch(`page-menus/${sideNavId}`);
+      sideNavResponse = await payloadFetch(`side-navigation/${sideNavId}`);
     } else {
       // Fallback to global side navigation
       sideNavResponse = await payloadFetch("globals/side-navigation");
