@@ -41,7 +41,8 @@ const { title, cards } = Astro.props;
                 </header>
                 <div class="usa-card__body">
                   <p>
-                    {card.description.length > 300
+                    {typeof card.description === "string" &&
+                    card.description.length > 300
                       ? card.description.substring(0, 300) + "..."
                       : card.description}
                   </p>
