@@ -45,7 +45,7 @@ export async function fetchSlug(collectionName: string, slug: string) {
 
 export async function fetchPageSlug(collectionName: string, slug: string) {
   const response = await payloadFetch(
-    `${collectionName}?where[slug][equals]=${slug}&depth=1`,
+    `${collectionName}?where[slug][equals]=${slug}&depth=2`,
   );
   return processFetchResponse(await safeJsonParse(response));
 }
