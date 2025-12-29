@@ -1,147 +1,97 @@
 ---
 import Filter from "./Filter.astro";
-import { filtersConfig } from "@/utilities/filtersConfig";
+import { FILTERS_CONFIG, FILTERS_DATA_ID } from "@/utilities/filtersConfig";
 import { getFiltersDataAttributes } from "@/utilities/filters";
+import type { FilteredPageConfig } from "@/env";
 
 interface Props {
-  collectionName: string;
+  filteredPageConfig: FilteredPageConfig;
 }
 
-const { collectionName = "" } = Astro.props;
+const { filteredPageConfig } = Astro.props;
 
 const baseUrl = import.meta.env.LOCAL_DEV
   ? "/"
   : (import.meta.env.BASEURL || "") + "/";
 
-const filtersDataAttributes = getFiltersDataAttributes(
-  filtersConfig,
-  collectionName,
+const dataAttributes = getFiltersDataAttributes(
+  FILTERS_CONFIG,
+  filteredPageConfig,
+  baseUrl,
 );
 ---
 
 <aside class="sidenav-container">
-  <span
-    id="pagefind-data"
-    data-baseurl={baseUrl}
-    {...filtersDataAttributes}
-    style="display:none"></span>
-
-  {filtersConfig?.map((filter) => <Filter filter={filter} />)}
-
-  <div id="results-count"></div>
-  <div id="recommended"></div>
-  <div id="search-results"></div>
-  <hr class="margin-bottom-3 margin-top-3" />
-  <div id="pagination"></div>
+  {
+    dataAttributes && (
+      <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
+    )
+  }
+  {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
 </aside>
+
 <script>
   import {
-    addFilters,
+    getFiltersData,
+    getFiltersFromQueryParams,
+    displayFilters,
+    createFilteredCollectionItemList,
+    createFilteredPagination,
     getSearchOptions,
-    extractCollectionFilters,
-    getElement,
-    getFiltersFromElementData,
-  } from "../utilities/filters.ts";
+    search,
+    addFiltersEventListeners,
+    addPaginationEventListeners,
+    buildSearchOptions,
+    resetFilteredPage,
+  } from "../utilities/filters";
+  import { type ElementsPair, type FiltersData } from "../env.d";
 
-  const pagefindDataElement = document.getElementById("pagefind-data");
-  const baseUrl = pagefindDataElement?.dataset.baseurl;
+  try {
+    const data: FiltersData = getFiltersData();
+    if (data) {
+      const pagefind = await import(data.baseUrl + "pagefind/pagefind.js");
+      pagefind.init();
+      const pagefindFilters = await pagefind.filters();
 
-  const filtersMap = getFiltersFromElementData(pagefindDataElement);
-  console.log(filtersMap);
+      const filtersFromQueryParams = getFiltersFromQueryParams(window);
 
-  const pagefind = await import(baseUrl + "pagefind/pagefind.js");
-  pagefind.init();
-  const pagefindFilters = await pagefind.filters();
-
-  Object.keys(filtersMap).forEach((filterKey) => {
-    const { filterName, pagefindfilter } = filtersMap[filterKey];
-    const el = getElement(filterName); // get DOM element
-    const navEl = document.getElementById("nav-" + filterName); // get DOM element
-
-    if (el) {
-      // Add the element to the map entry
-      filtersMap[filterKey].filterElement = el;
-      filtersMap[filterKey].navElement = navEl;
-
-      // Apply the filter
-      addFilters(
-         extractCollectionFilters(pagefindFilters, pagefindfilter),
-        el,
-        navEl,
+      const displayedFilters: boolean = displayFilters(
+        data.filtersMap,
+        filtersFromQueryParams,
+        pagefindFilters,
       );
+
+      if (displayedFilters) {
+        const collectionList: ElementsPair = createFilteredCollectionItemList();
+        const pagination: ElementsPair = createFilteredPagination();
+
+        addFiltersEventListeners(data.filtersMap, async function () {
+          if (data.currentPageNum !== "1") {
+            resetFilteredPage();
+          } else {
+            await search(
+              pagefind,
+              getSearchOptions(data.filtersMap),
+              collectionList,
+              pagination,
+              data,
+            );
+          }
+        });
+        addPaginationEventListeners(pagination, data);
+
+        if (filtersFromQueryParams?.size > 0) {
+          await search(
+            pagefind,
+            buildSearchOptions(data.collectionName, filtersFromQueryParams),
+            collectionList,
+            pagination,
+            data,
+          );
+        }
+      }
     }
-  });
-
-  const resultsDiv = document.getElementById("search-results");
-
-  function renderResults(results) {
-    if (!results || results.length === 0) {
-      resultsDiv.innerHTML = "<p>No results found.</p>";
-      return;
-    }
-
-    const urls = results
-      .map((obj) => {
-        return obj?.url;
-      })
-      .filter(Boolean); // remove undefined
-
-    resultsDiv.innerHTML = urls
-      .map((url) => `<div><a href="${url}" target="_blank">${url}</a></div>`)
-      .join("");
+  } catch (err) {
+    console.error("Pagefind not available:", err);
   }
-
-  // Function to call when either dropdown changes
-  async function handleFilterChange() {
-    const searchOptions = getSearchOptions(filtersMap);
-    let results = [];
-    if (searchOptions) {
-      const searchResults = await pagefind.search(null, searchOptions);
-      results = await Promise.all(searchResults.results.map((r) => r.data()));
-    }
-    renderResults(results);
-  }
-
-  Object.keys(filtersMap).forEach((filterKey) => {
-    const { filterName, pagefindfilter, filterElement } = filtersMap[filterKey];
-    const el = getElement(filterName); // get DOM element
-
-    if (filterElement) {
-      filterElement.addEventListener("change", handleFilterChange);
-    }
-  });
 </script>
-
-<style is:global>
-  .usa-sidenav {
-    position: sticky;
-    top: 0;
-    height: fit-content;
-    max-height: calc(100vh - 2rem);
-  }
-
-  .usa-sidenav__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .usa-sidenav__item {
-    margin: 0;
-  }
-
-  /* Dropdown parent styling - looks like link but not clickable */
-  .usa-sidenav__item > span.usa-sidenav__link {
-    cursor: default;
-    display: block;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-  }
-
-  /* Hide side navigation on mobile */
-  @media (max-width: 768px) {
-    .usa-sidenav {
-      display: none;
-    }
-  }
-</style>

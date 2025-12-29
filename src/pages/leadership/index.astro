@@ -10,6 +10,7 @@ import {
   leadershipMapper,
 } from "@/utilities/fetch";
 import type { CollectionEntry } from "astro:content";
+import { getFilteredPageConfig } from "@/utilities/filters";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -43,7 +44,11 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
   <PagesSection
     heading="Leadership"
     color="gray-10"
-    filterCollectionName={collectionName}
+    filteredPageConfig={getFilteredPageConfig(
+      collectionName,
+      PAGE_SIZE,
+      currentPage,
+    )}
   >
     <CollectionItemList items={items} />
     {

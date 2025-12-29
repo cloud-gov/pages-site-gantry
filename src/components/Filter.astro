@@ -1,23 +1,22 @@
 ---
-import { type FiltersConfig } from "@/utilities/filtersConfig";
+import { type FilterConfig } from "@/env";
+import { getFilterNavId } from "@/utilities/filters";
 
 interface Props {
-  filter: FiltersConfig;
+  filter: FilterConfig;
 }
 const { filter } = Astro.props;
 const { filterName, filterLabel } = filter;
 ---
 
-<!-- WARNING: The nav element's ID is used to show or hide the filter based on its content.
-Changing the nav element's ID may break the filter toggle. -->
-
 <nav
+  hidden
   class="usa-sidenav"
   aria-label=`Filter ${filterName}`
-  id=`nav-${filterName}`
+  id={getFilterNavId(filterName)}
 >
   <label class="usa-label" for={filterName}>{filterLabel}</label>
-  <div class="usa-combo-box">
+  <div class="usa-combo-box" data-disable-filtering="true">
     <select class="usa-select" name={filterName} id={filterName}> </select>
   </div>
 </nav>

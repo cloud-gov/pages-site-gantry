@@ -1,14 +1,15 @@
 ---
 import CollectionItem from "@/components/CollectionItem.astro";
+import { COLLECTION_ITEM_LIST_ID } from "@/utilities/filtersConfig";
 
 const { items = [], showEvent = false } = Astro.props;
 ---
 
-<div id="results">
+<div>
   {items.length === 0 && <p>No items found</p>}
   {
     items.length > 0 && (
-      <ol class="usa-collection-group measure-6">
+      <ol class="usa-collection-group measure-6" id={COLLECTION_ITEM_LIST_ID}>
         {items.map((n) => (
           <CollectionItem {...n} showEvent={showEvent} />
         ))}

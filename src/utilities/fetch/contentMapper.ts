@@ -8,6 +8,7 @@ import {
   type LinkModel,
   type LogoModel,
   type PageModel,
+  type Tag,
 } from "@/env";
 import { preFooterMapper } from "@/utilities/fetch/preFooterMapper.ts";
 
@@ -52,7 +53,7 @@ export function contentMapper(
   const endSrc = (data as any).endDate;
   const files: File[] = fileField ? data[fileField] : [];
   const dateParts = parseDateParts(data[dateField] || data.publishedAt || "");
-  const yearTag = getYearTag(data[dateField] || data.publishedAt || "");
+  const yearTag: string = getYearTag(data[dateField] || data.publishedAt || "");
 
   return {
     title: data.title,
@@ -64,11 +65,14 @@ export function contentMapper(
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `${baseUrl}/${data.slug}`,
-    tags: (data.categories ?? []).map((c) => ({
-      label: c.title,
-      url: `${baseUrl}?category=${c.slug}`,
-    })),
+    tags: (data.categories ?? []).map(
+      (c): Tag => ({
+        label: c.title,
+        url: `${baseUrl}?category=${c.slug}`,
+      }),
+    ),
     yearTag: yearTag,
+    publishedAt: data.publishedAt,
   };
 }
 

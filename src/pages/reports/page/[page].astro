@@ -8,6 +8,7 @@ import {
   createPagingStaticPath,
   reportMapper,
 } from "@/utilities/fetch";
+import { getFilteredPageConfig } from "@/utilities/filters";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -30,7 +31,11 @@ export const prerender = true;
 <Layout title="Reports" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection
     heading="Reports"
-    filterCollectionName={collectionName}
+    filteredPageConfig={getFilteredPageConfig(
+      collectionName,
+      PAGE_SIZE,
+      currentPage,
+    )}
     color="gray-10"
   >
     <CollectionItemList items={items} />

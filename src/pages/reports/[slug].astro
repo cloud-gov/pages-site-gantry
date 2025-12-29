@@ -12,7 +12,9 @@ import Tags, { type Tag } from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
-import { getCollectionFiltersConfig } from "@/utilities/filters";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filters";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 const collectionName = "reports";
@@ -31,12 +33,18 @@ export const getStaticPaths = createGetStaticPath("reports");
 const report = reportMapper(data);
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  report,
+  slug,
+);
 ---
 
 <Layout
   title={report.title}
   useInPageNav={report.showInPageNav}
-  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, report)}
+  filtersSlugMetaData={filtersSlugMetaData}
 >
   {
     report.showInPageNav && (
@@ -61,5 +69,11 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <Fragment slot="sidebar"></Fragment>
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={report}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>
 
 <PreviewReload />

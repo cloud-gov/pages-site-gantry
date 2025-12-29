@@ -12,7 +12,9 @@ import Tags from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 import type { CollectionEntry } from "astro:content";
-import { getCollectionFiltersConfig } from "@/utilities/filters";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filters";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 
@@ -41,12 +43,18 @@ const end = tryParseDateParts(data.endDate);
 export const getStaticPaths = createGetStaticPath("events");
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  event,
+  slug,
+);
 ---
 
 <Layout
   title={event.title}
   useInPageNav={event.showInPageNav}
-  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, event)}
+  filtersSlugMetaData={filtersSlugMetaData}
 >
   {
     event.showInPageNav && (
@@ -166,5 +174,11 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     }
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={event}
+  showEvent={true}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>
 
 <PreviewReload />

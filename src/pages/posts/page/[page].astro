@@ -8,6 +8,7 @@ import {
   createPagingStaticPath,
   postsMapper,
 } from "@/utilities/fetch";
+import { getFilteredPageConfig } from "@/utilities/filters";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -28,7 +29,14 @@ export const prerender = true;
 ---
 
 <Layout title="posts">
-  <PagesSection heading="Posts" filterCollectionName={collectionName}>
+  <PagesSection
+    heading="Posts"
+    filteredPageConfig={getFilteredPageConfig(
+      collectionName,
+      PAGE_SIZE,
+      currentPage,
+    )}
+  >
     <CollectionItemList items={items} />
     {
       hasPaginationNav && (

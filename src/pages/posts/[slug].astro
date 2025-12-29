@@ -7,7 +7,9 @@ import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
-import { getCollectionFiltersConfig } from "@/utilities/filters";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filters";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 const collectionName = "posts";
@@ -26,12 +28,18 @@ export const getStaticPaths = createGetStaticPath("posts");
 const post = postsMapper(data);
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  post,
+  slug,
+);
 ---
 
 <Layout
   title={post.title}
   useInPageNav={post.showInPageNav}
-  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, post)}
+  filtersSlugMetaData={filtersSlugMetaData}
 >
   {
     post.showInPageNav && (
@@ -48,5 +56,11 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <RichText content={post.content} />
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={post}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>
 
 <PreviewReload />

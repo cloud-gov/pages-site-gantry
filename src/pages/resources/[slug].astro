@@ -11,7 +11,9 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
-import { getCollectionFiltersConfig } from "@/utilities/filters";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filters";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 const collectionName = "resources";
@@ -30,12 +32,18 @@ export const getStaticPaths = createGetStaticPath("resources");
 const resource = resourceMapper(data);
 
 export const prerender = true;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  resource,
+  slug,
+);
 ---
 
 <Layout
   title={resource.title}
   useInPageNav={resource.showInPageNav}
-  collectionFiltersConfig={getCollectionFiltersConfig(collectionName, resource)}
+  filtersSlugMetaData={filtersSlugMetaData}
 >
   {
     resource.showInPageNav && (
@@ -59,3 +67,9 @@ export const prerender = true;
     <RichText content={resource.content} />
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={resource}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>
