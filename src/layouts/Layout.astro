@@ -10,6 +10,7 @@ import { getMediaUrl } from "@/utilities/media";
 import "../styles/index.scss";
 import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
+import ThemeStyles from "@/components/ThemeStyles.astro";
 import {
   fetchSiteConfig,
   fetchMenu,
@@ -111,6 +112,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <meta name="twitter:title" content={metaTitle} />
     {description && <meta name="twitter:description" content={description} />}
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+    <ThemeStyles />
   </head>
   <body>
     <Config />
@@ -154,6 +156,10 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
       max-width: 75rem;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .usa-in-page-nav-container main {
+      max-width: none;
     }
 
     @media (min-width: 1024px) {

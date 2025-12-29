@@ -1,4 +1,12 @@
+@forward "uswds" with (
+  $theme-font-path: '/fonts',
+  $theme-image-path: '/img',
+  $theme-show-notifications: false,
+  $theme-show-compile-warnings: false,
+);
+
 @use "./uswds-variables.scss";
 @use "./typography.scss";
 @use "./tags.scss";
 @use "./uswds-color-utilities.scss";
+@use "./fonts.scss";

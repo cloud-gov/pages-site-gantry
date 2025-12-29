@@ -95,7 +95,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       </Fragment>
     )
   }
-  <PagesSection heading={data.title}>
+  <PagesSection heading={data.title} fullWidth={true}>
     <div class="flex-column margin-bottom-5">
       {data.image && <Media media={data.image} />}
       {item.date && <p class="font-sans-sm text-italic" set:text={item.date} />}
