@@ -142,7 +142,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <Footer footer={footer} />
     {
       siteConfig.dapAgencyCode && (
-        <DigitalAnalytcs
+        <DigitalAnalytics
           dapAgencyCode={siteConfig.dapAgencyCode}
           dapSubAgencyCode={siteConfig.dapSubAgencyCode}
         />
@@ -156,6 +156,10 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
       max-width: 75rem;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .usa-in-page-nav-container main {
+      max-width: none;
     }
 
     @media (min-width: 1024px) {

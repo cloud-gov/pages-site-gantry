@@ -11,6 +11,7 @@ interface Props {
   id?: string;
   color?: string;
   align?: "center" | "left";
+  fullWidth?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   align = "left",
   classes = "",
   id = false,
+  fullWidth = false,
 } = Astro.props;
 ---
 
@@ -28,7 +30,7 @@ const {
 >
   <div class="grid-container">
     <div class="grid-row">
-      <div class="grid-col-8">
+      <div class={fullWidth ? "grid-col-12" : "grid-col-8"}>
         <div class="section__container">
           <div class="section__intro">
             {heading && <h1 class="margin-bottom-2">{heading}</h1>}
@@ -38,9 +40,11 @@ const {
           </div>
         </div>
       </div>
-      <div class="grid-col-4">
-        <slot name="sidebar" />
-      </div>
+      {!fullWidth && (
+        <div class="grid-col-4">
+          <slot name="sidebar" />
+        </div>
+      )}
     </div>
   </div>
 </section>
