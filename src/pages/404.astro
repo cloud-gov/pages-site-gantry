@@ -1,0 +1,35 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import RichText from "@/components/RichText.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import { fetchNotFoundPage } from "@/utilities/fetch";
+
+let notFoundData: any;
+if (!Astro.isPrerendered) {
+  notFoundData = await fetchNotFoundPage();
+} else {
+  try {
+    const { getCollection } = await import("astro:content");
+    const response = await getCollection("notFoundPage" as any);
+    notFoundData = (response[0] as any)?.data;
+  } catch {
+    // Fallback if collection doesn't exist during prerendering
+    notFoundData = null;
+  }
+}
+
+// For Payload globals, the data is returned directly (not in docs array)
+// Similar to how fetchSiteConfig() and fetchHomePage() work
+const data = notFoundData;
+
+const title = data?.title || "Page Not Found";
+const heading = data?.heading || "404 - Page Not Found";
+const content = data?.content;
+---
+
+<Layout title={title}>
+  <PagesSection>
+    <h1>{heading}</h1>
+    {content && <RichText content={content} />}
+  </PagesSection>
+</Layout>
