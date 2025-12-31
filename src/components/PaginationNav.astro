@@ -5,7 +5,7 @@ import {
 } from "@/utilities/pagination.ts";
 import PaginationNavItem from "@/components/PaginationNavItem.astro";
 import type { PageNavItemModel } from "@/env";
-import { PAGINATION_LIST_ID } from "@/utilities/filtersConfig";
+import { PAGINATION_LIST_ID } from "@/utilities/filter";
 const { currentPage, totalPages, basePath } = Astro.props;
 
 let siteUrl = import.meta.env.BASEURL || "";

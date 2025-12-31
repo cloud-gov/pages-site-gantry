@@ -1,7 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeEach, describe, expect, it } from "vitest";
 import Filters from "./Filters.astro";
-import { FILTERS_DATA_ID } from "@/utilities/filtersConfig";
+import { FILTERS_DATA_ID } from "@/utilities/filter";
 
 describe("Filters", () => {
   let container: any;

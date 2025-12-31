@@ -1,7 +1,7 @@
 import navigate_next from "@uswds-images/usa-icons/navigate_next.svg";
 import navigate_before from "@uswds-images/usa-icons/navigate_before.svg";
 import type { PageNavItemModel, PageNavItemType } from "@/env";
-import { PAGINATION_ITEM_ID_PREFIX } from "@/utilities/filtersConfig";
+import { PAGINATION_ITEM_ID_PREFIX } from "@/utilities/filter";
 export function paginate<T>(items: T[], currentPage: number, pageSize: number) {
   const totalPages = Math.ceil(items.length / pageSize);
   const paginatedItems = items.slice(
@@ -122,22 +122,22 @@ export function searchPagination(
 }
 
 export function getPageNavItems(
-  currentPageNum: number | string,
+  currentPage: number | string,
   total: number,
 ): PageNavItemModel[] {
   const results: PageNavItemModel[] = [];
-  const pageNumbers: string | number[] = getPageNumbers(currentPageNum, total);
+  const pageNumbers: string | number[] = getPageNumbers(currentPage, total);
 
   for (let pageNumber of pageNumbers) {
     if (pageNumber === "...") {
       results.push({ itemType: "overflow" });
     } else {
-      const currentPageNumAsNum = Number(currentPageNum);
-      const isCurrentPage = Number(pageNumber) === currentPageNumAsNum;
+      const currentPageAsNum = Number(currentPage);
+      const isCurrentPage = Number(pageNumber) === currentPageAsNum;
       if (pageNumber == 1 && !isCurrentPage) {
         results.push({
           itemType: "prev",
-          pageNumber: currentPageNumAsNum - 1,
+          pageNumber: currentPageAsNum - 1,
           isCurrentPage,
         });
         results.push({ itemType: "page", pageNumber });
@@ -145,7 +145,7 @@ export function getPageNavItems(
         results.push({ itemType: "page", pageNumber, isCurrentPage });
         results.push({
           itemType: "next",
-          pageNumber: currentPageNumAsNum + 1,
+          pageNumber: currentPageAsNum + 1,
           isCurrentPage,
         });
       } else {

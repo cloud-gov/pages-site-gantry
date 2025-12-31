@@ -1,7 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeEach, describe, expect, it } from "vitest";
 import FiltersSlugMetaData from "./FiltersSlugMetaData.astro";
-import { getFiltersSlugMetaData } from "@/utilities/filters";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
 
 describe("FiltersConfig", () => {
   let container: any;

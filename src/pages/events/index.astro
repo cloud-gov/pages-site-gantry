@@ -8,7 +8,6 @@ import {
   createPagingStaticPath,
   eventsMapper,
 } from "@/utilities/fetch";
-import { getFilteredPageConfig } from "@/utilities/filters";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -31,11 +30,11 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
 <Layout title="events" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection
     heading="Events"
-    filteredPageConfig={getFilteredPageConfig(
+    filteredPageConfig={{
       collectionName,
-      PAGE_SIZE,
+      pageSize: PAGE_SIZE,
       currentPage,
-    )}
+    }}
   >
     <CollectionItemList showEvent hideDate={true} items={items} />
     {

@@ -8,7 +8,6 @@ import {
   createPagingStaticPath,
   newsMapper,
 } from "@/utilities/fetch";
-import { getFilteredPageConfig } from "@/utilities/filters";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -31,11 +30,11 @@ export const prerender = true;
 <Layout title="News" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection
     heading="News"
-    filteredPageConfig={getFilteredPageConfig(
+    filteredPageConfig={{
       collectionName,
-      PAGE_SIZE,
+      pageSize: PAGE_SIZE,
       currentPage,
-    )}
+    }}
     color="gray-10"
   >
     <CollectionItemList items={items} />

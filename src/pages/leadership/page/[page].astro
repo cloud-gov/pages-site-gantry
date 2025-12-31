@@ -10,7 +10,6 @@ import {
 } from "@/utilities/fetch";
 import { paginate } from "@/utilities/pagination";
 import PaginationNav from "@/components/PaginationNav.astro";
-import { getFilteredPageConfig } from "@/utilities/filters";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 const { page } = Astro.params;
@@ -43,11 +42,11 @@ export const prerender = true;
 <Layout title="Leadership" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection
     heading="Leadership"
-    filteredPageConfig={getFilteredPageConfig(
+    filteredPageConfig={{
       collectionName,
-      PAGE_SIZE,
+      pageSize: PAGE_SIZE,
       currentPage,
-    )}
+    }}
     color="gray-10"
   >
     <CollectionItemList items={items} />

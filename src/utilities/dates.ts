@@ -1,4 +1,4 @@
-import { UNSPECIFIED_FILTER_VALUE } from "@/utilities/filtersConfig";
+import { UNSPECIFIED_FILTER_VALUE } from "@/utilities/filter";
 
 export interface DateParts {
   full: string;

@@ -276,7 +276,7 @@ export interface FiltersSlugMetaData {
 export interface FilteredPageConfig {
   collectionName?: string;
   pageSize?: number | string;
-  currentPageNum?: number | string;
+  currentPage?: number | string;
 }
 
 export type PageNavItemType =
@@ -297,14 +297,14 @@ export interface PageNavItemModel {
 
 export interface ElementsPair {
   original?: HTMLElement;
-  filtered?: HTMLElement | Node;
+  filtered?: HTMLElement;
 }
 
 export interface FiltersData {
   filtersMap: Map<string, FilterMapEntry>;
   baseUrl: string;
   pageSize: string;
-  currentPageNum: string;
+  currentPage: string;
   collectionName: string;
 }
 
