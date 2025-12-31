@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro build && cp -r public/* _site/",
-    "index": "npm install && pagefind --site _site --verbose",
+    "index": "npm install --no-package-lock && pagefind --site _site --verbose",
     "local:index": "RENDER_MODE=static astro build && cp -r public/* _site/ && npm run index && rm -rf pagefind && cp -r _site/pagefind ./pagefind",
     "preview": "astro preview",
     "astro": "astro",
