@@ -6,7 +6,7 @@ applications:
       - route: ((site)).app.cloud.gov
     processes:
       - type: web
-        command: npm run dev
+        command: npm run start:preview
         disk_quota: 5G
         instances: 1
         memory: 1024MB
@@ -23,11 +23,12 @@ applications:
       NPM_CONFIG_PRODUCTION: false
       NODE_MODULES_CACHE: false
       OPTIMIZE_MEMORY: true
-      EDITOR_APP_URL: https://((site)).app.cloud.gov
+      EDITOR_APP_URL: ((editor_app_url))
       ASTRO_ENDPOINT: http://localhost:4321
       APP_ENV: ((env))
       SITE: ((site))
       PAYLOAD_API_KEY: ((api_key))
       PREVIEW_MODE: ((preview_mode))
+      RENDER_MODE: server
       ASTRO_TELEMETRY_DISABLED: 1
     health-check-type: process

@@ -70,7 +70,7 @@ app.use(async (req, res, next) => {
   if (!jwtUser) return uauth();
 
   // check site access
-  if (jwtUser.sites.find((s) => s.site?.name === process.env.SITE)) {
+  if (jwtUser.sites.find((s) => s.site?.slug === process.env.SITE)) {
     return next();
   } else {
     console.log("wrong site");

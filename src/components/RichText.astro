@@ -5,25 +5,29 @@ import {
 } from "@payloadcms/richtext-lexical/html";
 import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
 import sanitizeHtml from "sanitize-html";
-import upload from "./RichTextConverers/upload";
+import upload from "./RichTextConverters/upload";
+import { getTextContent } from "./RichTextConverters/helpers";
+import { table, tablerow, tablecell } from "./RichTextConverters/table";
+import { processListBlock } from "./RichTextConverters/processList";
+import { accordionBlock } from "./RichTextConverters/accordion";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
-
 type NodeTypes = DefaultNodeTypes;
 
 const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
   defaultConverters,
 }) => {
-  return {
+  /*
+   * Converters used inside each process item body (nested rich text)
+   * Used to convert nested rich text inside Process List items without
+   * re-invoking block converters (avoids recursion while preserving
+   * heading/table/upload rules).
+   */
+  const nestedConverters: HTMLConvertersFunction<NodeTypes> = () => ({
     ...defaultConverters,
     upload: ({ node }) => upload({ node }),
     heading: ({ node }) => {
-      const getTextContent = (child) => {
-        if (child.text) return child.text;
-        if (child.children) return child.children.map(getTextContent).join("");
-        return "";
-      };
       const text = node.children?.map(getTextContent).join("") || "";
       const id = text
         .toLowerCase()
@@ -31,51 +35,110 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
         .replace(/[^a-z0-9-]/g, "");
       return `<${node.tag} id="${id}">${text}</${node.tag}>`;
     },
+    table: ({ node }) => table({ node }),
+    tablerow: ({ node }) => tablerow({ node }),
+    tablecell: ({ node }) => tablecell({ node }),
+  });
+
+  return {
+    ...defaultConverters,
+
+    upload: ({ node }) => upload({ node }),
+
+    heading: ({ node }) => {
+      const text = node.children?.map(getTextContent).join("") || "";
+      const id = text
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+      return `<${node.tag} id="${id}">${text}</${node.tag}>`;
+    },
+
+    table: ({ node }) => table({ node }),
+    tablerow: ({ node }) => tablerow({ node }),
+    tablecell: ({ node }) => tablecell({ node }),
+
+    blocks: {
+      processList: ({ node }) =>
+        processListBlock({
+          node,
+          htmlConverters: nestedConverters, // reuse pipeline for nested body
+        }),
+      accordion: ({ node }) =>
+        accordionBlock({
+          node,
+          htmlConverters: nestedConverters,
+        }),
+      // Add future blocks here:
+      // otherBlockSlug: ({ node }) => renderOtherBlock(node, nestedConverters),
+    },
   };
 };
+
+let rawHTML = convertLexicalToHTML({
+  data: content,
+  converters: htmlConverters,
+});
 ---
 
 <section
   class={`usa-prose ${alert && "alert-prose margin-y-0"} ${identifier && "identifier-prose margin-y-0"}`}
   style={`--textColor: var(${textColor}); --linkColor: var(${linkColor});`}
-  set:html={sanitizeHtml(
-    convertLexicalToHTML({ data: content, converters: htmlConverters }),
-    {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        "img",
-        "svg",
-        "use",
-      ]),
-      allowedClasses: {
-        a: false,
-        div: false,
-        h1: false,
-        h2: false,
-        h3: false,
-        h4: false,
-        h5: false,
-        h6: false,
-        img: false,
-        li: false,
-        ol: false,
-        p: false,
-        span: false,
-        ul: false,
-      },
-      allowedAttributes: {
-        a: ["href", "name", "target", "download"],
-        img: ["src", "alt"],
-        use: ["href"],
-        svg: ["class", "aria-hidden", "focusable", "role", "img"],
-        h1: ["id"],
-        h2: ["id"],
-        h3: ["id"],
-        h4: ["id"],
-        h5: ["id"],
-        h6: ["id"],
-      },
+  set:html={sanitizeHtml(rawHTML, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+      "img",
+      "svg",
+      "use",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "button",
+    ]),
+    allowedClasses: {
+      a: false,
+      table: ["usa-table", "usa-table--striped"],
+      div: [
+        "usa-accordion__content",
+        "usa-prose",
+        "usa-accordion",
+        "usa-accordion--multiselectable",
+      ],
+      h1: false,
+      h2: ["usa-process-list__heading", "usa-accordion__heading"],
+      h3: ["usa-process-list__heading", "usa-accordion__heading"],
+      h4: ["usa-process-list__heading", "usa-accordion__heading"],
+      h5: ["usa-process-list__heading", "usa-accordion__heading"],
+      h6: ["usa-process-list__heading", "usa-accordion__heading"],
+      img: false,
+      li: ["usa-process-list__item"],
+      ol: ["usa-process-list"],
+      p: false,
+      span: false,
+      ul: false,
+      button: ["usa-accordion__button"],
     },
-  )}
+    allowedAttributes: {
+      a: ["href", "name", "target", "download"],
+      img: ["src", "alt"],
+      use: ["href"],
+      svg: ["class", "aria-hidden", "focusable", "role", "img"],
+      h1: ["id", "class"],
+      h2: ["id", "class"],
+      h3: ["id", "class"],
+      h4: ["id", "class"],
+      h5: ["id", "class"],
+      h6: ["id", "class"],
+      th: ["scope"],
+      table: ["class"],
+      ol: ["class"],
+      li: ["class"],
+      button: ["class", "type", "aria-expanded", "aria-controls"],
+      div: ["id", "data-allow-multiple"],
+    },
+  })}
 />
 
 <style lang="scss">

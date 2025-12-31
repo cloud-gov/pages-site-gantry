@@ -4,9 +4,11 @@
 
 <script>
   import { ready, subscribe } from "@payloadcms/live-preview";
-  const serverURL = "http://localhost:3000";
+  import { PREVIEW_MODE, EDITOR_APP_URL } from "astro:env/client";
 
-  if (window.self !== window.top) {
+  const serverURL = EDITOR_APP_URL as string;
+
+  if (window.self !== window.top && PREVIEW_MODE === "true") {
     subscribe({
       callback: () => {
         window.location.reload();

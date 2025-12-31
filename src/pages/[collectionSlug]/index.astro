@@ -1,0 +1,133 @@
+---
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import Layout from "@/layouts/Layout.astro";
+import PaginationNav from "@/components/PaginationNav.astro";
+import PageWithSideNav from "@/components/PageWithSideNav.astro";
+import RichText from "@/components/RichText.astro";
+import Media from "@/components/Media.astro";
+import {
+  fetchCustomCollectionPages,
+  createCustomCollectionPageMapper,
+  fetchCollection,
+  fetchSlug,
+} from "@/utilities/fetch";
+import { paginate } from "@/utilities/pagination";
+
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
+
+const { collectionSlug } = Astro.params;
+
+// Check if this slug matches a custom collection config
+const collectionConfig = await fetchSlug(
+  "custom-collections",
+  collectionSlug || "",
+);
+
+let page = null;
+let collectionPages: any[] = [];
+let items: any[] = [];
+let currentPage = 1;
+let totalPages = 1;
+let hasPaginationNav = false;
+
+if (!collectionConfig) {
+  // Check if this is a regular page - if so, render it here since this route matched first
+  page = await fetchSlug("pages", collectionSlug || "");
+
+  if (!page) {
+    return Astro.redirect("/404");
+  }
+} else {
+  // Fetch pages for this custom collection
+  const collectionPagesData = await fetchCustomCollectionPages(
+    collectionConfig.id,
+  );
+  collectionPages = collectionPagesData?.docs || [];
+
+  // Sort by publishedAt
+  const sorted = collectionPages.sort((a: any, b: any) => {
+    return (
+      new Date(b.publishedAt || 0).getTime() -
+      new Date(a.publishedAt || 0).getTime()
+    );
+  });
+
+  // Paginate
+  currentPage = 1;
+  hasPaginationNav = sorted.length >= PAGE_SIZE;
+  const paginationResult = paginate(sorted, currentPage, PAGE_SIZE);
+  totalPages = paginationResult.totalPages;
+  const paginatedItems = paginationResult.paginatedItems;
+
+  // Map items
+  const mapper = createCustomCollectionPageMapper(collectionSlug || "");
+  items = paginatedItems.map(mapper);
+}
+
+export async function getStaticPaths() {
+  // Fetch all custom collection configs to generate static paths
+  try {
+    const data = await fetchCollection("custom-collections");
+    const configs = data?.docs || [];
+
+    // Also fetch all pages to exclude their slugs from matching this route
+    const { fetchCollection: fetchPages } = await import("@/utilities/fetch");
+    const pagesData = await fetchPages("pages");
+    const pageSlugs = new Set(
+      (pagesData?.docs || []).map((page: any) => page.slug),
+    );
+
+    // Only return paths for custom collections that aren't also page slugs
+    return configs
+      .filter((config: any) => !pageSlugs.has(config.slug))
+      .map((config: any) => ({
+        params: { collectionSlug: config.slug },
+      }));
+  } catch (error) {
+    console.warn(
+      "Could not generate static paths for custom collections:",
+      error,
+    );
+    return [];
+  }
+}
+
+export const prerender = import.meta.env.PREVIEW_MODE || false;
+---
+
+{
+  page ? (
+    <Layout title={page.title}>
+      <PageWithSideNav
+        heading={page.title}
+        showSideNav={true}
+        currentPath={`/${collectionSlug}`}
+        sideNavId={page.sideNavigation?.id}
+      >
+        {page.image && <Media media={page.image} />}
+        <RichText content={page.content} />
+      </PageWithSideNav>
+    </Layout>
+  ) : collectionConfig ? (
+    <Layout
+      title={collectionConfig.title}
+      currentPage={currentPage}
+      totalPages={totalPages}
+    >
+      <PagesSection heading={collectionConfig.title}>
+        {collectionConfig.description && (
+          <p class="margin-bottom-3">{collectionConfig.description}</p>
+        )}
+        <CollectionItemList items={items} />
+        {hasPaginationNav && (
+          <PaginationNav
+            currentPage={currentPage}
+            totalPages={totalPages}
+            basePath={`/${collectionSlug}/page`}
+          />
+        )}
+      </PagesSection>
+    </Layout>
+  ) : null
+}

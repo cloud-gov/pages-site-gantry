@@ -8,6 +8,7 @@ import {
   type LinkModel,
   type LogoModel,
   type PageModel,
+  type MediaValueProps,
   type Tag,
 } from "@/env";
 import { preFooterMapper } from "@/utilities/fetch/preFooterMapper.ts";
@@ -138,7 +139,7 @@ export function reportMapper(data: CollectionEntry<"reports">["data"]) {
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `/reports/${data.slug}`,
-    tags: data.categories.map((c) => ({
+    tags: (data.categories ?? []).map((c) => ({
       label: c.title,
       url: `/reports?category=${c.slug}`,
     })),
@@ -157,12 +158,50 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `/resources/${data.slug}`,
-    tags: data.categories.map((c) => ({
+    tags: (data.categories ?? []).map((c) => ({
       label: c.title,
       url: `/resources?category=${c.slug}`,
     })),
     showInPageNav: data.showInPageNav ?? true,
   };
+}
+
+/**
+ * Mapper for custom collection pages
+ * @param data - The custom collection page data
+ * @param collectionSlug - The URL slug for the custom collection (from collectionConfig)
+ */
+export function customCollectionPageMapper(data: any, collectionSlug: string) {
+  const mapped = contentMapper(data, {
+    baseUrl: `/${collectionSlug}`,
+    dateField: data.contentDate ? "contentDate" : "publishedAt",
+    fileField: "files",
+  });
+
+  return {
+    ...mapped,
+    date: data.contentDate
+      ? formatDate(data.contentDate)
+      : formatDate(data.publishedAt || ""),
+    description: data.excerpt || "",
+    showInPageNav: data.showInPageNav ?? true,
+  };
+}
+
+/**
+ * Creates a customCollectionPageMapper with a specific collection slug
+ * Use this when you need to map custom collection pages with the correct URL slug
+ */
+export function createCustomCollectionPageMapper(collectionSlug: string) {
+  return (data: any) => customCollectionPageMapper(data, collectionSlug);
+}
+
+export function shouldDisplay(a: any, currentDate: Date): boolean {
+  const publishDate = new Date(a?.publishDate);
+  return (
+    !!a?.isActive &&
+    (isNaN(publishDate.getTime()) || publishDate <= currentDate)
+  );
 }
 
 export function alertsMapper(
@@ -173,14 +212,25 @@ export function alertsMapper(
   return (
     responseData
       ?.filter((a) => !!getData(a)?.isActive)
-      ?.map((a) => ({
-        title: getData(a).title,
-        type: getData(a).type,
-        content: getData(a).content,
-        icon: getData(a).icon,
-        slim: getData(a).slim,
-        alignment: getData(a).alignment,
-      })) ?? []
+      ?.map((a) => {
+        const data = getData(a);
+        const result: AlertModel = {
+          title: data.title,
+          type: data.type,
+          content: data.content,
+        };
+        // Only include optional fields if they are defined
+        if (data.icon !== undefined) {
+          result.icon = data.icon;
+        }
+        if (data.slim !== undefined) {
+          result.slim = data.slim;
+        }
+        if (data.alignment !== undefined) {
+          result.alignment = data.alignment;
+        }
+        return result;
+      }) ?? []
   );
 }
 
@@ -219,6 +269,13 @@ export function linkMapper(link): LinkModel {
         externalLink: false,
       };
       break;
+    case "customCollectionLink":
+      result = {
+        text: link?.name,
+        url: collectionUrlMapper(link?.customCollection?.slug),
+        externalLink: false,
+      };
+      break;
   }
   return result;
 }
@@ -247,4 +304,62 @@ export function footerMapper(i: any, pf: any): FooterModel {
       },
     },
   };
+}
+
+export interface RelatedItem {
+  title: string;
+  description?: string;
+  link: string;
+  externalLink: boolean;
+  media?: MediaValueProps;
+  date?: DateParts | string;
+}
+
+export function relatedItemsMapper(
+  relatedItems: any[],
+  collectionMapper: (data: any) => any,
+): RelatedItem[] {
+  if (!relatedItems || relatedItems.length === 0) {
+    return [];
+  }
+
+  return relatedItems
+    .map((block): RelatedItem | null => {
+      // Handle external links
+      if (block.blockType === "externalLink") {
+        return {
+          title: block.title || "",
+          description: block.description || "",
+          link: block.url || "",
+          externalLink: true,
+        };
+      }
+
+      // Handle internal items
+      if (block.blockType === "internalItem" && block.item) {
+        const item =
+          typeof block.item === "object" && block.item !== null
+            ? block.item
+            : null;
+
+        if (!item) {
+          return null;
+        }
+
+        // Map the internal item using the provided mapper
+        const mapped = collectionMapper(item);
+        return {
+          title: mapped.title || item.title || "",
+          description: block.description || mapped.description || "",
+          link: mapped.link || "",
+          externalLink: false,
+          media: mapped.media,
+          date: mapped.date,
+        };
+      }
+
+      // Unknown block type
+      return null;
+    })
+    .filter((item): item is RelatedItem => item !== null); // Fixed: proper filter syntax
 }

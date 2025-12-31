@@ -94,6 +94,25 @@ const events = defineCollection({
         .optional(),
       categories: z.array(cCustom.optional()),
       site: z.any(),
+      relatedItems: z
+        .array(
+          z.discriminatedUnion("blockType", [
+            z.object({
+              blockType: z.literal("internalItem"),
+              item: z.union([z.string(), z.number(), z.any()]),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+            z.object({
+              blockType: z.literal("externalLink"),
+              title: z.string(),
+              url: z.string(),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+          ]),
+        )
+        .optional(),
       publishedAt: z.string().datetime(),
       slug: z.string(),
       slugLock: z.boolean(),
@@ -147,6 +166,25 @@ const news = defineCollection({
       site: z.any(),
       reviewReady: z.boolean(),
       showInPageNav: z.boolean().optional(),
+      relatedItems: z
+        .array(
+          z.discriminatedUnion("blockType", [
+            z.object({
+              blockType: z.literal("internalItem"),
+              item: z.union([z.string(), z.number(), z.any()]),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+            z.object({
+              blockType: z.literal("externalLink"),
+              title: z.string(),
+              url: z.string(),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+          ]),
+        )
+        .optional(),
       publishedAt: z.string().datetime(),
       slug: z.string(),
       slugLock: z.boolean(),
@@ -172,6 +210,25 @@ const posts = defineCollection({
       showInPageNav: z.boolean().optional(),
       authors: z.any(),
       populatedAuthors: z.any(),
+      relatedItems: z
+        .array(
+          z.discriminatedUnion("blockType", [
+            z.object({
+              blockType: z.literal("internalItem"),
+              item: z.union([z.string(), z.number(), z.any()]),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+            z.object({
+              blockType: z.literal("externalLink"),
+              title: z.string(),
+              url: z.string(),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+          ]),
+        )
+        .optional(),
       publishedAt: z.string().datetime(),
       slug: z.string(),
       slugLock: z.boolean(),
@@ -210,6 +267,25 @@ const reports = defineCollection({
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
       showInPageNav: z.boolean().optional(),
+      relatedItems: z
+        .array(
+          z.discriminatedUnion("blockType", [
+            z.object({
+              blockType: z.literal("internalItem"),
+              item: z.union([z.string(), z.number(), z.any()]),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+            z.object({
+              blockType: z.literal("externalLink"),
+              title: z.string(),
+              url: z.string(),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+          ]),
+        )
+        .optional(),
       publishedAt: z.string().datetime(),
       updatedAt: z.string().datetime().optional(),
       createdAt: z.string().datetime().optional(),
@@ -239,6 +315,25 @@ const resources = defineCollection({
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
+      relatedItems: z
+        .array(
+          z.discriminatedUnion("blockType", [
+            z.object({
+              blockType: z.literal("internalItem"),
+              item: z.union([z.string(), z.number(), z.any()]),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+            z.object({
+              blockType: z.literal("externalLink"),
+              title: z.string(),
+              url: z.string(),
+              description: z.string().optional(),
+              id: z.string().optional(),
+            }),
+          ]),
+        )
+        .optional(),
       showInPageNav: z.boolean().optional(),
       publishedAt: z.string().datetime(),
       updatedAt: z.string().datetime().optional(),
@@ -398,6 +493,15 @@ const siteConfig = defineCollection({
         searchAffiliate: z.any().optional(),
         dapAgencyCode: z.string().optional(),
         dapSubAgencyCode: z.string().optional(),
+        collectionDisplayNames: z
+          .array(
+            z.object({
+              collectionSlug: z.string(),
+              displayName: z.string(),
+              customSlug: z.string().optional(),
+            }),
+          )
+          .optional(),
       })
       .partial(),
   ),
@@ -501,8 +605,93 @@ const preFooter = defineCollection({
   ),
 });
 
+const general = defineCollection({
+  loader: collectionLoader("general"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      excerpt: z.string().optional(),
+      image: mvCustom.optional(),
+      files: z
+        .array(
+          z.object({
+            id: z.string(),
+            file: mvCustom,
+            label: z.string().optional(),
+          }),
+        )
+        .optional(),
+      slug: z.string(),
+      slugLock: z.boolean().optional(),
+      contentDate: z.string().datetime().optional(),
+      location: z.string().optional(),
+      categories: z.array(cCustom.optional()).optional(),
+      site: z.any(),
+      content: z.any().optional(), // richText
+      reviewReady: z.boolean().optional(),
+      showInPageNav: z.boolean().optional(),
+      publishedAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
+const customCollections = defineCollection({
+  loader: collectionLoader("custom-collections"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      slug: z.string(),
+      description: z.string().optional(),
+      site: z.any(),
+      reviewReady: z.boolean().optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
+const customCollectionPages = defineCollection({
+  loader: collectionLoader("custom-collection-pages"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      collectionConfig: z.any(), // relationship to custom-collections
+      title: z.string(),
+      excerpt: z.string().optional(),
+      image: mvCustom.optional(),
+      files: z
+        .array(
+          z.object({
+            id: z.string(),
+            file: mvCustom,
+            label: z.string().optional(),
+          }),
+        )
+        .optional(),
+      slug: z.string(),
+      slugLock: z.boolean().optional(),
+      contentDate: z.string().datetime().optional(),
+      categories: z.array(cCustom.optional()).optional(),
+      site: z.any(),
+      content: z.any().optional(), // richText
+      reviewReady: z.boolean().optional(),
+      showInPageNav: z.boolean().optional(),
+      publishedAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime(),
+      createdAt: z.string().datetime(),
+      _status: z.enum(["draft", "published"]),
+    }),
+  ),
+});
+
 const sideNavigations = defineCollection({
-  loader: collectionLoader("page-menus"),
+  loader: collectionLoader("side-navigation"),
   schema: makeAllKeysNullable(
     z.object({
       id: z.string(),
@@ -588,6 +777,8 @@ export const collections = {
   posts,
   reports,
   resources,
+  customCollections,
+  customCollectionPages,
   sideNavigations,
   // site globals
   homepage,
