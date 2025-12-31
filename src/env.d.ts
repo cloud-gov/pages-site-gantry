@@ -289,10 +289,7 @@ export type PageNavItemType =
   | "next"
   | "overflow"
   | "page"
-  | "prev-template"
-  | "next-template"
-  | "overflow-template"
-  | "page-template";
+;
 
 export interface PageNavItemModel {
   pageNumber?: any;

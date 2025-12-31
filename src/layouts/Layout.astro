@@ -9,6 +9,7 @@ import Config from "@/config.astro";
 import { getMediaUrl } from "@/utilities/media";
 import "../styles/index.scss";
 import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
+import PreviewReload from "@/components/PreviewReload.astro";
 import {
   fetchSiteConfig,
   fetchMenu,
@@ -172,6 +173,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
       }
     }
   </style>
+  <PreviewReload />
   <script>
     import "@uswds/uswds";
   </script>

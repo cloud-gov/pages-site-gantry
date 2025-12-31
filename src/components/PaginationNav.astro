@@ -29,7 +29,7 @@ const baseUrl = siteUrl + basePath;
         <>
           {(item.itemType === "prev" || item.itemType === "next") && (
             <PaginationNavItem
-              url=`${baseUrl}/${item.pageNumber}`
+              url={`${baseUrl}/${item.pageNumber}`}
               itemType={item.itemType}
               linkId={getPaginationItemId({
                 itemType: item.itemType,
@@ -48,7 +48,7 @@ const baseUrl = siteUrl + basePath;
           )}
           {item.itemType === "page" && (
             <PaginationNavItem
-              url=`${baseUrl}/${item.pageNumber}`
+              url={`${baseUrl}/${item.pageNumber}`}
               isCurrentPage={item.isCurrentPage}
               pageNum={item.pageNumber}
               itemType={item.itemType}
@@ -68,7 +68,7 @@ const baseUrl = siteUrl + basePath;
 <template id={getPaginationItemId({ itemType: "prev", idType: "template" })}>
   <ul>
     <PaginationNavItem
-      url=`${baseUrl}/`
+      url={`${baseUrl}/`}
       itemType="prev"
     />
   </ul>
@@ -76,7 +76,7 @@ const baseUrl = siteUrl + basePath;
 <template id={getPaginationItemId({ itemType: "next", idType: "template" })}>
   <ul>
     <PaginationNavItem
-      url=`${baseUrl}/`
+      url={`${baseUrl}/`}
       itemType="next"
     />
   </ul>
@@ -86,7 +86,7 @@ const baseUrl = siteUrl + basePath;
 >
   <ul>
     <PaginationNavItem
-      url=`${baseUrl}/`
+      url={`${baseUrl}/`}
       itemType="overflow"
      />
   </ul>
@@ -94,7 +94,7 @@ const baseUrl = siteUrl + basePath;
 <template id={getPaginationItemId({ itemType: "page",  pageId: "page",  idType: "template" })}>
   <ul>
     <PaginationNavItem
-      url=`${baseUrl}/`
+      url={`${baseUrl}/`}
       isCurrentPage={false}
       itemType="page"
      />

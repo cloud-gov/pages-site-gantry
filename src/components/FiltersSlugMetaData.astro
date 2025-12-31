@@ -11,10 +11,10 @@ const { filtersSlugMetaData } = Astro.props;
 {
   filtersSlugMetaData && (
   <meta
-    data-pagefind-meta=`collectionItemId:${filtersSlugMetaData.collectionItemId}`
+    data-pagefind-meta={`collectionItemId:${filtersSlugMetaData.collectionItemId}`}
   />
   <meta
-    data-pagefind-meta=`publishedAt:${filtersSlugMetaData.publishedAt}`
+    data-pagefind-meta={`publishedAt:${filtersSlugMetaData.publishedAt}`}
   />
 )}
 {
