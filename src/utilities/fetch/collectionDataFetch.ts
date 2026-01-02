@@ -1,6 +1,10 @@
 import { paginate } from "../pagination";
 import { fetchCollection } from "./queries";
 
+export const sortCollection = (a: any, b: any) => {
+  return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+};
+
 export async function getPaginatedCollectionData<T>(
   collectionName: string,
   currentPage: number,
@@ -24,11 +28,7 @@ export async function getPaginatedCollectionData<T>(
     };
   }
 
-  const sorted = data.docs.sort((a: any, b: any) => {
-    return (
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
-  });
+  const sorted = data.docs.sort(sortCollection);
   const hasPaginationNav = sorted.length >= pageSize;
   const { totalPages, paginatedItems } = paginate(
     sorted,

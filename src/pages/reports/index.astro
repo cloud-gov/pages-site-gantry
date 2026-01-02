@@ -28,7 +28,15 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title="Reports" currentPage={currentPage} totalPages={totalPages}>
-  <PagesSection heading="Reports" color="gray-10">
+  <PagesSection
+    heading="Reports"
+    filteredPageConfig={{
+      collectionName,
+      pageSize: PAGE_SIZE,
+      currentPage,
+    }}
+    color="gray-10"
+  >
     <CollectionItemList items={items} />
     {
       hasPaginationNav && (

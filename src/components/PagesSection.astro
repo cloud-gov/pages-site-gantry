@@ -1,9 +1,11 @@
 ---
+import Filters from "./Filters.astro";
 interface Button {
   label: string;
   url: string;
   variant?: string;
 }
+import type { FilteredPageConfig } from "@/env";
 
 interface Props {
   heading?: string;
@@ -11,6 +13,7 @@ interface Props {
   id?: string;
   color?: string;
   align?: "center" | "left";
+  filteredPageConfig?: FilteredPageConfig;
 }
 
 const {
@@ -19,6 +22,7 @@ const {
   align = "left",
   classes = "",
   id = false,
+  filteredPageConfig,
 } = Astro.props;
 ---
 
@@ -38,8 +42,17 @@ const {
           </div>
         </div>
       </div>
-      <div class="grid-col-4">
-        <slot name="sidebar" />
+      <div class="grid-col-4 margin-top-4">
+        {
+          filteredPageConfig && (
+            <div class="grid-row">
+              <Filters filteredPageConfig={filteredPageConfig} />
+            </div>
+          )
+        }
+        <div class="grid-row">
+          <slot name="sidebar" />
+        </div>
       </div>
     </div>
   </div>

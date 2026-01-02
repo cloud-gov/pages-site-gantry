@@ -1,0 +1,22 @@
+---
+import CollectionItem from "./CollectionItem.astro";
+import type { FiltersSlugMetaData } from "../env";
+
+interface Props {
+  item: any;
+  filtersSlugMetaData: FiltersSlugMetaData;
+  showEvent: boolean;
+}
+
+const { item, filtersSlugMetaData, showEvent = false } = Astro.props;
+---
+
+{
+  filtersSlugMetaData && (
+    <template id={filtersSlugMetaData.collectionItemId}>
+      <div>
+        <CollectionItem {...item} showEvent={showEvent} />
+      </div>
+    </template>
+  )
+}

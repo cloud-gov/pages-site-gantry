@@ -1,0 +1,28 @@
+---
+import { type FilterConfig } from "@/env";
+import { getFilterNavId } from "@/utilities/filter";
+
+interface Props {
+  filter: FilterConfig;
+}
+const { filter } = Astro.props;
+const { filterName, filterLabel } = filter;
+---
+
+<nav
+  hidden
+  class="usa-sidenav"
+  aria-label=`Filter ${filterName}`
+  id={getFilterNavId(filterName)}
+>
+  <label class="usa-label" for={filterName}>{filterLabel}</label>
+  <div class="usa-combo-box" data-disable-filtering="true">
+    <select class="usa-select" name={filterName} id={filterName}> </select>
+  </div>
+</nav>
+
+<style is:global>
+  .usa-combo-box__list {
+    overflow-y: auto !important;
+  }
+</style>

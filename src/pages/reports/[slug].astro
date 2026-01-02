@@ -12,6 +12,9 @@ import PagesSection from "@/components/PagesSection.astro";
 import Tags from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 import ResourceFile from "@/components/ResourceFile.astro";
 import RelatedItems from "@/components/RelatedItems.astro";
 
@@ -37,9 +40,19 @@ const relatedItems = data.relatedItems
   : [];
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  report,
+  slug,
+);
 ---
 
-<Layout title={report.title} useInPageNav={report.showInPageNav}>
+<Layout
+  title={report.title}
+  useInPageNav={report.showInPageNav}
+  filtersSlugMetaData={filtersSlugMetaData}
+>
   {
     report.showInPageNav && (
       <Fragment slot="in-page-nav">
@@ -76,3 +89,9 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <Fragment slot="sidebar"></Fragment>
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={report}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>

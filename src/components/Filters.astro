@@ -1,0 +1,106 @@
+---
+import Filter from "./Filter.astro";
+import {
+  FILTERS_CONFIG,
+  FILTERS_DATA_ID,
+  getFiltersDataAttributes,
+} from "@/utilities/filter";
+import type { FilteredPageConfig } from "@/env";
+
+interface Props {
+  filteredPageConfig: FilteredPageConfig;
+}
+
+const { filteredPageConfig } = Astro.props;
+
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? "/"
+  : (import.meta.env.BASEURL || "") + "/";
+
+const dataAttributes = getFiltersDataAttributes(
+  FILTERS_CONFIG,
+  filteredPageConfig,
+  baseUrl,
+);
+---
+
+<aside class="sidenav-container">
+  {
+    dataAttributes && (
+      <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
+    )
+  }
+  {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+</aside>
+
+<script>
+  import { getFiltersData } from "../utilities/filter/filtersData";
+  import {
+    getFiltersFromQueryParams,
+    getSearchOptionsFromSelectFilters,
+    getSearchOptionsFromQuery,
+    addFiltersEventListeners,
+    renderFilters,
+    resetFilteredPage,
+    createFilteredPagination,
+    addPaginationEventListeners,
+    createFilteredCollectionItemList,
+    search,
+    displayOriginals,
+    getFirstPageLinkUrl,
+  } from "../utilities/filter";
+  import { type ElementsPair, type FiltersData } from "../env.d";
+
+  let collectionListPair: ElementsPair;
+  let paginationPair: ElementsPair;
+
+  try {
+    const data: FiltersData = getFiltersData();
+    if (data) {
+      const pagefind = await import(data.baseUrl + "pagefind/pagefind.js");
+      pagefind.init();
+      const pagefindFilters = await pagefind.filters();
+
+      const filtersFromQueryParams = getFiltersFromQueryParams(window);
+      collectionListPair = createFilteredCollectionItemList();
+      paginationPair = createFilteredPagination();
+      const firstPageUrl = getFirstPageLinkUrl();
+
+      if (
+        collectionListPair &&
+        renderFilters(data.filtersMap, filtersFromQueryParams, pagefindFilters)
+      ) {
+        addFiltersEventListeners(data.filtersMap, async function (e) {
+          if (data.currentPage !== "1") {
+            resetFilteredPage(firstPageUrl, data.filtersMap, e);
+          } else {
+            await search(
+              pagefind,
+              getSearchOptionsFromSelectFilters(data.filtersMap),
+              collectionListPair,
+              paginationPair,
+              data,
+            );
+          }
+        });
+        addPaginationEventListeners(paginationPair, data);
+
+        if (filtersFromQueryParams?.size > 0) {
+          await search(
+            pagefind,
+            getSearchOptionsFromQuery(
+              data.collectionName,
+              filtersFromQueryParams,
+            ),
+            collectionListPair,
+            paginationPair,
+            data,
+          );
+        }
+      }
+    }
+  } catch (err) {
+    displayOriginals(collectionListPair, paginationPair);
+    console.error(err);
+  }
+</script>

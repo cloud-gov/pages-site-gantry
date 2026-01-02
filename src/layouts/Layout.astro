@@ -20,6 +20,7 @@ import {
 import { type AlertModel, type FooterModel } from "@/env";
 import Alerts from "@/components/Alerts.astro";
 import { fetchFooter, footerMapper } from "@/utilities/fetch";
+import FiltersSlugMetaData from "@/components/FiltersSlugMetaData.astro";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -81,6 +82,7 @@ const {
   useInPageNav = false,
   currentPage,
   totalPages,
+  filtersSlugMetaData,
 } = Astro.props;
 const metaTitle = title
   ? `${title} | ${siteConfig.agencyName || "Agency Homepage"}`
@@ -111,6 +113,8 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <meta name="twitter:title" content={metaTitle} />
     {description && <meta name="twitter:description" content={description} />}
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+
+    <FiltersSlugMetaData filtersSlugMetaData={filtersSlugMetaData} />
   </head>
   <body>
     <Config />

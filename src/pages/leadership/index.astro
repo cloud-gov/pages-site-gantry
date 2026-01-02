@@ -40,7 +40,15 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
 <Layout title="Leadership" currentPage={currentPage} totalPages={totalPages}>
-  <PagesSection heading="Leadership" color="gray-10">
+  <PagesSection
+    heading="Leadership"
+    color="gray-10"
+    filteredPageConfig={{
+      collectionName,
+      pageSize: PAGE_SIZE,
+      currentPage,
+    }}
+  >
     <CollectionItemList items={items} />
     {
       people.length >= PAGE_SIZE && (

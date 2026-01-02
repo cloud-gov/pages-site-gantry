@@ -28,7 +28,14 @@ export const prerender = true;
 ---
 
 <Layout title="posts">
-  <PagesSection heading="Posts">
+  <PagesSection
+    heading="Posts"
+    filteredPageConfig={{
+      collectionName,
+      pageSize: PAGE_SIZE,
+      currentPage,
+    }}
+  >
     <CollectionItemList items={items} />
     {
       hasPaginationNav && (
