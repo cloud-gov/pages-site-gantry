@@ -83,7 +83,7 @@ export function getFiltersSelection(
     if (!filterElement) return;
 
     if (e && e.target.name === filterName) {
-      filters.push({ filterName, selectedValue: e.target.value });
+      e.target.value && filters.push({ filterName, selectedValue: e.target.value });
     } else {
       const selectedValue = (
         filterElement as HTMLInputElement | HTMLSelectElement
