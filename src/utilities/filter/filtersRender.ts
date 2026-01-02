@@ -4,13 +4,17 @@ import type {
   FilterOption,
   FiltersData,
 } from "@/env";
-import { getCollectionFilters } from "@/utilities/filter/filtersSelect";
+import {
+  getCollectionFilters,
+  getFiltersSelection,
+} from "@/utilities/filter/filtersSelect";
 import {
   FILTER_NAV_ID_PREFIX,
-  PAGINATION_LINK_ID_FIST_PAGE,
 } from "@/utilities/filter/filtersConfig";
 import { getFilteredResultFragment } from "@/utilities/filter/filtersSearch";
 import { getFilteredPaginationFragment } from "@/utilities/filter/filtersPagination";
+import { getPaginationItemId } from "@/utilities/pagination.ts";
+import { appendQuery } from "@/utilities/filter/filtersUtils.ts";
 
 export function getFilterNavId(filterName: string) {
   return `${FILTER_NAV_ID_PREFIX}${filterName}`;
@@ -152,15 +156,19 @@ function displayOriginal(elementsPair: ElementsPair) {
 }
 
 export function displayFiltered(elementsPair: ElementsPair, fragment) {
-  elementsPair.original.style.display = "none";
-  elementsPair.filtered.style.display = "";
-  elementsPair.filtered.replaceChildren(fragment);
+  elementsPair?.original && (elementsPair.original.style.display = "none");
+  if (elementsPair?.filtered) {
+    elementsPair.filtered.style.display = "";
+    elementsPair.filtered.replaceChildren(fragment);
+  }
 }
 
 export function hideBoth(elementsPair: ElementsPair) {
-  elementsPair.original.style.display = "none";
-  elementsPair.filtered.style.display = "none";
-  elementsPair.filtered.replaceChildren();
+  elementsPair?.original && (elementsPair.original.style.display = "none");
+  if (elementsPair?.filtered) {
+    elementsPair.filtered.style.display = "none";
+    elementsPair.filtered.replaceChildren();
+  }
 }
 
 function getElementByName(filter: string): HTMLElement {
@@ -175,6 +183,27 @@ function getElementByName(filter: string): HTMLElement {
   return el;
 }
 
-export function resetFilteredPage() {
-  document.getElementById(`${PAGINATION_LINK_ID_FIST_PAGE}`)?.click();
+export function getFirstPageLinkUrl() {
+  const firstPageLinkId = getPaginationItemId({
+    itemType: "page",
+    pageId: 1,
+    idType: "link",
+  });
+  const link = document.getElementById(firstPageLinkId);
+  if (!link || link.tagName !== "A") {
+    return null;
+  }
+  return link.href;
+}
+
+export function resetFilteredPage(
+  firstPageLinkUrl: string,
+  filtersMap: Map<string, FilterMapEntry>,
+  e: CustomEvent,
+) {
+  if (firstPageLinkUrl) {
+    const filterSelections = getFiltersSelection(filtersMap, e);
+    const url = appendQuery(firstPageLinkUrl, filterSelections);
+    window.location.href = url.toString();
+  }
 }

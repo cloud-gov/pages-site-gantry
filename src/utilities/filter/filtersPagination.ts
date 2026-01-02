@@ -1,11 +1,20 @@
-import type { ElementsPair, FilterMapEntry, FiltersData, PageNavItemModel } from "@/env";
+import type {
+  ElementsPair,
+  FilterMapEntry,
+  FiltersData,
+  PageNavItemModel,
+} from "@/env";
 import { getPageNavItems, getPaginationItemId } from "@/utilities/pagination";
 import {
   PAGINATION_ITEM_ID_PREFIX,
   PAGINATION_LIST_FILTERED_ID,
-  PAGINATION_LIST_ID
+  PAGINATION_LIST_ID,
 } from "@/utilities/filter/filtersConfig";
-import { cloneElementWithId, createDocumentFragment } from "@/utilities/filter/filtersUtils";
+import {
+  appendQuery,
+  cloneElementWithId,
+  createDocumentFragment,
+} from "@/utilities/filter/filtersUtils";
 import { getFiltersSelection } from "@/utilities/filter/filtersSelect";
 
 export function getFilteredPaginationFragmentForPageNavItems(
@@ -39,7 +48,7 @@ export function getFilteredPaginationFragmentForPageNavItems(
             link.id = getPaginationItemId({
               itemType: pageNavItem.itemType,
               pageId: pageNavItem.pageNumber,
-              idType: "link",
+              idType: "link-filtered",
             });
           }
           clones.push(paginationNavItemCloned);
@@ -84,10 +93,15 @@ export function addPaginationEventListeners(
   pagination: ElementsPair,
   data: FiltersData,
 ) {
-  pagination.filtered.addEventListener("click", getPaginatiionLinkListener(data.filtersMap));
+  pagination.filtered.addEventListener(
+    "click",
+    getPaginatiionLinkListener(data.filtersMap),
+  );
 }
 
-export function getPaginatiionLinkListener(filtersMap: Map<string, FilterMapEntry>) {
+export function getPaginatiionLinkListener(
+  filtersMap: Map<string, FilterMapEntry>,
+) {
   return (e: any) => {
     const link = e.target.closest(`[id^=${PAGINATION_ITEM_ID_PREFIX}]`);
     if (!link) return;
@@ -95,15 +109,7 @@ export function getPaginatiionLinkListener(filtersMap: Map<string, FilterMapEntr
     const filterSelections = getFiltersSelection(filtersMap);
     if (filterSelections.length > 0) {
       e.preventDefault();
-
-      const url = new URL(link.href, window.location.href);
-      filterSelections.forEach((filterSelection) => {
-        url.searchParams.set(
-          filterSelection.filterName,
-          filterSelection.selectedValue,
-        );
-      });
-
+      const url = appendQuery(link.href, filterSelections);
       window.location.href = url.toString();
     }
   };

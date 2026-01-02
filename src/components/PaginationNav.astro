@@ -39,12 +39,14 @@ const baseUrl = siteUrl + basePath;
             />
           )}
           {item.itemType === "overflow" && (
-            <PaginationNavItem itemType="overflow"
-                               linkId={getPaginationItemId({
-                                 itemType: item.itemType,
-                                 pageId: item.pageNumber,
-                                 idType: "link",
-                               })}/>
+            <PaginationNavItem
+              itemType="overflow"
+              linkId={getPaginationItemId({
+                itemType: item.itemType,
+                pageId: item.pageNumber,
+                idType: "link",
+              })}
+            />
           )}
           {item.itemType === "page" && (
             <PaginationNavItem
@@ -67,37 +69,38 @@ const baseUrl = siteUrl + basePath;
 
 <template id={getPaginationItemId({ itemType: "prev", idType: "template" })}>
   <ul>
-    <PaginationNavItem
-      url={`${baseUrl}/`}
-      itemType="prev"
-    />
+    <PaginationNavItem url={`${baseUrl}/`} itemType="prev" />
   </ul>
 </template>
 <template id={getPaginationItemId({ itemType: "next", idType: "template" })}>
   <ul>
-    <PaginationNavItem
-      url={`${baseUrl}/`}
-      itemType="next"
-    />
+    <PaginationNavItem url={`${baseUrl}/`} itemType="next" />
   </ul>
 </template>
 <template
-  id={getPaginationItemId({ itemType: "overflow", pageId: "page", idType: "template" })}
+  id={getPaginationItemId({
+    itemType: "overflow",
+    pageId: "page",
+    idType: "template",
+  })}
 >
   <ul>
-    <PaginationNavItem
-      url={`${baseUrl}/`}
-      itemType="overflow"
-     />
+    <PaginationNavItem url={`${baseUrl}/`} itemType="overflow" />
   </ul>
 </template>
-<template id={getPaginationItemId({ itemType: "page",  pageId: "page",  idType: "template" })}>
+<template
+  id={getPaginationItemId({
+    itemType: "page",
+    pageId: "page",
+    idType: "template",
+  })}
+>
   <ul>
     <PaginationNavItem
       url={`${baseUrl}/`}
       isCurrentPage={false}
       itemType="page"
-     />
+    />
   </ul>
 </template>
 <template
@@ -108,10 +111,6 @@ const baseUrl = siteUrl + basePath;
   })}
 >
   <ul>
-    <PaginationNavItem
-      url=`${baseUrl}/`
-      isCurrentPage={true}
-      itemType="page"
-     />
+    <PaginationNavItem url=`${baseUrl}/` isCurrentPage={true} itemType="page" />
   </ul>
 </template>

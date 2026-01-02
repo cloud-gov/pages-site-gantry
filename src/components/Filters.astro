@@ -20,7 +20,7 @@ const baseUrl = import.meta.env.LOCAL_DEV
 const dataAttributes = getFiltersDataAttributes(
   FILTERS_CONFIG,
   filteredPageConfig,
-  baseUrl
+  baseUrl,
 );
 ---
 
@@ -47,6 +47,7 @@ const dataAttributes = getFiltersDataAttributes(
     createFilteredCollectionItemList,
     search,
     displayOriginals,
+    getFirstPageLinkUrl,
   } from "../utilities/filter";
   import { type ElementsPair, type FiltersData } from "../env.d";
 
@@ -63,15 +64,15 @@ const dataAttributes = getFiltersDataAttributes(
       const filtersFromQueryParams = getFiltersFromQueryParams(window);
       collectionListPair = createFilteredCollectionItemList();
       paginationPair = createFilteredPagination();
+      const firstPageUrl = getFirstPageLinkUrl();
 
       if (
         collectionListPair &&
-        paginationPair &&
         renderFilters(data.filtersMap, filtersFromQueryParams, pagefindFilters)
       ) {
-        addFiltersEventListeners(data.filtersMap, async function () {
+        addFiltersEventListeners(data.filtersMap, async function (e) {
           if (data.currentPage !== "1") {
-            resetFilteredPage();
+            resetFilteredPage(firstPageUrl, data.filtersMap, e);
           } else {
             await search(
               pagefind,
@@ -103,4 +104,3 @@ const dataAttributes = getFiltersDataAttributes(
     console.error(err);
   }
 </script>
-

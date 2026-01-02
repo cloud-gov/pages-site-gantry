@@ -73,27 +73,34 @@ export function getSearchOptionsFromQuery(
   return { filters: searchOptions };
 }
 
-export function getFiltersSelection(filtersMap: Map<string, FilterMapEntry>) {
+export function getFiltersSelection(
+  filtersMap: Map<string, FilterMapEntry>,
+  e?: CustomEvent,
+) {
   const filters: { filterName: string; selectedValue: string }[] = [];
 
   filtersMap.forEach(({ filterElement, filterName }) => {
     if (!filterElement) return;
 
-    const selectedValue = (
-      filterElement as HTMLInputElement | HTMLSelectElement
-    ).value;
+    if (e && e.target.name === filterName) {
+      filters.push({ filterName, selectedValue: e.target.value });
+    } else {
+      const selectedValue = (
+        filterElement as HTMLInputElement | HTMLSelectElement
+      ).value;
 
-    const input: HTMLInputElement = document.getElementById(
-      filterName,
-    ) as HTMLInputElement;
+      const input: HTMLInputElement = document.getElementById(
+        filterName,
+      ) as HTMLInputElement;
 
-    if (
-      selectedValue &&
-      selectedValue !== "all" &&
-      selectedValue.trim() !== "" &&
-      input?.value?.trim() !== ""
-    ) {
-      filters.push({ filterName, selectedValue });
+      if (
+        selectedValue &&
+        selectedValue !== "all" &&
+        selectedValue.trim() !== "" &&
+        input?.value?.trim() !== ""
+      ) {
+        filters.push({ filterName, selectedValue });
+      }
     }
   });
 

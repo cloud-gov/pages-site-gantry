@@ -284,12 +284,7 @@ export interface FilteredPageConfig {
   currentPage?: number | string;
 }
 
-export type PageNavItemType =
-  | "prev"
-  | "next"
-  | "overflow"
-  | "page"
-;
+export type PageNavItemType = "prev" | "next" | "overflow" | "page";
 
 export interface PageNavItemModel {
   pageNumber?: any;

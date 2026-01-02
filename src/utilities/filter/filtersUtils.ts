@@ -26,3 +26,17 @@ export function cloneElementWithId(
   parentContainer.appendChild(clone);
   return { original, filtered: clone };
 }
+
+export function appendQuery(
+  linkUrl,
+  filterSelections: { filterName: string; selectedValue: string }[],
+) {
+  const url = new URL(linkUrl, window.location.href);
+  filterSelections.forEach((filterSelection) => {
+    url.searchParams.set(
+      filterSelection.filterName,
+      filterSelection.selectedValue,
+    );
+  });
+  return url;
+}

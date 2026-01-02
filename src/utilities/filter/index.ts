@@ -30,6 +30,7 @@ export {
   getFilterNavId,
   resetFilteredPage,
   displayOriginals,
+  getFirstPageLinkUrl,
 } from "./filtersRender";
 export {
   createFilteredPagination,

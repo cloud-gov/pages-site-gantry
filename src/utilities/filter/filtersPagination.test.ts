@@ -78,7 +78,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
   });
 
   it("should return an empty DocumentFragment when pageNavItems array is empty", () => {
-    expect(paginaton.getFilteredPaginationFragmentForPageNavItems([])).toBe(null);
+    expect(paginaton.getFilteredPaginationFragmentForPageNavItems([])).toBe(
+      null,
+    );
   });
 
   it("should skip items when template element is not found", () => {
@@ -92,7 +94,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
       { itemType: "page", pageNumber: "1" },
     ];
 
-    expect(paginaton.getFilteredPaginationFragmentForPageNavItems([])).toBe(null);
+    expect(paginaton.getFilteredPaginationFragmentForPageNavItems([])).toBe(
+      null,
+    );
     expect(mockFragment.appendChild).not.toHaveBeenCalled();
   });
 
@@ -108,7 +112,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
       { itemType: "page", pageNumber: "1" },
     ];
 
-    expect(paginaton.getFilteredPaginationFragmentForPageNavItems([])).toBe(null);
+    expect(paginaton.getFilteredPaginationFragmentForPageNavItems([])).toBe(
+      null,
+    );
     expect(mockFragment.appendChild).not.toHaveBeenCalled();
   });
 

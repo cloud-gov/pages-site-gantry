@@ -2,6 +2,7 @@ import navigate_next from "@uswds-images/usa-icons/navigate_next.svg";
 import navigate_before from "@uswds-images/usa-icons/navigate_before.svg";
 import type { PageNavItemModel, PageNavItemType } from "@/env";
 import { PAGINATION_ITEM_ID_PREFIX } from "@/utilities/filter";
+
 export function paginate<T>(items: T[], currentPage: number, pageSize: number) {
   const totalPages = Math.ceil(items.length / pageSize);
   const paginatedItems = items.slice(
@@ -196,7 +197,7 @@ export function getPageNumbers(
 interface PaginationIdOptions {
   itemType: PageNavItemType;
   pageId?: number | string;
-  idType?: "template" | "link";
+  idType?: "template" | "link" | "link-filtered";
   isCurrentPage?: boolean;
 }
 
@@ -206,28 +207,19 @@ export function getPaginationItemId({
   pageId,
   isCurrentPage = false,
 }: PaginationIdOptions): string {
-  let suffix = "";
-  switch (idType) {
-    case "template":
-      suffix = "template";
-      break;
-    case "link":
-      suffix = "link";
-      break;
-  }
   switch (itemType) {
     case "overflow":
-      return `${PAGINATION_ITEM_ID_PREFIX}${suffix}=overflow`;
+      return `${PAGINATION_ITEM_ID_PREFIX}${idType}=overflow`;
     case "prev":
-      return `${PAGINATION_ITEM_ID_PREFIX}${suffix}-prev`;
+      return `${PAGINATION_ITEM_ID_PREFIX}${idType}-prev`;
     case "next":
-      return `${PAGINATION_ITEM_ID_PREFIX}${suffix}-next`;
+      return `${PAGINATION_ITEM_ID_PREFIX}${idType}-next`;
     case "page":
       switch (idType) {
         case "template":
-          return `${PAGINATION_ITEM_ID_PREFIX}${suffix}-page-${isCurrentPage ? "current" : ""}`;
+          return `${PAGINATION_ITEM_ID_PREFIX}${idType}-page-${isCurrentPage ? "current" : ""}`;
         case "link":
-          return `${PAGINATION_ITEM_ID_PREFIX}${suffix}-${pageId}`;
+          return `${PAGINATION_ITEM_ID_PREFIX}${idType}-${pageId}`;
       }
   }
   return "";

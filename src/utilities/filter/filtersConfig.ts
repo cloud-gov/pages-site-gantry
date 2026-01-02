@@ -16,7 +16,7 @@ export const PAGINATION_LIST_ID = "pagination-list";
 export const PAGINATION_LIST_FILTERED_ID = "pagination-list-filtered";
 export const PAGEFIND_FILTER_PREFIX = "pagefindfilter";
 export const UNSPECIFIED_FILTER_VALUE = "Unspecified";
-export const PAGINATION_ITEM_ID_PREFIX = "filtered-pagination-item-";
+export const PAGINATION_ITEM_ID_PREFIX = "pagination-item-";
 export const PAGINATION_LINK_ID_FIST_PAGE = `${PAGINATION_ITEM_ID_PREFIX}link-1`;
 
 export const DATASET_KEYS = {

@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cloneElementWithId } from "@/utilities/filter/filtersUtils.ts";
+import {
+  cloneElementWithId,
+} from "@/utilities/filter/filtersUtils.ts";
 
 describe("Filters Utility, cloneElementWithId", () => {
   beforeEach(() => {
