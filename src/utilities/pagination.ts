@@ -219,6 +219,7 @@ export function getPaginationItemId({
         case "template":
           return `${PAGINATION_ITEM_ID_PREFIX}${idType}-page-${isCurrentPage ? "current" : ""}`;
         case "link":
+        case "link-filtered":
           return `${PAGINATION_ITEM_ID_PREFIX}${idType}-${pageId}`;
       }
   }
