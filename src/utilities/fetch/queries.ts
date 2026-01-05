@@ -69,3 +69,7 @@ export async function fetchCustomCollectionPageBySlug(
   );
   return processFetchResponse(await safeJsonParse(response));
 }
+
+export async function fetchNotFoundPage() {
+  return fetchCollection("globals/not-found-page");
+}
