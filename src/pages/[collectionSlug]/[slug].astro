@@ -34,9 +34,9 @@ if (!Astro.isPrerendered) {
     collectionConfig.id,
     pageSlug || "",
   );
+
   if (!data) return Astro.redirect("/404");
 } else {
-  // @ts-expect-error
   ({ data } = Astro.props);
 }
 
@@ -87,7 +87,11 @@ export async function getStaticPaths() {
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={item.title} useInPageNav={item.showInPageNav}>
+<Layout
+  title={item.title}
+  useInPageNav={item.showInPageNav}
+  useBreadcrumbTitle={true}
+>
   {
     item.showInPageNav && (
       <Fragment slot="in-page-nav">
@@ -121,12 +125,12 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         <div
           class="usa-summary-box maxw-tablet margin-bottom-2"
           role="region"
-          aria-labelledby={`content-details-${itemSlug}`}
+          aria-labelledby={`content-details-${data.slug}`}
         >
           <div class="usa-summary-box__body">
             <h2
               class="usa-summary-box__heading"
-              id={`content-details-${itemSlug}`}
+              id={`content-details-${data.slug}`}
             >
               Details
             </h2>

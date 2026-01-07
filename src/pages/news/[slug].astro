@@ -36,7 +36,11 @@ const relatedItems = data.relatedItems
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={newsItem.title} useInPageNav={newsItem.showInPageNav}>
+<Layout
+  title={newsItem.title}
+  useInPageNav={newsItem.showInPageNav}
+  useBreadcrumbTitle={true}
+>
   {
     newsItem.showInPageNav && (
       <Fragment slot="in-page-nav">

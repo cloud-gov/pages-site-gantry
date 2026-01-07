@@ -48,7 +48,11 @@ export const getStaticPaths = createGetStaticPath("events");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={event.title} useInPageNav={event.showInPageNav}>
+<Layout
+  title={event.title}
+  useInPageNav={event.showInPageNav}
+  useBreadcrumbTitle={true}
+>
   {
     event.showInPageNav && (
       <Fragment slot="in-page-nav">
