@@ -63,37 +63,42 @@ const socialLinks: SocialLink[] | undefined =
 
           {socialLinks && (
             <div class="usa-footer__social-links grid-row grid-gap-1">
-              {socialLinks.map((sm) => (
-                <div class="grid-col-auto">
-                  <a
-                    href={sm.url}
-                    class="usa-social-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="{sm.platform} (opens in new tab)"
-                  >
-                    <Image
-                      src={
-                        sm.platform === SocialPlatform.FACEBOOK
-                          ? facebookImg
-                          : sm.platform === SocialPlatform.X
-                            ? xImg
-                            : sm.platform === SocialPlatform.INSTAGRAM
-                              ? instagramImg
-                              : sm.platform === SocialPlatform.YOUTUBE
-                                ? youtubeImg
-                                : sm.platform === SocialPlatform.RSS_FEED
-                                  ? rssFeedImg
-                                  : ""
-                      }
-                      class="usa-social-link__icon"
-                      alt={sm.url}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </a>
-                </div>
-              ))}
+              {socialLinks.map((sm) => {
+                const iconSrc =
+                  sm.platform === SocialPlatform.FACEBOOK
+                    ? facebookImg
+                    : sm.platform === SocialPlatform.X
+                      ? xImg
+                      : sm.platform === SocialPlatform.INSTAGRAM
+                        ? instagramImg
+                        : sm.platform === SocialPlatform.YOUTUBE
+                          ? youtubeImg
+                          : sm.platform === SocialPlatform.RSS_FEED
+                            ? rssFeedImg
+                            : null;
+
+                return (
+                  iconSrc && (
+                    <div class="grid-col-auto">
+                      <a
+                        href={sm.url}
+                        class="usa-social-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="{sm.platform} (opens in new tab)"
+                      >
+                        <Image
+                          src={iconSrc}
+                          class="usa-social-link__icon"
+                          alt={sm.url}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </a>
+                    </div>
+                  )
+                );
+              })}
             </div>
           )}
         </nav>
