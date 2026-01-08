@@ -5,6 +5,9 @@ import { createGetStaticPath, fetchSlug } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Media from "@/components/Media.astro";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 const collectionName = "leadership";
@@ -21,9 +24,19 @@ if (!Astro.isPrerendered) {
 export const getStaticPaths = createGetStaticPath("leadership");
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  data,
+  slug,
+);
 ---
 
-<Layout title={data.title} useBreadcrumbTitle={true}>
+<Layout
+  title={data.title}
+  filtersSlugMetaData={filtersSlugMetaData}
+  useBreadcrumbTitle={true}
+>
   <PagesSection>
     <div class="flex-column margin-bottom-2">
       <h1 set:text={data.title} />
@@ -37,3 +50,9 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     {data.content && <RichText content={data.content} />}
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={data}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>

@@ -772,8 +772,8 @@ const notFoundPage = defineCollection({
   loader: collectionLoader("globals/not-found-page"),
   schema: makeAllKeysNullable(
     z.object({
-      title: z.string(),
-      heading: z.string(),
+      title: z.string().nullable().optional(),
+      heading: z.string().nullable().optional(),
       content: z.any(), // richText
       showSearch: z.boolean().optional(),
     }),

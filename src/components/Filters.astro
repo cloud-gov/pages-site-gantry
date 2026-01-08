@@ -1,0 +1,118 @@
+---
+import Filter from "./Filter.astro";
+import {
+  FILTERS_CONFIG,
+  FILTERS_DATA_ID,
+  getFiltersDataAttributes,
+} from "@/utilities/filter";
+import type { FilteredPageConfig } from "@/env";
+
+interface Props {
+  filteredPageConfig: FilteredPageConfig;
+}
+
+const { filteredPageConfig } = Astro.props;
+
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? "/"
+  : (import.meta.env.BASEURL || "") + "/";
+
+const dataAttributes = getFiltersDataAttributes(
+  FILTERS_CONFIG,
+  filteredPageConfig,
+  baseUrl,
+);
+---
+
+<aside class="sidenav-container">
+  {
+    dataAttributes && (
+      <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
+    )
+  }
+  {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+</aside>
+
+<script>
+  import { getFiltersData } from "../utilities/filter/filtersData";
+  import {
+    getFiltersFromQueryParams,
+    getSearchOptionsFromSelectedFilters,
+    getSearchOptionsFromQuery,
+    addFiltersEventListeners,
+    renderFilters,
+    navigateToTheFirstPage,
+    createFilteredPagination,
+    addPaginationEventListeners,
+    createFilteredCollectionItemList,
+    search,
+    updateHistoryState,
+    displayOriginals,
+    getFirstPageLinkUrl,
+    getFiltersSelections,
+  } from "../utilities/filter";
+  import { type ElementsPair, type FiltersData } from "../env.d";
+
+  let collectionListPair: ElementsPair;
+  let paginationPair: ElementsPair;
+
+  try {
+    const data: FiltersData = getFiltersData();
+    if (data) {
+      const pagefind = await import(data.baseUrl + "pagefind/pagefind.js");
+      pagefind.init();
+      const pagefindFilters = await pagefind.filters();
+
+      const filtersFromQueryParams = getFiltersFromQueryParams(window);
+      collectionListPair = createFilteredCollectionItemList();
+      const firstPageUrl = getFirstPageLinkUrl();
+
+      if (
+        collectionListPair &&
+        renderFilters(data.filtersMap, filtersFromQueryParams, pagefindFilters)
+      ) {
+        paginationPair = createFilteredPagination();
+
+        addFiltersEventListeners(data.filtersMap, async function (e) {
+          const filtersSelections = getFiltersSelections(data.filtersMap, e);
+          if (data.currentPage !== "1") {
+            navigateToTheFirstPage(firstPageUrl, filtersSelections);
+          } else {
+            updateHistoryState(filtersSelections);
+            if (!filtersSelections) {
+              displayOriginals(collectionListPair, paginationPair);
+            } else {
+              await search(
+                pagefind,
+                getSearchOptionsFromSelectedFilters(
+                  data.filtersMap,
+                  filtersSelections,
+                ),
+                collectionListPair,
+                paginationPair,
+                data,
+              );
+            }
+          }
+        });
+        addPaginationEventListeners(paginationPair, data);
+
+        if (filtersFromQueryParams?.size > 0) {
+          await search(
+            pagefind,
+            getSearchOptionsFromQuery(
+              data.collectionName,
+              filtersFromQueryParams,
+            ),
+            collectionListPair,
+            paginationPair,
+            data,
+          );
+        }
+      }
+    }
+  } catch (err) {
+    displayOriginals(collectionListPair, paginationPair);
+    console.error(err);
+  }
+</script>

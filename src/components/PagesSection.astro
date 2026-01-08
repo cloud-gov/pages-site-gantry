@@ -1,9 +1,11 @@
 ---
+import Filters from "./Filters.astro";
 interface Button {
   label: string;
   url: string;
   variant?: string;
 }
+import type { FilteredPageConfig } from "@/env";
 
 interface Props {
   heading?: string;
@@ -11,6 +13,7 @@ interface Props {
   id?: string;
   color?: string;
   align?: "center" | "left";
+  filteredPageConfig?: FilteredPageConfig;
 }
 
 const {
@@ -19,6 +22,7 @@ const {
   align = "left",
   classes = "",
   id = false,
+  filteredPageConfig,
 } = Astro.props;
 ---
 
@@ -28,18 +32,29 @@ const {
 >
   <div class="grid-container">
     <div class="grid-row">
-      <div class="grid-col-8">
+      <div class="section__intro">
+        {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+      </div>
+    </div>
+    <div class="grid-row">
+      <div class="main-section grid-col-8">
         <div class="section__container">
-          <div class="section__intro">
-            {heading && <h1 class="margin-bottom-2">{heading}</h1>}
-          </div>
           <div class="section__slot">
             <slot />
           </div>
         </div>
       </div>
-      <div class="grid-col-4">
-        <slot name="sidebar" />
+      <div class="sidebar-section grid-col-4">
+        {
+          filteredPageConfig && (
+            <div class="grid-row margin-left-1">
+              <Filters filteredPageConfig={filteredPageConfig} />
+            </div>
+          )
+        }
+        <div class="grid-row margin-left-1">
+          <slot name="sidebar" />
+        </div>
       </div>
     </div>
   </div>
@@ -69,5 +84,16 @@ const {
   }
   .section__slot {
     padding: 1rem 0;
+  }
+
+  @media (max-width: 1023px) {
+    .sidebar-section {
+      order: -1;
+    }
+    .main-section,
+    .sidebar-section {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
   }
 </style>

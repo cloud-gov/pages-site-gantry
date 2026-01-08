@@ -266,3 +266,75 @@ export interface IdentifierColors {
   primaryLinkColor?: string;
   secondaryLinkColor?: string;
 }
+
+interface FilterAttribute {
+  attributeValue: string;
+  content: string;
+}
+
+export interface FiltersSlugMetaData {
+  collectionItemId: string;
+  sortField: string;
+  filters: FilterAttribute[];
+}
+
+export interface FilteredPageConfig {
+  collectionName?: string;
+  pageSize?: number | string;
+  currentPage?: number | string;
+}
+
+export type PageNavItemType = "prev" | "next" | "overflow" | "page";
+
+export interface PageNavItemModel {
+  pageNumber?: any;
+  itemType: PageNavItemType;
+  isCurrentPage?: boolean;
+}
+
+export interface ElementsPair {
+  original?: HTMLElement;
+  filtered?: HTMLElement;
+}
+
+export interface FiltersData {
+  filtersMap: Map<string, FilterMapEntry>;
+  baseUrl: string;
+  pageSize: string;
+  currentPage: string;
+  collectionName: string;
+}
+
+export interface FilterConfig {
+  filterName: string;
+  filterLabel: string;
+}
+
+export type FilterMapEntry = {
+  filterName: string;
+  pagefindfilter: string;
+  filterElement?: any;
+  navElement?: any;
+};
+
+export interface FilterOption {
+  value: string;
+  textContent: string;
+}
+
+export interface Tag {
+  label: string;
+  url: string;
+}
+
+interface PageFindResults {
+  url: string;
+  meta: {
+    collectionItemId: string;
+  };
+}
+
+export interface FilterSelection {
+  filterName: string;
+  selectedValue: string;
+}
