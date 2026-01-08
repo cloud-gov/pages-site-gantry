@@ -14,9 +14,11 @@ page = await fetchSlug("pages", slug);
 if (!page) return Astro.redirect("/404");
 
 export const getStaticPaths = createStaticPathsForPagesSlug();
+
+export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={page.title}>
+<Layout title={page.title} useBreadcrumbTitle={true}>
   <PageWithSideNav
     heading={page.title}
     showSideNav={true}

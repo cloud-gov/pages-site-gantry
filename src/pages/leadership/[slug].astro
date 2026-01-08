@@ -23,7 +23,7 @@ export const getStaticPaths = createGetStaticPath("leadership");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title={data.title}>
+<Layout title={data.title} useBreadcrumbTitle={true}>
   <PagesSection>
     <div class="flex-column margin-bottom-2">
       <h1 set:text={data.title} />

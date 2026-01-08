@@ -39,7 +39,11 @@ const relatedItems = data.relatedItems
 export const prerender = true;
 ---
 
-<Layout title={resource.title} useInPageNav={resource.showInPageNav}>
+<Layout
+  title={resource.title}
+  useInPageNav={resource.showInPageNav}
+  useBreadcrumbTitle={true}
+>
   {
     resource.showInPageNav && (
       <Fragment slot="in-page-nav">

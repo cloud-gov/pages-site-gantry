@@ -4,10 +4,14 @@ import Link from "./Link.astro";
 interface Props {
   currentPage?: number;
   totalPages?: number;
+  breadcrumbTitle?: string;
 }
 
-const { currentPage: currentPageProp, totalPages: totalPagesProp } =
-  Astro.props;
+const {
+  currentPage: currentPageProp,
+  totalPages: totalPagesProp,
+  breadcrumbTitle: breadcrumbTitleProp,
+} = Astro.props;
 
 const currentPath = Astro.url.pathname;
 let cleanPath = currentPath;
@@ -23,6 +27,7 @@ if (baseUrl && baseUrl !== "/") {
 // Detect pagination and extract page number from URL
 let currentPage: number | null = currentPageProp || null;
 let totalPages: number | null = totalPagesProp || null;
+let breadcrumbTitle: string | null = breadcrumbTitleProp || null;
 
 // Extract page number from URL if not provided as prop (e.g., /resources/page/2)
 if (!currentPage) {
@@ -72,9 +77,10 @@ const buildBreadcrumbs = () => {
     currentUrl += `/${segment}`;
 
     // Generate page title from URL segment
-    let pageTitle = segment
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase());
+    let pageTitle =
+      breadcrumbTitle && i === pathSegments.length - 1
+        ? breadcrumbTitle
+        : segment.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
     // Handle known collection pages
     if (
@@ -137,7 +143,7 @@ if (currentPath === "/" || cleanPath === "" || cleanPath === "/") {
   <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
     <ol class="usa-breadcrumb__list">
       {
-        breadcrumbs.map((crumb, index) => (
+        breadcrumbs.map((crumb) => (
           <li class="usa-breadcrumb__list-item">
             {crumb.isCurrent ? (
               <span class="usa-breadcrumb__current" aria-current="page">
