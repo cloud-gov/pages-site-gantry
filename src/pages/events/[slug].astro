@@ -13,6 +13,9 @@ import Tags from "@/components/Tags.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import RelatedItems from "@/components/RelatedItems.astro";
 import type { CollectionEntry } from "astro:content";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 
@@ -46,11 +49,18 @@ const relatedItems = data.relatedItems
 export const getStaticPaths = createGetStaticPath("events");
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  event,
+  slug,
+);
 ---
 
 <Layout
   title={event.title}
   useInPageNav={event.showInPageNav}
+  filtersSlugMetaData={filtersSlugMetaData}
   useBreadcrumbTitle={true}
 >
   {
@@ -173,3 +183,9 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={event}
+  showEvent={true}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>

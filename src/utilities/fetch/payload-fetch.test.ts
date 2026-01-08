@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getDraftOption } from "@/utilities/fetch/payload-fetch";
+import { getDraftOption } from "./payload-fetch";
 
 describe("Payload Fetch Utility", () => {
   it("selects draft option", () => {

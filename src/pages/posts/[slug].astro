@@ -12,6 +12,9 @@ import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import RelatedItems from "@/components/RelatedItems.astro";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 const collectionName = "posts";
@@ -35,11 +38,18 @@ const relatedItems = data.relatedItems
   : [];
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  post,
+  slug,
+);
 ---
 
 <Layout
   title={post.title}
   useInPageNav={post.showInPageNav}
+  filtersSlugMetaData={filtersSlugMetaData}
   useBreadcrumbTitle={true}
 >
   {
@@ -58,3 +68,9 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={post}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>

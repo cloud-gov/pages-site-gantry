@@ -14,6 +14,9 @@ import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import ResourceFile from "@/components/ResourceFile.astro";
 import RelatedItems from "@/components/RelatedItems.astro";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
 const collectionName = "resources";
@@ -37,11 +40,18 @@ const relatedItems = data.relatedItems
   : [];
 
 export const prerender = true;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  resource,
+  slug,
+);
 ---
 
 <Layout
   title={resource.title}
   useInPageNav={resource.showInPageNav}
+  filtersSlugMetaData={filtersSlugMetaData}
   useBreadcrumbTitle={true}
 >
   {
@@ -79,3 +89,9 @@ export const prerender = true;
     <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>
+
+<FiltersCollectionItemTemplate
+  item={resource}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>

@@ -1,0 +1,72 @@
+---
+import type { PageNavItemType } from "@/env";
+interface Props {
+  url?: string;
+  pageNum?: number;
+  isCurrentPage?: boolean;
+  itemType: PageNavItemType;
+  linkId?: string;
+}
+
+const { url, pageNum, isCurrentPage, itemType, linkId } = Astro.props;
+---
+
+{
+  itemType === "prev" && (
+    <li class="usa-pagination__item usa-pagination__arrow">
+      <a
+        id={linkId}
+        href={url}
+        class="usa-pagination__link usa-pagination__previous-page"
+        aria-label="Previous page"
+      >
+        <svg class="usa-icon" aria-hidden="true" role="img">
+          <use href="/img/sprite.svg#navigate_before" />
+        </svg>
+        <span class="usa-pagination__link-text">Previous</span>
+      </a>
+    </li>
+  )
+}
+{
+  itemType === "next" && (
+    <li class="usa-pagination__item usa-pagination__arrow">
+      <a
+        id={linkId}
+        class="usa-pagination__link usa-pagination__next-page"
+        aria-label="Next page"
+        href={url}
+      >
+        <span class="usa-pagination__link-text">Next </span>
+        <svg class="usa-icon" aria-hidden="true" role="img">
+          <use href="/img/sprite.svg#navigate_next" />
+        </svg>
+      </a>
+    </li>
+  )
+}
+{
+  itemType === "overflow" && (
+    <li
+      class="usa-pagination__item usa-pagination__overflow"
+      aria-label="ellipsis indicating non-visible pages"
+    >
+      <span>…</span>
+    </li>
+  )
+}
+{
+  itemType === "page" && (
+    <li class="usa-pagination__item usa-pagination__page-no">
+      <a
+        id={linkId}
+        class={`usa-pagination__button ${isCurrentPage ? " usa-current" : ""}`}
+        href={url}
+        aria-current={isCurrentPage ? "page" : undefined}
+        aria-label={`Page ${pageNum}`}
+      >
+        {pageNum}
+      </a>
+    </li>
+  )
+}

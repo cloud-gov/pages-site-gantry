@@ -1,13 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { alertsMapper, footerMapper } from "@/utilities/fetch";
 import {
+  alertsMapper,
   collectionUrlMapper,
   linkMapper,
-  logoMapper,
   pageUrlMapper,
-  shouldDisplay,
-} from "@/utilities/fetch/contentMapper";
-import type { FooterModel, PageModel } from "@/env";
+  footerMapper,
+} from "./contentMapper";
+import type { PageModel } from "@/env";
 
 vi.mock("astro:content", () => ({
   getCollection: vi.fn(),

@@ -1,28 +1,17 @@
 import { type CollectionEntry } from "astro:content";
 import { formatDate } from "../formatting";
-import { type DateParts, parseDateParts } from "../dates";
+import { type DateParts, getYearTag, parseDateParts } from "../dates";
 import {
   type AlertModel,
   type CollectionCategoryProps,
   type FooterModel,
   type LinkModel,
   type LogoModel,
-  type PageModel,
   type MediaValueProps,
+  type PageModel,
+  type Tag,
 } from "@/env";
-import { preFooterMapper } from "@/utilities/fetch/preFooterMapper.ts";
-
-type Category = {
-  title: string;
-  slug: string;
-};
-
-type File = {
-  file?: {
-    url?: string;
-    alt?: string;
-  };
-};
+import { preFooterMapper } from "./preFooterMapper.ts";
 
 type ContentData = {
   title?: string;
@@ -37,7 +26,7 @@ type ContentData = {
 type MapperConfig = {
   baseUrl: string;
   dateField?: string;
-  fileField?: string;
+  dateConversionFunction?: (any) => any;
 };
 
 function safeParse(input?: string | number | Date): DateParts | null {
@@ -46,43 +35,52 @@ function safeParse(input?: string | number | Date): DateParts | null {
   return Number.isNaN(parts.raw.getTime()) ? null : parts;
 }
 
+export function filteredContentMapper(data, baseUrl, yearTag) {
+  return {
+    tags: (data.categories ?? []).map(
+      (c): Tag => ({
+        label: c.title,
+        url: `${baseUrl}?category=${c.slug}`,
+      }),
+    ),
+    yearTag: yearTag,
+    sortField: data.publishedAt,
+  };
+}
+
 export function contentMapper(
   data: ContentData,
-  { baseUrl, dateField = "publishedAt", fileField }: MapperConfig,
+  { baseUrl, dateField = "publishedAt", dateConversionFunction }: MapperConfig,
 ) {
   const endSrc = (data as any).endDate;
-  const files: File[] = fileField ? data[fileField] : [];
-  const dateParts = parseDateParts(data[dateField] || data.publishedAt || "");
 
   return {
     title: data.title,
     content: data.content,
-    date: safeParse(data[dateField] || data.publishedAt || ""),
+    date: dateConversionFunction(data[dateField] || data.publishedAt || ""),
     startDate: safeParse(data.startDate || ""),
     endDate: safeParse(endSrc),
-    description: data.excerpt,
+    description: data.excerpt || "",
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `${baseUrl}/${data.slug}`,
-    tags: (data.categories ?? []).map((c) => ({
-      label: c.title,
-      url: `${baseUrl}?category=${c.slug}`,
-    })),
+    showInPageNav: data.showInPageNav ?? true,
+    ...filteredContentMapper(
+      data,
+      baseUrl,
+      getYearTag(data[dateField] || data.publishedAt || ""),
+    ),
   };
 }
 
 export function eventsMapper(data: any) {
-  const mapped = contentMapper(data, {
-    baseUrl: "/events",
-    dateField: "startDate",
-    fileField: "attachments",
-  });
-
-  // Override description to use the correct field for events
   return {
-    ...mapped,
+    ...contentMapper(data, {
+      baseUrl: "/events",
+      dateField: "startDate",
+      dateConversionFunction: safeParse,
+    }),
     description: data.description || data.excerpt || "",
-    showInPageNav: data.showInPageNav ?? true,
   };
 }
 
@@ -99,87 +97,43 @@ export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {
 }
 
 export function newsMapper(data: CollectionEntry<"news">["data"]) {
-  const mapped = contentMapper(data, {
+  return contentMapper(data, {
     baseUrl: "/news",
     dateField: "newsDate",
-    fileField: "newsFiles",
+    dateConversionFunction: safeParse,
   });
-  return {
-    ...mapped,
-    showInPageNav: data.showInPageNav ?? true,
-  };
 }
 
 export function postsMapper(data: CollectionEntry<"posts">["data"]) {
-  const mapped = contentMapper(data, {
+  return contentMapper(data, {
     baseUrl: "/posts",
     dateField: "postsDate",
-    fileField: "postsFiles",
+    dateConversionFunction: safeParse,
   });
-  return {
-    ...mapped,
-    showInPageNav: data.showInPageNav ?? true,
-  };
 }
 
 export function reportMapper(data: CollectionEntry<"reports">["data"]) {
-  return {
-    title: data.title,
-    content: data.content,
-    date: data.reportDate
-      ? formatDate(data.reportDate)
-      : formatDate(data.publishedAt),
-    description: data.excerpt,
-    media: data.image,
-    imageAlt: data.image?.altText || data.title,
-    link: `/reports/${data.slug}`,
-    tags: (data.categories ?? []).map((c) => ({
-      label: c.title,
-      url: `/reports?category=${c.slug}`,
-    })),
-    showInPageNav: data.showInPageNav ?? true,
-  };
+  return contentMapper(data, {
+    baseUrl: "/reports",
+    dateField: "reportDate",
+    dateConversionFunction: formatDate,
+  });
 }
 
 export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
-  return {
-    title: data.title,
-    content: data.content,
-    date: data.resourceDate
-      ? formatDate(data.resourceDate)
-      : formatDate(data.publishedAt),
-    description: data.excerpt,
-    media: data.image,
-    imageAlt: data.image?.altText || data.title,
-    link: `/resources/${data.slug}`,
-    tags: (data.categories ?? []).map((c) => ({
-      label: c.title,
-      url: `/resources?category=${c.slug}`,
-    })),
-    showInPageNav: data.showInPageNav ?? true,
-  };
+  return contentMapper(data, {
+    baseUrl: "/resources",
+    dateField: "resourceDate",
+    dateConversionFunction: formatDate,
+  });
 }
 
-/**
- * Mapper for custom collection pages
- * @param data - The custom collection page data
- * @param collectionSlug - The URL slug for the custom collection (from collectionConfig)
- */
 export function customCollectionPageMapper(data: any, collectionSlug: string) {
-  const mapped = contentMapper(data, {
+  return contentMapper(data, {
     baseUrl: `/${collectionSlug}`,
     dateField: data.contentDate ? "contentDate" : "publishedAt",
-    fileField: "files",
+    dateConversionFunction: formatDate,
   });
-
-  return {
-    ...mapped,
-    date: data.contentDate
-      ? formatDate(data.contentDate)
-      : formatDate(data.publishedAt || ""),
-    description: data.excerpt || "",
-    showInPageNav: data.showInPageNav ?? true,
-  };
 }
 
 /**

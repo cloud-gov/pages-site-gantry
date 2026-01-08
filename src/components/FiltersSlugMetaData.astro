@@ -1,0 +1,31 @@
+---
+import type { FiltersSlugMetaData } from "@/env";
+
+interface Props {
+  filtersSlugMetaData?: FiltersSlugMetaData;
+}
+
+const { filtersSlugMetaData } = Astro.props;
+---
+
+{
+  filtersSlugMetaData && (
+    <>
+      <meta
+        data-pagefind-meta={`collectionItemId:${filtersSlugMetaData.collectionItemId}`}
+      />
+      <meta data-pagefind-meta={`sortField:${filtersSlugMetaData.sortField}`} />
+    </>
+  )
+}
+{
+  filtersSlugMetaData?.filters?.map(
+    (filter) =>
+      filter && (
+        <meta
+          data-pagefind-filter={filter.attributeValue}
+          content={filter.content}
+        />
+      ),
+  )
+}

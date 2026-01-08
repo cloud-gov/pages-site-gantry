@@ -19,7 +19,11 @@ $uswds-vars: meta.module-variables("uswds");
       // skip the "vivid" part
     } @else {
       $part: list.nth($parts, $i);
-      $base-family: if($base-family == "", $part, "#{$base-family}-#{$part}");
+       @if $base-family == "" {
+        $base-family: $part;
+      } @else {
+        $base-family: "#{$base-family}-#{$part}";
+      }
     }
   }
 

@@ -1,7 +1,5 @@
 import {
   type LinkGroup,
-  type LinkModel,
-  type PageModel,
   PRE_FOOTER_TYPE_BIG,
   PRE_FOOTER_TYPE_SLIM,
   type PreFooterBigModel,
@@ -13,7 +11,7 @@ import {
 } from "@/env";
 import { cleanConfiguration } from "@/utilities/preFooterBig";
 import type { CollectionEntry } from "astro:content";
-import { linkMapper } from "@/utilities/fetch/contentMapper.ts";
+import { linkMapper } from "./contentMapper.ts";
 
 const preFooterCollectionName = "preFooter";
 
