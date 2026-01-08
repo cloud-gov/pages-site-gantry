@@ -15,10 +15,10 @@ Both portion of the application can be run locally. They require a number of env
 npm run dev
 ```
 
-and the proxy runs with:
+and the proxy runs on port 3030 with:
 
 ```sh
-node oauth/index.js
+node --watch oauth/index.js
 ```
 
 ## Tests
@@ -46,7 +46,7 @@ This check is also used in CI to verify the code is formatted in a pull request 
 
 **Fetch Implementation Locations**
 - Site-wide queries for global collections (like site configuration, menu, footer, etc.) are implemented at Layout level (`src/pages/index.astro`, `src/layouts`).
-- Content collection queries (like news, posts, pages, etc.) are implemented at `src/pages` level: 
+- Content collection queries (like news, posts, pages, etc.) are implemented at `src/pages` level:
   * for collection in `src/pages/COLLECTION_NAME/page/index.astro`;
   * for collection item in `src/pages/COLLECTION_NAME/[slug].astro`.
 - Fetch functions are:

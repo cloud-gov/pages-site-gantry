@@ -1,4 +1,3 @@
-const path = require("node:path");
 const bodyParser = require("body-parser");
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -8,9 +7,13 @@ const pino = require("pino-http");
 const httpProxy = require("http-proxy");
 
 const app = express();
+
+const astroEndpoint = process.env.ASTRO_ENDPOINT || "http://localhost:4321";
+
 const proxy = httpProxy.createProxyServer({
-  target: process.env.ASTRO_ENDPOINT.replace("http", "ws"),
+  target: astroEndpoint,
   ws: true,
+  changeOrigin: true,
 });
 
 var server = require("http").createServer(app);
@@ -20,6 +23,7 @@ server.on("upgrade", function (req, socket, head) {
 
 const UNAUTHORIZED = "You are not authorized to visit this site.";
 
+app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -78,14 +82,14 @@ app.use(async (req, res, next) => {
   }
 });
 
+// Proxy all requests (including _image) to Astro server
 app.use(async function (req, res) {
-  const data = await fetch(path.join(process.env.ASTRO_ENDPOINT, req.path));
-  text = await data.text();
-  for (const header of data.headers.entries()) {
-    res.setHeader(...header);
-  }
-
-  res.send(text);
+  proxy.web(req, res, { target: astroEndpoint }, (err) => {
+    if (err) {
+      console.error("Proxy error:", err);
+      res.status(500).send("Proxy error");
+    }
+  });
 });
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT || 3030);
