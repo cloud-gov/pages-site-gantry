@@ -272,7 +272,7 @@ interface FilterAttribute {
   content: string;
 }
 
-export interface FiltersSlugMetaData {
+export interface FiltersSlugMetaDataModel {
   collectionItemId: string;
   sortField: string;
   filters: FilterAttribute[];

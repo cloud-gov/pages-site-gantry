@@ -5,7 +5,7 @@ import { createGetStaticPath, fetchSlug } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Media from "@/components/Media.astro";
-import type { FiltersSlugMetaData } from "@/env";
+import type { FiltersSlugMetaDataModel } from "@/env";
 import { getFiltersSlugMetaData } from "@/utilities/filter";
 import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
@@ -25,7 +25,7 @@ export const getStaticPaths = createGetStaticPath("leadership");
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 
-const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
   collectionName,
   data,
   slug,

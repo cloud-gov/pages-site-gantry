@@ -12,7 +12,7 @@ import PagesSection from "@/components/PagesSection.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import RelatedItems from "@/components/RelatedItems.astro";
-import type { FiltersSlugMetaData } from "@/env";
+import type { FiltersSlugMetaDataModel } from "@/env";
 import { getFiltersSlugMetaData } from "@/utilities/filter";
 import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
@@ -39,7 +39,7 @@ const relatedItems = data.relatedItems
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 
-const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
   collectionName,
   post,
   slug,

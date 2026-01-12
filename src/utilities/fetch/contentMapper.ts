@@ -104,6 +104,13 @@ export function newsMapper(data: CollectionEntry<"news">["data"]) {
   });
 }
 
+export function policyMapper(data: CollectionEntry<"policies">["data"]) {
+  return contentMapper(data, {
+    baseUrl: "/policies",
+    dateConversionFunction: safeParse,
+  });
+}
+
 export function postsMapper(data: CollectionEntry<"posts">["data"]) {
   return contentMapper(data, {
     baseUrl: "/posts",

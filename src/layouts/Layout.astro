@@ -21,6 +21,7 @@ import { type AlertModel, type FooterModel } from "@/env";
 import Alerts from "@/components/Alerts.astro";
 import { fetchFooter, footerMapper } from "@/utilities/fetch";
 import FiltersSlugMetaData from "@/components/FiltersSlugMetaData.astro";
+import type { FiltersSlugMetaDataModel } from "@/env";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -82,6 +83,7 @@ interface Props {
   currentPage?: number;
   totalPages?: number;
   useBreadcrumbTitle?: boolean;
+  filtersSlugMetaData: FiltersSlugMetaDataModel;
 }
 
 // TODO: Add meta title and description to site config
