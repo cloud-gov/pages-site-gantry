@@ -7,9 +7,9 @@ export interface Props {
   description?: string;
   bgImage?: any;
   ctaButton?: {
-    text: string;
-    url: string;
-    style: string;
+    text?: string;
+    url?: string;
+    style?: string;
   };
 }
 
@@ -36,13 +36,11 @@ const backgroundImageUrl = bgImage ? getMediaUrl(bgImage) : null;
 >
   <div class="grid-container">
     <div class="usa-hero__callout">
-      <h1 class="usa-hero__heading">
-        {title}
-      </h1>
+      {title && <h1 class="usa-hero__heading">{title}</h1>}
       {subtitle && <h2 class="usa-hero__heading--alt">{subtitle}</h2>}
       {description && <p>{description}</p>}
       {
-        ctaButton && (
+        ctaButton && ctaButton.url && ctaButton.text && (
           <a class="usa-button" href={ctaButton.url}>
             {ctaButton.text}
           </a>
