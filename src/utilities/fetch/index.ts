@@ -33,4 +33,5 @@ export {
   alertsMapper,
   footerMapper,
   relatedItemsMapper,
+  policyMapper,
 } from "./contentMapper";

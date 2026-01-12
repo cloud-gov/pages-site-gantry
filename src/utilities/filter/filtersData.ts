@@ -4,7 +4,7 @@ import type {
   FilteredPageConfig,
   FilterMapEntry,
   FiltersData,
-  FiltersSlugMetaData,
+  FiltersSlugMetaDataModel,
   Tag,
 } from "@/env";
 import {
@@ -20,7 +20,7 @@ export function getFiltersSlugMetaData(
   collectionName: string,
   collectionItem: any,
   slug: string,
-): FiltersSlugMetaData {
+): FiltersSlugMetaDataModel {
   if (!collectionName || !collectionItem || !slug) return null;
 
   const tags: FilterAttribute[] = collectionItem?.tags

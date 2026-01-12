@@ -3,7 +3,7 @@ import CollectionItemList from "@/components/CollectionItemList.astro";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import PaginationNav from "@/components/PaginationNav.astro";
-import { newsMapper } from "@/utilities/fetch";
+import { policyMapper } from "@/utilities/fetch";
 import {
   getPaginatedCollectionData,
   createPagingStaticPath,
@@ -20,14 +20,14 @@ const { items, totalPages, hasPaginationNav } =
     collectionName,
     currentPage,
     PAGE_SIZE,
-    newsMapper,
+    policyMapper,
   );
 
 export const getStaticPaths = createPagingStaticPath(PAGE_SIZE, "policies");
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 ---
 
-<Layout title="News" currentPage={currentPage} totalPages={totalPages}>
+<Layout title="Policies" currentPage={currentPage} totalPages={totalPages}>
   <PagesSection
     heading="Policies"
     filteredPageConfig={{
@@ -43,7 +43,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         <PaginationNav
           currentPage={currentPage}
           totalPages={totalPages}
-          basePath="/news/page"
+          basePath="/policies/page"
         />
       )
     }
