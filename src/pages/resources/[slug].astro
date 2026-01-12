@@ -14,7 +14,7 @@ import InPageNavigation from "@/components/InPageNavigation.astro";
 import Media from "@/components/Media.astro";
 import ResourceFile from "@/components/ResourceFile.astro";
 import RelatedItems from "@/components/RelatedItems.astro";
-import type { FiltersSlugMetaData } from "@/env";
+import type { FiltersSlugMetaDataModel } from "@/env";
 import { getFiltersSlugMetaData } from "@/utilities/filter";
 import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
@@ -41,7 +41,7 @@ const relatedItems = data.relatedItems
 
 export const prerender = true;
 
-const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
   collectionName,
   resource,
   slug,

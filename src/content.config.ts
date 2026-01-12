@@ -343,6 +343,25 @@ const resources = defineCollection({
   ),
 });
 
+const policies = defineCollection({
+  loader: collectionLoader("policies"),
+  schema: makeAllKeysNullable(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      slug: z.string(),
+      slugLock: z.boolean(),
+      site: z.any(), // siteField, can be any
+      content: z.any(), // richText, can be any
+      reviewReady: z.boolean(),
+      publishedAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime().optional(),
+      createdAt: z.string().datetime().optional(),
+      _status: z.enum(["draft", "published"]).optional(),
+    }),
+  ),
+});
+
 // Site Globals
 
 const homepage = defineCollection({
@@ -789,6 +808,7 @@ export const collections = {
   posts,
   reports,
   resources,
+  policies,
   customCollections,
   customCollectionPages,
   sideNavigations,

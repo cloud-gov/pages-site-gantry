@@ -4,20 +4,16 @@ import Layout from "@/layouts/Layout.astro";
 import {
   createGetStaticPath,
   fetchSlug,
-  newsMapper,
-  relatedItemsMapper,
+  policyMapper,
 } from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import PagesSection from "@/components/PagesSection.astro";
-import InPageNavigation from "@/components/InPageNavigation.astro";
-import Media from "@/components/Media.astro";
-import RelatedItems from "@/components/RelatedItems.astro";
 import type { FiltersSlugMetaDataModel } from "@/env";
 import { getFiltersSlugMetaData } from "@/utilities/filter";
 import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { slug } = Astro.params;
-const collectionName = "news";
+const collectionName = "policies";
 let data: CollectionEntry<typeof collectionName>["data"];
 
 if (!Astro.isPrerendered) {
@@ -27,49 +23,34 @@ if (!Astro.isPrerendered) {
   ({ data } = Astro.props);
 }
 
-export const getStaticPaths = createGetStaticPath("news");
+export const getStaticPaths = createGetStaticPath("policies");
 
-const newsItem = newsMapper(data);
-
-// Map related items if they exist
-const relatedItems = data.relatedItems
-  ? relatedItemsMapper(data.relatedItems, newsMapper)
-  : [];
+const policy = policyMapper(data);
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
 
 const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
   collectionName,
-  newsItem,
+  policy,
   slug,
 );
 ---
 
 <Layout
-  title={newsItem.title}
-  useInPageNav={newsItem.showInPageNav}
+  title={policy.title}
+  useInPageNav={policy.showInPageNav}
   filtersSlugMetaData={filtersSlugMetaData}
   useBreadcrumbTitle={true}
->
-  {
-    newsItem.showInPageNav && (
-      <Fragment slot="in-page-nav">
-        <InPageNavigation />
-      </Fragment>
-    )
-  }
-  <PagesSection>
+  ><PagesSection>
     <div class="flex-column margin-bottom-5">
-      <h1 set:text={newsItem.title} />
+      <h1 set:text={policy.title} />
     </div>
-    {data.image && <Media media={data.image} />}
     <RichText content={data.content} />
-    <RelatedItems items={relatedItems} />
   </PagesSection>
 </Layout>
 
 <FiltersCollectionItemTemplate
-  item={newsItem}
+  item={policy}
   showEvent={false}
   filtersSlugMetaData={filtersSlugMetaData}
 />
