@@ -1,0 +1,70 @@
+---
+import { type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import {
+  createGetStaticPath,
+  fetchSlug,
+  newsMapper,
+  relatedItemsMapper,
+} from "@/utilities/fetch";
+import RichText from "@/components/RichText.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import InPageNavigation from "@/components/InPageNavigation.astro";
+import Media from "@/components/Media.astro";
+import RelatedItems from "@/components/RelatedItems.astro";
+import type { FiltersSlugMetaData } from "@/env";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
+
+const { slug } = Astro.params;
+const collectionName = "policies";
+let data: CollectionEntry<typeof collectionName>["data"];
+
+if (!Astro.isPrerendered) {
+  data = await fetchSlug(collectionName, slug);
+  if (!data) return Astro.redirect("/404");
+} else {
+  ({ data } = Astro.props);
+}
+
+export const getStaticPaths = createGetStaticPath("policies");
+
+const policy = newsMapper(data);
+
+export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaData = getFiltersSlugMetaData(
+  collectionName,
+  policy,
+  slug,
+);
+---
+
+<Layout
+  title={policy.title}
+  useInPageNav={policy.showInPageNav}
+  filtersSlugMetaData={filtersSlugMetaData}
+  useBreadcrumbTitle={true}
+>
+  {
+    policy.showInPageNav && (
+      <Fragment slot="in-page-nav">
+        <InPageNavigation />
+      </Fragment>
+    )
+  }
+  <PagesSection>
+    <div class="flex-column margin-bottom-5">
+      <h1 set:text={policy.title} />
+    </div>
+    {data.image && <Media media={data.image} />}
+    <RichText content={data.content} />
+    <RelatedItems items={relatedItems} />
+  </PagesSection>
+</Layout>
+
+<FiltersCollectionItemTemplate
+  item={policy}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>
