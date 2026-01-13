@@ -10,6 +10,7 @@ import { getTextContent } from "./RichTextConverters/helpers";
 import { table, tablerow, tablecell } from "./RichTextConverters/table";
 import { processListBlock } from "./RichTextConverters/processList";
 import { accordionBlock } from "./RichTextConverters/accordion";
+import { cardGridBlock } from "./RichTextConverters/cardGrid";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
@@ -69,6 +70,10 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
           node,
           htmlConverters: nestedConverters,
         }),
+      cardGrid: ({ node }) =>
+        cardGridBlock({
+          node,
+        }),
       // Add future blocks here:
       // otherBlockSlug: ({ node }) => renderOtherBlock(node, nestedConverters),
     },
@@ -98,13 +103,29 @@ let rawHTML = convertLexicalToHTML({
       "button",
     ]),
     allowedClasses: {
-      a: false,
+      a: ["usa-button"],
       table: ["usa-table", "usa-table--striped"],
       div: [
+        "grid-row",
+        "grid-gap",
+        "grid-col",
         "usa-accordion__content",
         "usa-prose",
         "usa-accordion",
         "usa-accordion--multiselectable",
+        "usa-card__container",
+        "usa-card__header",
+        "usa-card__body",
+        "usa-card__heading",
+        "usa-card__footer",
+        "usa-card__media",
+        "usa-card__img",
+        "tablet:grid-col",
+        "usa-card",
+        "usa-card-group",
+        "usa-card--flag",
+        "flex-1",
+        "usa-card--media-right",
       ],
       h1: false,
       h2: ["usa-process-list__heading", "usa-accordion__heading"],
