@@ -31,7 +31,7 @@ export const cardGridBlock = ({ node }: { node: any }): string => {
           <div class="usa-card__media">
             <div class="usa-card__img">
               <img
-                src="https://designsystem.digital.gov/img/introducing-uswds-2-0/built-to-grow--alt.jpg"
+                src="${card.image.url}"
                 alt="${card.image.altText}"
               />
             </div>
