@@ -126,6 +126,7 @@ let rawHTML = convertLexicalToHTML({
         "usa-card--flag",
         "flex-1",
         "usa-card--media-right",
+        "cardgrid-component",
       ],
       h1: false,
       h2: ["usa-process-list__heading", "usa-accordion__heading"],
@@ -174,6 +175,36 @@ let rawHTML = convertLexicalToHTML({
   :global(.identifier-prose a:hover) :global(.identifier-prose a:visited) {
     font-weight: 700;
     color: var(--linkColor) !important;
+  }
+
+  :global(.cardgrid-component .usa-card__container) {
+    border-radius: 0;
+    border: none;
+    background-color: #e6e6e2;
+  }
+  @media (min-width: 40em) {
+    :global(.cardgrid-component.usa-card--flag .usa-card__media) {
+      width: 11rem;
+    }
+
+    :global(.cardgrid-component.usa-card--flag .usa-card__img) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    :global(.cardgrid-component.usa-card--flag .usa-card__header),
+    :global(.cardgrid-component.usa-card--flag .usa-card__body),
+    :global(.cardgrid-component.usa-card--flag .usa-card__footer) {
+      margin-left: 11rem;
+      padding-left: 1rem;
+    }
+
+    :global(.cardgrid-component.usa-card--flag .usa-card__header) {
+      padding-top: 1rem;
+    }
+    :global(.cardgrid-component.usa-card--flag .usa-card__body) {
+      padding-top: 0;
+    }
   }
 </style>
 

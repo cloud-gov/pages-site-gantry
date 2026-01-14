@@ -1,11 +1,12 @@
+import { getMediaUrl } from "@/utilities/media";
+
 type Card = {
-  image?: {
-    altText: string;
-    url: string;
-  };
+  image?: any;
   title: string;
   description: string;
   orientation?: "vertical" | "horizontal" | "horizontal-right";
+  link?: string;
+  linkText?: string;
 };
 
 export const cardGridBlock = ({ node }: { node: any }): string => {
@@ -31,16 +32,25 @@ export const cardGridBlock = ({ node }: { node: any }): string => {
           <div class="usa-card__media">
             <div class="usa-card__img">
               <img
-                src="${card.image.url}"
-                alt="${card.image.altText}"
+                src="${getMediaUrl(card.image)}"
+                alt="${card.image.altText || card.title}"
               />
             </div>
           </div>
         `
             : "";
+
+          const linkHTML =
+            card.link && card.linkText
+              ? `
+              <div class="usa-card__footer">
+                <a href="${card.link}" class="usa-button">${card.linkText}</a>
+              </div>
+            `
+              : "";
           return `
         <div class="
-          tablet:grid-col usa-card
+          tablet:grid-col usa-card cardgrid-component 
           ${card.orientation === "horizontal" ? "usa-card--flag flex-1" : ""}
           ${card.orientation === "horizontal-right" ? "usa-card--flag flex-1 usa-card--media-right" : ""}
           ">
@@ -52,6 +62,7 @@ export const cardGridBlock = ({ node }: { node: any }): string => {
             <div class="usa-card__body">
               <p class="usa-card__description">${card.description}</p>
             </div>
+            ${linkHTML}
           </div>
         </div>
       `;

@@ -114,7 +114,7 @@ describe("rich text embedded card grid block", () => {
     // Horizontal card should include the orientation modifier class
     // (Your converter uses 'usa-card--horizontal' when orientation is "horizontal")
     expect(result).toContain(
-      'class="tablet:grid-col usa-card usa-card--flag flex-1"',
+      'class="tablet:grid-col usa-card cardgrid-component usa-card--flag flex-1"',
     ); // <— update to exact class if needed
 
     // Vertical card still renders as a usa-card without the horizontal modifier
