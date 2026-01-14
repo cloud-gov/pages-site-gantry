@@ -11,6 +11,7 @@ import { table, tablerow, tablecell } from "./RichTextConverters/table";
 import { processListBlock } from "./RichTextConverters/processList";
 import { accordionBlock } from "./RichTextConverters/accordion";
 import { cardGridBlock } from "./RichTextConverters/cardGrid";
+import { imageBlock } from "./RichTextConverters/image";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
@@ -74,6 +75,10 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
         cardGridBlock({
           node,
         }),
+      image: ({ node }) =>
+        imageBlock({
+          node,
+        }),
       // Add future blocks here:
       // otherBlockSlug: ({ node }) => renderOtherBlock(node, nestedConverters),
     },
@@ -127,6 +132,13 @@ let rawHTML = convertLexicalToHTML({
         "flex-1",
         "usa-card--media-right",
         "cardgrid-component",
+        "maxw-tablet",
+        "maxw-desktop",
+        "maxw-mobile-lg",
+        "maxw-mobile",
+        "width-full",
+        "margin-x-auto",
+        "margin-left-auto",
       ],
       h1: false,
       h2: ["usa-process-list__heading", "usa-accordion__heading"],
@@ -158,7 +170,7 @@ let rawHTML = convertLexicalToHTML({
       ol: ["class"],
       li: ["class"],
       button: ["class", "type", "aria-expanded", "aria-controls"],
-      div: ["id", "data-allow-multiple"],
+      div: ["id", "data-allow-multiple", "style", "class"],
     },
   })}
 />
