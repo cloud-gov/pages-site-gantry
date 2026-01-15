@@ -1,0 +1,50 @@
+---
+import { getMediaUrl } from "@/utilities/media";
+import RichText from "./RichText.astro";
+
+export interface Props {
+  title?: string;
+  content?: any;
+  bgImage?: any;
+}
+
+const { title, content, bgImage } = Astro.props;
+
+const backgroundImageUrl = bgImage ? getMediaUrl(bgImage) : null;
+---
+
+{
+  bgImage && (
+    <section
+      class="textblock-image-bg"
+      style={
+        backgroundImageUrl
+          ? `background-image: url('${backgroundImageUrl}'); background-size: cover; background-position: center;`
+          : ""
+      }
+    >
+      <div class="grid-container padding-top-5 padding-bottom-5">
+        <div>
+          {title && <h2 class="text-center">{title}</h2>}
+          {content && (
+            <div class="text-center">
+              <RichText content={content} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+{
+  !bgImage && (
+    <section class="usa-section">
+      <div class="grid-container">
+        <div class="maxw-4xl">
+          {title && <h2 class="font-heading-xl margin-bottom-3">{title}</h2>}
+          {content && <RichText content={content} />}
+        </div>
+      </div>
+    </section>
+  )
+}
