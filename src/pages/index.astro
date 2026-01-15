@@ -11,7 +11,7 @@ const homePageData = await fetchHomePage();
 const contentBlocks = homePageData?.content || [];
 ---
 
-<Layout>
+<Layout title="Home Page">
   {
     contentBlocks.map((block: any) => {
       switch (block.blockType) {
