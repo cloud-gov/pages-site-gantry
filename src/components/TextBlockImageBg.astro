@@ -1,0 +1,36 @@
+---
+import { getMediaUrl } from "@/utilities/media";
+import RichText from "./RichText.astro";
+
+export interface Props {
+  title?: string;
+  content?: any;
+  bgImage?: any;
+}
+
+const { title, content, bgImage } = Astro.props;
+
+const backgroundImageUrl = bgImage ? getMediaUrl(bgImage) : null;
+---
+
+<section
+  class="usa-hero"
+  style={backgroundImageUrl
+    ? `background-image: url('${backgroundImageUrl}'); background-size: cover; background-position: center;`
+    : ""}
+>
+  <div class="grid-container">
+    <div class="usa-hero__callout">
+      <h1 class="usa-hero__heading">
+        {title}
+      </h1>
+      {
+        content && (
+          <div>
+            <RichText content={content} />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
