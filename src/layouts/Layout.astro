@@ -75,7 +75,7 @@ const footer: FooterModel = footerMapper(
 );
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   socialImage?: any;
   canonical?: string;
@@ -83,7 +83,7 @@ interface Props {
   currentPage?: number;
   totalPages?: number;
   useBreadcrumbTitle?: boolean;
-  filtersSlugMetaData: FiltersSlugMetaDataModel;
+  filtersSlugMetaData?: FiltersSlugMetaDataModel;
 }
 
 // TODO: Add meta title and description to site config

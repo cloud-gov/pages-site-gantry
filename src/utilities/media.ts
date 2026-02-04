@@ -43,10 +43,14 @@ export const getUploadUrl = ({
   filename: string;
   bucket: string;
 }) => {
+  const baseUrl = import.meta.env.LOCAL_DEV
+    ? "/"
+    : (import.meta.env.BASEURL || "") + "/";
+
   const isPreview =
     import.meta.env.PREVIEW_MODE || import.meta.env.PREVIEW_MODE === "true";
   const isLocal = import.meta.env.LOCAL_DEV === "true";
-  const assetPath = `/~assets/${filename}`;
+  const assetPath = `${baseUrl}~assets/${filename}`;
 
   if (isPreview) {
     return `${import.meta.env.EDITOR_APP_URL}${url}`;
