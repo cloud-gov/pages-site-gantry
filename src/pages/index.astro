@@ -4,6 +4,7 @@ import Hero from "@/components/Hero.astro";
 import CardGrid from "@/components/CardGrid.astro";
 import RichText from "@/components/RichText.astro";
 import { fetchHomePage } from "@/utilities/fetch";
+import TextBlockImageBg from "@/components/TextBlockImageBg.astro";
 
 // Fetch home page data from Payload CMS
 
@@ -44,18 +45,11 @@ const contentBlocks = homePageData?.content || [];
 
         case "textBlock":
           return (
-            <section class="usa-section">
-              <div class="grid-container">
-                <div class="maxw-4xl">
-                  {block.title && (
-                    <h2 class="font-heading-xl margin-bottom-3">
-                      {block.title}
-                    </h2>
-                  )}
-                  {block.content && <RichText content={block.content} />}
-                </div>
-              </div>
-            </section>
+            <TextBlockImageBg
+              title={block.title}
+              content={block.content}
+              bgImage={block.bgImage}
+            />
           );
 
         default:

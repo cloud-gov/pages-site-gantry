@@ -139,6 +139,7 @@ let rawHTML = convertLexicalToHTML({
         "width-full",
         "margin-x-auto",
         "margin-left-auto",
+        "text-center",
       ],
       h1: false,
       h2: ["usa-process-list__heading", "usa-accordion__heading"],
@@ -194,6 +195,11 @@ let rawHTML = convertLexicalToHTML({
     border: none;
     background-color: #e6e6e2;
   }
+
+  :global(.textblock-image-bg .text-center .usa-prose p) {
+    max-width: none;
+  }
+
   @media (min-width: 40em) {
     :global(.cardgrid-component.usa-card--flag .usa-card__media) {
       width: 25%;
