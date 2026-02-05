@@ -190,6 +190,10 @@ let rawHTML = convertLexicalToHTML({
     color: var(--linkColor) !important;
   }
 
+  :global(.usa-card-group) {
+    margin-top: 2rem;
+  }
+
   :global(.cardgrid-component .usa-card__container) {
     border-radius: 0;
     border: none;
@@ -200,6 +204,10 @@ let rawHTML = convertLexicalToHTML({
     max-width: none;
   }
 
+  :global(.usa-prose .grid-row.usa-card-group) {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
   @media (min-width: 40em) {
     :global(.cardgrid-component.usa-card--flag .usa-card__media) {
       width: 25%;
@@ -215,6 +223,30 @@ let rawHTML = convertLexicalToHTML({
     :global(.cardgrid-component.usa-card--flag .usa-card__footer) {
       margin-left: 25%;
       padding-left: 1rem;
+    }
+
+    :global(
+      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__img
+    ) {
+      border-top-left-radius: inherit;
+      border-bottom-left-radius: inherit;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    :global(
+      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__header
+    ),
+    :global(
+      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__body
+    ),
+    :global(
+      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__footer
+    ) {
+      margin-left: 0;
+      padding-left: 0;
+      margin-right: 25%;
+      padding-right: 1rem;
     }
 
     :global(.cardgrid-component.usa-card--flag .usa-card__header) {
