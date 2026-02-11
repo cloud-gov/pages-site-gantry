@@ -1,14 +1,20 @@
-import { getTextContent } from "./helpers";
-
 /**
- * Full table renderer: adds USWDS classes and emits <thead>/<tbody>.
- * Uses the provided "table" + "tablerow" + "tablecell" structure from your Lexical JSON.
+ * Table converters for Payload Lexical rich text → HTML
+ * - Preserves nested HTML (uploads, headings, bold/italic, lists, links, etc.)
+ * - Emits <thead>/<tbody>
+ * - Applies USWDS table classes
+ * - Handles headerState, scope, colSpan/rowSpan
+ *
+ * Integration: pass a `renderChildren(children?: any[]) => string` function
+ * from the Astro converter that calls `convertLexicalToHTML` with
+ * nestedConverters.
  */
+
+type RenderChildren = (children?: any[]) => string;
 
 /**
  * Decide if a row is a header row.
- * We treat a row as a header row when ALL cells are column headers/empty headers (1 or 3),
- * which matches the first row in stringified content JSON.
+ * Treat a row as a header row when ALL cells are column headers (headerState 1 or 3).
  */
 const isHeaderRow = (row: any): boolean => {
   const cells = Array.isArray(row?.children) ? row.children : [];
@@ -18,38 +24,64 @@ const isHeaderRow = (row: any): boolean => {
   );
 };
 
-/**
- * Build a <tr> HTML string from a row node using headerState rules.
- */
-const renderRow = (row: any, { inThead }: { inThead: boolean }): string => {
+/** Render a single table cell with proper semantics and spans. */
+const renderCell = (
+  cell: any,
+  {
+    inThead,
+    renderChildren,
+  }: { inThead: boolean; renderChildren: RenderChildren },
+): string => {
+  const inner = renderChildren(cell?.children);
+
+  const colSpan =
+    cell?.colSpan && cell.colSpan !== 1
+      ? ` colspan="${String(cell.colSpan)}"`
+      : "";
+  const rowSpan =
+    cell?.rowSpan && cell.rowSpan !== 1
+      ? ` rowspan="${String(cell.rowSpan)}"`
+      : "";
+
+  // In THEAD, treat cells as column headers
+  if (inThead) {
+    return `<th scope="col"${colSpan}${rowSpan}>${inner}</th>`;
+  }
+
+  // In TBODY, headerState==2 => row header
+  if (cell?.headerState === 2) {
+    return `<th scope="row"${colSpan}${rowSpan}>${inner}</th>`;
+  }
+
+  // Otherwise, regular data cell
+  return `<td${colSpan}${rowSpan}>${inner}</td>`;
+};
+
+/** Render a table row. */
+const renderRow = (
+  row: any,
+  {
+    inThead,
+    renderChildren,
+  }: { inThead: boolean; renderChildren: RenderChildren },
+): string => {
   const cells = Array.isArray(row?.children) ? row.children : [];
-
   const htmlCells = cells
-    .map((cell: any, idx: number) => {
-      const inner = (cell?.children || []).map(getTextContent).join("");
-
-      // Column headers (first/thead rows): 1 or 3 => <th scope="col">
-      if (inThead && (cell?.headerState === 1 || cell?.headerState === 3)) {
-        return `<th scope="col">${inner}</th>`;
-      }
-
-      // Row headers inside tbody: 2 => <th scope="row">
-      if (!inThead && cell?.headerState === 2) {
-        return `<th scope="row">${inner}</th>`;
-      }
-
-      // Normal cell: 0 => <td>
-      // Fallback: if an unexpected headerState shows up in tbody, treat non-first cells as <td>.
-      return `<td>${inner}</td>`;
-    })
+    .map((cell: any) => renderCell(cell, { inThead, renderChildren }))
     .join("");
-
   return `<tr>${htmlCells}</tr>`;
 };
 
-export const table = ({ node }): string => {
+/** Full table renderer with USWDS classes and thead/tbody split. */
+export const table = ({
+  node,
+  renderChildren,
+}: {
+  node: any;
+  renderChildren: RenderChildren;
+}): string => {
   const rows = Array.isArray(node?.children) ? node.children : [];
-  const classNames = "usa-table usa-table--striped";
+  const classNames = "usa-table usa-table--striped table-centered";
 
   if (rows.length === 0) {
     return `<table class="${classNames}"></table>`;
@@ -64,24 +96,67 @@ export const table = ({ node }): string => {
   const bodyRows = rows.slice(splitIndex);
 
   const thead = headerRows.length
-    ? `<thead>${headerRows.map((row) => renderRow(row, { inThead: true })).join("")}</thead>`
+    ? `<thead>${headerRows
+        .map((row: any) => renderRow(row, { inThead: true, renderChildren }))
+        .join("")}</thead>`
     : "";
 
-  const tbody = `<tbody>${bodyRows.map((row) => renderRow(row, { inThead: false })).join("")}</tbody>`;
+  const tbody = `<tbody>${bodyRows
+    .map((row: any) => renderRow(row, { inThead: false, renderChildren }))
+    .join("")}</tbody>`;
 
-  return `<table class="${classNames}">${thead}${tbody}</table>`;
+  return `
+
+        <div class="usa-table-container--scrollable">
+          <table class="${classNames}">${thead}${tbody}</table>
+        </div>
+
+    `;
 };
 
-export const tablerow = ({ node }): string => {
-  return renderRow(node, { inThead: false });
+/**
+ * Row-only converter (defaults to tbody semantics).
+ * Useful when Payload invokes `tablerow` directly.
+ */
+export const tablerow = ({
+  node,
+  renderChildren,
+}: {
+  node: any;
+  renderChildren: RenderChildren;
+}): string => {
+  return renderRow(node, { inThead: false, renderChildren });
 };
 
-export const tablecell = ({ node }): string => {
-  const inner = (node?.children || []).map(getTextContent).join("");
+/**
+ * Cell-only converter (no thead context available here).
+ * We infer header semantics from `headerState`:
+ * - 1 or 3 => column header
+ * - 2   => row header
+ * - else => data cell
+ */
+export const tablecell = ({
+  node,
+  renderChildren,
+}: {
+  node: any;
+  renderChildren: RenderChildren;
+}): string => {
+  const inner = renderChildren(node?.children);
+
+  const colSpan =
+    node?.colSpan && node.colSpan !== 1
+      ? ` colspan="${String(node.colSpan)}"`
+      : "";
+  const rowSpan =
+    node?.rowSpan && node.rowSpan !== 1
+      ? ` rowspan="${String(node.rowSpan)}"`
+      : "";
+
   const isColHeader = node?.headerState === 1 || node?.headerState === 3;
   const isRowHeader = node?.headerState === 2;
 
-  if (isColHeader) return `<th scope="col">${inner}</th>`;
-  if (isRowHeader) return `<th scope="row">${inner}</th>`;
-  return `<td>${inner}</td>`;
+  if (isColHeader) return `<th scope="col"${colSpan}${rowSpan}>${inner}</th>`;
+  if (isRowHeader) return `<th scope="row"${colSpan}${rowSpan}>${inner}</th>`;
+  return `<td${colSpan}${rowSpan}>${inner}</td>`;
 };

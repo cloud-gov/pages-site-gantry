@@ -4,43 +4,95 @@ import {
   type HTMLConvertersFunction,
 } from "@payloadcms/richtext-lexical/html";
 import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
+
 import sanitizeHtml from "sanitize-html";
+
 import upload from "./RichTextConverters/upload";
-import { getTextContent } from "./RichTextConverters/helpers";
 import { table, tablerow, tablecell } from "./RichTextConverters/table";
+import { getTextContent } from "./RichTextConverters/helpers";
 import { processListBlock } from "./RichTextConverters/processList";
 import { accordionBlock } from "./RichTextConverters/accordion";
 import { cardGridBlock } from "./RichTextConverters/cardGrid";
 import { imageBlock } from "./RichTextConverters/image";
+import type { SerializedEditorState } from "node_modules/lexical/LexicalEditorState";
+import type { SerializedLexicalNode } from "node_modules/lexical/LexicalNode";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
+
 type NodeTypes = DefaultNodeTypes;
 
+/**
+ * Construct a minimal, valid SerializedEditorState for a given children array.
+ */
+const makeEditorState = (children: any[] = []) =>
+  ({
+    root: {
+      type: "root",
+      version: 1,
+      format: "left", // <-- must be ElementFormatType
+      indent: 0,
+      direction: "ltr", // <-- must be "ltr" | "rtl"
+      textFormat: 0,
+      textStyle: "",
+      children,
+    },
+  }) satisfies SerializedEditorState<SerializedLexicalNode>;
+
+/**
+ * Factory to create a function that renders node.children using a converter set.
+ */
+const createRenderChildren =
+  (nestedConverters: HTMLConvertersFunction<NodeTypes>) =>
+  (children: any[] = []) =>
+    convertLexicalToHTML({
+      data: makeEditorState(children),
+      converters: nestedConverters,
+    });
+
+/**
+ * Main converter block
+ */
 const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
   defaultConverters,
 }) => {
-  /*
-   * Converters used inside each process item body (nested rich text)
-   * Used to convert nested rich text inside Process List items without
-   * re-invoking block converters (avoids recursion while preserving
-   * heading/table/upload rules).
+  /**
+   * Nested converter pipeline (used inside blocks/tables).
+   * Avoids infinite recursion by not re-invoking block converters,
+   * but keeps upload/table/heading rules.
    */
-  const nestedConverters: HTMLConvertersFunction<NodeTypes> = () => ({
-    ...defaultConverters,
-    upload: ({ node }) => upload({ node }),
-    heading: ({ node }) => {
-      const text = node.children?.map(getTextContent).join("") || "";
-      const id = text
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "");
-      return `<${node.tag} id="${id}">${text}</${node.tag}>`;
-    },
-    table: ({ node }) => table({ node }),
-    tablerow: ({ node }) => tablerow({ node }),
-    tablecell: ({ node }) => tablecell({ node }),
-  });
+  const nestedConverters: HTMLConvertersFunction<NodeTypes> = () => {
+    // child renderer for nested content
+    const renderChildren = createRenderChildren(nestedConverters);
+
+    return {
+      ...defaultConverters,
+
+      upload: ({ node }) => upload({ node }),
+
+      /**
+       * Preserve inline formatting inside headings but still generate stable IDs.
+       * We derive the ID from the plain-text version, but render inner HTML via renderChildren.
+       */
+      heading: ({ node }) => {
+        const plain = node.children?.map(getTextContent).join("") ?? "";
+        const id = plain
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "");
+        const inner = renderChildren(node.children);
+        return `<${node.tag} id="${id}">${inner}</${node.tag}>`;
+      },
+
+      // Critical: table converters receive renderChildren and delegate cell content to it.
+      table: ({ node }) => table({ node, renderChildren }),
+      tablerow: ({ node }) => tablerow({ node, renderChildren }),
+      tablecell: ({ node }) => tablecell({ node, renderChildren }),
+    };
+  };
+
+  // child renderer for the top-level pipeline
+  const renderChildren = createRenderChildren(nestedConverters);
 
   return {
     ...defaultConverters,
@@ -48,43 +100,36 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
     upload: ({ node }) => upload({ node }),
 
     heading: ({ node }) => {
-      const text = node.children?.map(getTextContent).join("") || "";
-      const id = text
+      const plain = node.children?.map(getTextContent).join("") ?? "";
+      const id = plain
         .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
-      return `<${node.tag} id="${id}">${text}</${node.tag}>`;
+      const inner = renderChildren(node.children);
+      return `<${node.tag} id="${id}">${inner}</${node.tag}>`;
     },
 
-    table: ({ node }) => table({ node }),
-    tablerow: ({ node }) => tablerow({ node }),
-    tablecell: ({ node }) => tablecell({ node }),
+    // Table converters wired to use renderChildren
+    table: ({ node }) => table({ node, renderChildren }),
+    tablerow: ({ node }) => tablerow({ node, renderChildren }),
+    tablecell: ({ node }) => tablecell({ node, renderChildren }),
 
+    // We pass nestedConverters to bodies with nested rich text
     blocks: {
       processList: ({ node }) =>
-        processListBlock({
-          node,
-          htmlConverters: nestedConverters, // reuse pipeline for nested body
-        }),
+        processListBlock({ node, htmlConverters: nestedConverters }),
+
       accordion: ({ node }) =>
-        accordionBlock({
-          node,
-          htmlConverters: nestedConverters,
-        }),
-      cardGrid: ({ node }) =>
-        cardGridBlock({
-          node,
-        }),
-      image: ({ node }) =>
-        imageBlock({
-          node,
-        }),
-      // Add future blocks here:
-      // otherBlockSlug: ({ node }) => renderOtherBlock(node, nestedConverters),
+        accordionBlock({ node, htmlConverters: nestedConverters }),
+
+      cardGrid: ({ node }) => cardGridBlock({ node }),
+
+      image: ({ node }) => imageBlock({ node }),
     },
   };
 };
 
+// Convert full incoming RichText JSON using the main converters.
 let rawHTML = convertLexicalToHTML({
   data: content,
   converters: htmlConverters,
@@ -92,7 +137,9 @@ let rawHTML = convertLexicalToHTML({
 ---
 
 <section
-  class={`usa-prose ${alert && "alert-prose margin-y-0"} ${identifier && "identifier-prose margin-y-0"}`}
+  class={`usa-prose ${alert && "alert-prose margin-y-0"} ${
+    identifier && "identifier-prose margin-y-0"
+  }`}
   style={`--textColor: var(${textColor}); --linkColor: var(${linkColor});`}
   set:html={sanitizeHtml(rawHTML, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat([
@@ -109,7 +156,8 @@ let rawHTML = convertLexicalToHTML({
     ]),
     allowedClasses: {
       a: ["usa-button"],
-      table: ["usa-table", "usa-table--striped"],
+      table: ["usa-table", "usa-table--striped", "table-centered"],
+
       div: [
         "grid-row",
         "grid-gap",
@@ -140,6 +188,7 @@ let rawHTML = convertLexicalToHTML({
         "margin-x-auto",
         "margin-left-auto",
         "text-center",
+        "usa-table-container--scrollable",
       ],
       h1: false,
       h2: ["usa-process-list__heading", "usa-accordion__heading"],
@@ -147,6 +196,7 @@ let rawHTML = convertLexicalToHTML({
       h4: ["usa-process-list__heading", "usa-accordion__heading"],
       h5: ["usa-process-list__heading", "usa-accordion__heading"],
       h6: ["usa-process-list__heading", "usa-accordion__heading"],
+
       img: false,
       li: ["usa-process-list__item"],
       ol: ["usa-process-list"],
@@ -160,13 +210,17 @@ let rawHTML = convertLexicalToHTML({
       img: ["src", "alt"],
       use: ["href"],
       svg: ["class", "aria-hidden", "focusable", "role", "img"],
+
       h1: ["id", "class"],
       h2: ["id", "class"],
       h3: ["id", "class"],
       h4: ["id", "class"],
       h5: ["id", "class"],
       h6: ["id", "class"],
-      th: ["scope"],
+
+      th: ["scope", "colspan", "rowspan"],
+      td: ["colspan", "rowspan"],
+
       table: ["class"],
       ol: ["class"],
       li: ["class"],
@@ -180,10 +234,12 @@ let rawHTML = convertLexicalToHTML({
   :global(.alert-prose p) {
     max-width: 100%;
   }
+
   :global(.identifier-prose p) {
     font-weight: 700;
     color: var(--textColor);
   }
+
   :global(.identifier-prose a),
   :global(.identifier-prose a:hover) :global(.identifier-prose a:visited) {
     font-weight: 700;
@@ -208,11 +264,11 @@ let rawHTML = convertLexicalToHTML({
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
+
   @media (min-width: 40em) {
     :global(.cardgrid-component.usa-card--flag .usa-card__media) {
       width: 25%;
     }
-
     :global(.cardgrid-component.usa-card--flag .usa-card__img) {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
@@ -255,6 +311,14 @@ let rawHTML = convertLexicalToHTML({
     :global(.cardgrid-component.usa-card--flag .usa-card__body) {
       padding-top: 0;
     }
+
+    :global(.usa-table-container--scrollable .usa-table.table-centered) {
+      margin: 0 auto;
+    }
+  }
+  // prevents paragraph elements from escaping table cell
+  :global(.usa-table-container--scrollable .usa-table p) {
+    max-width: none;
   }
 </style>
 
