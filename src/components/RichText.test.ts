@@ -56,12 +56,24 @@ describe("RichText", () => {
                       {
                         type: "tablecell",
                         headerState: 1,
-                        children: [{ text: "Header 1" }],
+                        children: [
+                          {
+                            type: "paragraph",
+                            children: [{ type: "text", text: "Header 1" }],
+                          },
+                        ],
                       },
                       {
                         type: "tablecell",
                         headerState: 1,
-                        children: [{ text: "Header 1" }],
+                        children: [
+                          {
+                            type: "paragraph",
+                            children: [
+                              { type: "text", text: "<h2>Header 2</h2>" },
+                            ],
+                          },
+                        ],
                       },
                     ],
                   },
@@ -71,12 +83,39 @@ describe("RichText", () => {
                       {
                         type: "tablecell",
                         headerState: 2,
-                        children: [{ text: "Row 1" }],
+                        children: [
+                          {
+                            type: "paragraph",
+                            children: [{ type: "text", text: "Row 1" }],
+                          },
+                          {
+                            type: "paragraph",
+                            children: [
+                              {
+                                type: "text",
+                                text: '<a href="http://gsa.gov">gsa.gov</a>',
+                              },
+                            ],
+                          },
+                        ],
                       },
                       {
                         type: "tablecell",
                         headerState: 0,
-                        children: [{ text: "Data 1" }],
+                        children: [
+                          {
+                            type: "upload",
+                            value: {
+                              altText: "image",
+                              site: {
+                                bucket: "pages-site-bucket",
+                              },
+                              mimeType: "image/png",
+                              url: "/api/media/file/logo.png",
+                              filename: "logo.png",
+                            },
+                          },
+                        ],
                       },
                     ],
                   },
@@ -92,7 +131,9 @@ describe("RichText", () => {
       });
 
       // Check for table classes
-      expect(result).toContain('<table class="usa-table usa-table--striped">');
+      expect(result).toContain(
+        '<table class="usa-table usa-table--striped table-centered">',
+      );
 
       // Check for thead and tbody
       expect(result).toContain("<thead>");
@@ -104,7 +145,9 @@ describe("RichText", () => {
 
       // Check for cell content
       expect(result).toContain("Header 1");
-      expect(result).toContain("Data 1");
+      expect(result).toContain("<h2>Header 2</h2>");
+      expect(result).toContain('<a href="http://gsa.gov">gsa.gov</a>');
+      expect(result).toContain('<img src="/~assets/logo.png" alt="image" />');
     });
   });
 });
