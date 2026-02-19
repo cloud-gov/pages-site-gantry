@@ -12,7 +12,7 @@ services:
       HOST: 0.0.0.0
       PORT: 4561
       BASEURL: '/'
-      EDITOR_APP_URL: http://host.docker.internal:3000
+      EDITOR_APP_URL: https://pages-editor-dev.app.cloud.gov/
       OAUTH_CLIENT_ID:
       OAUTH_CLIENT_SECRET:
       NODE_ENV: development
