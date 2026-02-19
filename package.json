@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro build && cp -r public/* _site/",
+    "index": "exit 0",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro}\"",
@@ -30,7 +31,7 @@
     "astro": "^5.2.5",
     "body-parser": "^2.1.0",
     "cookie-parser": "^1.4.7",
-    "esbuild": "^0.25.12",
+    "esbuild": "^0.25.12f",
     "express": "^5.0.1",
     "http-proxy": "^1.18.1",
     "jose": "^5.9.6",
