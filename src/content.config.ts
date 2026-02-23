@@ -1,6 +1,6 @@
 import { defineCollection, z } from "astro:content";
 import type { ZodObject, ZodRawShape } from "astro:schema";
-import type { MediaValueProps, CollectionCategoryProps } from "@/env";
+import type { MediaValueProps, CollectionTagProps } from "@/env";
 import { collectionLoader } from "@/utilities/fetch";
 
 // NOTE: because we are rendering drafts, every property should
@@ -34,8 +34,8 @@ const mvCustom = z.custom<MediaValueProps>(
   },
 );
 
-// Custom Zod schema for CollectionCategoryProps
-const cCustom = z.custom<CollectionCategoryProps>(
+// Custom Zod schema for CollectionTagProps
+const cCustom = z.custom<CollectionTagProps>(
   (val) => {
     return (
       typeof val === "object" &&
@@ -45,7 +45,7 @@ const cCustom = z.custom<CollectionCategoryProps>(
   },
   {
     message:
-      "Invalid CollectionCategoryProps: must be an object with at least a 'title' string",
+      "Invalid CollectionTagProps: must be an object with at least a 'title' string",
   },
 );
 
@@ -92,7 +92,7 @@ const events = defineCollection({
           }),
         )
         .optional(),
-      categories: z.array(cCustom.optional()),
+      tags: z.array(cCustom.optional()),
       site: z.any(),
       relatedItems: z
         .array(
@@ -105,7 +105,7 @@ const events = defineCollection({
             }),
             z.object({
               blockType: z.literal("externalLink"),
-              title: z.string(),
+              label: z.string(),
               url: z.string(),
               description: z.string().optional(),
               id: z.string().optional(),
@@ -161,7 +161,7 @@ const news = defineCollection({
       title: z.string(),
       description: z.string(),
       image: mvCustom,
-      categories: z.array(cCustom.optional()),
+      tags: z.array(cCustom.optional()),
       content: z.any(), // content is a lexical object
       site: z.any(),
       reviewReady: z.boolean(),
@@ -177,7 +177,7 @@ const news = defineCollection({
             }),
             z.object({
               blockType: z.literal("externalLink"),
-              title: z.string(),
+              label: z.string(),
               url: z.string(),
               description: z.string().optional(),
               id: z.string().optional(),
@@ -203,7 +203,7 @@ const posts = defineCollection({
       title: z.string(),
       description: z.string(),
       image: mvCustom,
-      categories: z.array(cCustom.optional()),
+      tags: z.array(cCustom.optional()),
       site: z.any(),
       content: z.any(), // content is a lexical object
       reviewReady: z.boolean(),
@@ -221,7 +221,7 @@ const posts = defineCollection({
             }),
             z.object({
               blockType: z.literal("externalLink"),
-              title: z.string(),
+              label: z.string(),
               url: z.string(),
               description: z.string().optional(),
               id: z.string().optional(),
@@ -262,7 +262,7 @@ const reports = defineCollection({
       slug: z.string(),
       slugLock: z.boolean(),
       reportDate: z.string().datetime(),
-      categories: z.array(cCustom.optional()), // categoriesField, can be any
+      tags: z.array(cCustom.optional()), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
@@ -278,7 +278,7 @@ const reports = defineCollection({
             }),
             z.object({
               blockType: z.literal("externalLink"),
-              title: z.string(),
+              label: z.string(),
               url: z.string(),
               description: z.string().optional(),
               id: z.string().optional(),
@@ -311,7 +311,7 @@ const resources = defineCollection({
       slug: z.string(),
       slugLock: z.boolean(),
       resourceDate: z.string().datetime(),
-      categories: z.array(cCustom.optional()), // categoriesField, can be any
+      tags: z.array(cCustom.optional()), // categoriesField, can be any
       site: z.any(), // siteField, can be any
       content: z.any(), // richText, can be any
       reviewReady: z.boolean(),
@@ -326,7 +326,7 @@ const resources = defineCollection({
             }),
             z.object({
               blockType: z.literal("externalLink"),
-              title: z.string(),
+              label: z.string(),
               url: z.string(),
               description: z.string().optional(),
               id: z.string().optional(),
@@ -457,36 +457,70 @@ const homepage = defineCollection({
   ),
 });
 
+// Menu types to satisfy dropdown
+const BaseBlock = z.object({
+  id: z.string(),
+  label: z.string(),
+  blockName: z.string().nullable().optional(),
+});
+
+const PageLink = BaseBlock.extend({
+  blockType: z.literal("pageLink"),
+  page: z.any().nullable().optional(),
+});
+
+const SiteLink = BaseBlock.extend({
+  blockType: z.literal("link"),
+  url: z.string().nullable().optional(),
+});
+
+const ExternalLink = BaseBlock.extend({
+  blockType: z.literal("externalLink"),
+  url: z.string().nullable().optional(),
+});
+
+const CollectionTypeLink = BaseBlock.extend({
+  blockType: z.literal("collectionTypeLink"),
+  collectionType: z.any().nullable().optional(),
+});
+
+const CollectionEntryLink = BaseBlock.extend({
+  blockType: z.literal("collectionEntryLink"),
+  collectionEntry: z.any().nullable().optional(),
+});
+
+const Dropdown = BaseBlock.extend({
+  blockType: z.literal("dropdown"),
+  links: z
+    .array(
+      z.discriminatedUnion("blockType", [
+        PageLink,
+        SiteLink,
+        ExternalLink,
+        CollectionTypeLink,
+        CollectionEntryLink,
+      ]),
+    )
+    .default([])
+    .nullable()
+    .optional(),
+});
+
+const MenuItem = z.discriminatedUnion("blockType", [
+  PageLink,
+  SiteLink,
+  ExternalLink,
+  CollectionTypeLink,
+  CollectionEntryLink,
+  Dropdown,
+]);
+
 const menu = defineCollection({
   loader: collectionLoader("globals/menu"),
   schema: makeAllKeysNullable(
     z
       .object({
-        items: z
-          .array(
-            z
-              .object({
-                label: z.string(),
-                page: z.any(), // relation to page, can be any
-                id: z.string(),
-                blockName: z.string().nullable(),
-                blockType: z.string(),
-                url: z.string().optional(),
-                subitems: z
-                  .array(
-                    z.object({
-                      label: z.string(),
-                      page: z.any(), // relation to page, can be any
-                      id: z.string(),
-                      blockName: z.string().nullable(),
-                      blockType: z.string(),
-                    }),
-                  )
-                  .optional(),
-              })
-              .optional(),
-          )
-          .optional(),
+        items: z.array(MenuItem).nullable().optional(),
         _status: z.enum(["draft", "published"]),
         updatedAt: z.string().datetime(),
         createdAt: z.string().datetime(),
@@ -526,102 +560,93 @@ const siteConfig = defineCollection({
   ),
 });
 
+// Group with a name and an array of links (used in both variants)
+const LinkGroup = z.object({
+  id: z.string().nullable().optional(),
+  groupName: z.string().nullable().optional(),
+  link: z.array(MenuItem).nullable().optional(),
+});
+
+// Fields shared by "big" and "slim" preFooter
+const PreFooterBase = z.object({
+  id: z.string().nullable().optional(),
+  groupCol: z.string().nullable().optional(),
+  linkGroup: z.array(LinkGroup).nullable().optional(),
+
+  connectSectionLocation: z.string().nullable().optional(),
+  contactCenter: z
+    .array(
+      z
+        .object({
+          name: z.string().nullable().optional(),
+          phone: z.string().nullable().optional(),
+          email: z.string().nullable().optional(),
+          id: z.string().nullable().optional(),
+        })
+        .nullable()
+        .optional(),
+    )
+    .nullable()
+    .optional(),
+
+  facebook: z
+    .array(
+      z.object({ url: z.string().nullable().optional() }).nullable().optional(),
+    )
+    .nullable()
+    .optional(),
+  platform_x: z
+    .array(
+      z.object({ url: z.string().nullable().optional() }).nullable().optional(),
+    )
+    .nullable()
+    .optional(),
+  youtube: z
+    .array(
+      z.object({ url: z.string().nullable().optional() }).nullable().optional(),
+    )
+    .nullable()
+    .optional(),
+  instagram: z
+    .array(
+      z.object({ url: z.string().nullable().optional() }).nullable().optional(),
+    )
+    .nullable()
+    .optional(),
+  rssfeed: z
+    .array(
+      z.object({ url: z.string().nullable().optional() }).nullable().optional(),
+    )
+    .nullable()
+    .optional(),
+
+  reviewReady: z.boolean().nullable().optional(),
+  _status: z.enum(["draft", "published"]).nullable().optional(),
+  updatedAt: z.string().datetime().nullable().optional(),
+  createdAt: z.string().datetime().nullable().optional(),
+  globalType: z.string().nullable().optional(),
+});
+
+// "big" variant: just the base + type literal
+const PreFooterBig = PreFooterBase.extend({
+  type: z.literal("big"),
+});
+
+// "slim" variant: base + type + extra slimLink[] (same union)
+const PreFooterSlim = PreFooterBase.extend({
+  type: z.literal("slim"),
+  slimLink: z.array(MenuItem).nullable().optional(),
+});
+
+// Final discriminated union on `type`
+const PreFooterSchema = z.discriminatedUnion("type", [
+  PreFooterBig,
+  PreFooterSlim,
+]);
+
 const preFooter = defineCollection({
   loader: collectionLoader("globals/pre-footer"),
-  schema: makeAllKeysNullable(
-    z
-      .object({
-        type: z.string().nullable().optional(),
-        connectSectionLocation: z.string().nullable().optional(),
-        contactCenter: z.array(
-          z
-            .object({
-              name: z.string().nullable().optional(),
-              phone: z.string().nullable().optional(),
-              email: z.string().nullable().optional(),
-            })
-            .nullable()
-            .optional(),
-        ),
-        facebook: z.array(
-          z
-            .object({
-              url: z.string().nullable().optional(),
-            })
-            .nullable()
-            .optional(),
-        ),
-        platform_x: z.array(
-          z
-            .object({
-              url: z.string().nullable().optional(),
-            })
-            .nullable()
-            .optional(),
-        ),
-        youtube: z.array(
-          z
-            .object({
-              url: z.string().nullable().optional(),
-            })
-            .nullable()
-            .optional(),
-        ),
-        instagram: z.array(
-          z
-            .object({
-              url: z.string().nullable().optional(),
-            })
-            .nullable()
-            .optional(),
-        ),
-        rssfeed: z.array(
-          z
-            .object({
-              url: z.string().nullable().optional(),
-            })
-            .nullable()
-            .optional(),
-        ),
-        groupCol: z.string().nullable().optional(),
-        linkGroup: z.array(
-          z
-            .object({
-              groupName: z.string().nullable().optional(),
-              link: z.array(
-                z
-                  .object({
-                    blockType: z.string().nullable().optional(),
-                    name: z.string().nullable().optional(),
-                    type: z.any().nullable().optional(),
-                    id: z.string().nullable().optional(),
-                    url: z.string().nullable().optional(),
-                  })
-                  .nullable()
-                  .optional(),
-              ),
-            })
-            .nullable()
-            .optional(),
-        ),
-        slimLink: z.array(
-          z
-            .object({
-              blockType: z.string().nullable().optional(),
-              name: z.string().nullable().optional(),
-              page: z.any().nullable().optional(),
-              id: z.string().nullable().optional(),
-              url: z.string().nullable().optional(),
-            })
-            .optional(),
-        ),
-        _status: z.enum(["draft", "published"]),
-        updatedAt: z.string().datetime(),
-        createdAt: z.string().datetime(),
-        globalType: z.string(),
-      })
-      .partial(),
-  ),
+  schema: PreFooterSchema,
 });
 
 const general = defineCollection({
@@ -645,7 +670,7 @@ const general = defineCollection({
       slugLock: z.boolean().optional(),
       contentDate: z.string().datetime().optional(),
       location: z.string().optional(),
-      categories: z.array(cCustom.optional()).optional(),
+      tags: z.array(cCustom.optional()).optional(),
       site: z.any(),
       content: z.any().optional(), // richText
       reviewReady: z.boolean().optional(),
@@ -658,8 +683,8 @@ const general = defineCollection({
   ),
 });
 
-const customCollections = defineCollection({
-  loader: collectionLoader("custom-collections"),
+const collectionTypes = defineCollection({
+  loader: collectionLoader("collection-types"),
   schema: makeAllKeysNullable(
     z.object({
       id: z.string(),
@@ -675,12 +700,12 @@ const customCollections = defineCollection({
   ),
 });
 
-const customCollectionPages = defineCollection({
-  loader: collectionLoader("custom-collection-pages"),
+const collectionEntries = defineCollection({
+  loader: collectionLoader("collection-entries"),
   schema: makeAllKeysNullable(
     z.object({
       id: z.string(),
-      collectionConfig: z.any(), // relationship to custom-collections
+      collectionConfig: z.any(), // relationship to collection-types
       title: z.string(),
       excerpt: z.string().optional(),
       image: mvCustom.optional(),
@@ -696,7 +721,7 @@ const customCollectionPages = defineCollection({
       slug: z.string(),
       slugLock: z.boolean().optional(),
       contentDate: z.string().datetime().optional(),
-      categories: z.array(cCustom.optional()).optional(),
+      tags: z.array(cCustom.optional()).optional(),
       site: z.any(),
       content: z.any().optional(), // richText
       reviewReady: z.boolean().optional(),
@@ -767,17 +792,7 @@ const footer = defineCollection({
         identityDomainColor: z.string().nullable().optional(),
         primaryLinkColor: z.string().nullable().optional(),
         secondaryLinkColor: z.string().nullable().optional(),
-        link: z.array(
-          z
-            .object({
-              blockType: z.string().nullable().optional(),
-              name: z.string().nullable().optional(),
-              page: z.any().nullable().optional(),
-              id: z.string().nullable().optional(),
-              url: z.string().nullable().optional(),
-            })
-            .optional(),
-        ),
+        link: z.array(MenuItem).nullable().optional(),
         _status: z.enum(["draft", "published"]),
         updatedAt: z.string().datetime(),
         createdAt: z.string().datetime(),
@@ -809,8 +824,8 @@ export const collections = {
   reports,
   resources,
   policies,
-  customCollections,
-  customCollectionPages,
+  collectionTypes,
+  collectionEntries,
   sideNavigations,
   // site globals
   homepage,

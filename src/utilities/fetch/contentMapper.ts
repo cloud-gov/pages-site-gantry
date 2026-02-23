@@ -3,7 +3,7 @@ import { formatDate } from "../formatting";
 import { type DateParts, getYearTag, parseDateParts } from "../dates";
 import {
   type AlertModel,
-  type CollectionCategoryProps,
+  type CollectionTagProps,
   type FooterModel,
   type LinkModel,
   type LogoModel,
@@ -12,6 +12,7 @@ import {
   type Tag,
 } from "@/env";
 import { preFooterMapper } from "./preFooterMapper.ts";
+import { fetchCollectionEntry } from "./queries.ts";
 
 type ContentData = {
   title?: string;
@@ -19,7 +20,7 @@ type ContentData = {
   excerpt?: string;
   publishedAt?: string;
   slug?: string;
-  categories?: CollectionCategoryProps[];
+  tags?: CollectionTagProps[];
   [key: string]: any;
 };
 
@@ -37,10 +38,10 @@ function safeParse(input?: string | number | Date): DateParts | null {
 
 export function filteredContentMapper(data, baseUrl, yearTag) {
   return {
-    tags: (data.categories ?? []).map(
+    tags: (data.tags ?? []).map(
       (c): Tag => ({
         label: c.title,
-        url: `${baseUrl}?category=${c.slug}`,
+        url: `${baseUrl}?tag=${c.slug}`,
       }),
     ),
     yearTag: yearTag,
@@ -135,7 +136,7 @@ export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
   });
 }
 
-export function customCollectionPageMapper(data: any, collectionSlug: string) {
+export function customCollectionEntryMapper(data: any, collectionSlug: string) {
   return contentMapper(data, {
     baseUrl: `/${collectionSlug}`,
     dateField: data.contentDate ? "contentDate" : "publishedAt",
@@ -144,11 +145,11 @@ export function customCollectionPageMapper(data: any, collectionSlug: string) {
 }
 
 /**
- * Creates a customCollectionPageMapper with a specific collection slug
+ * Creates a customCollectionEntryMapper with a specific collection slug
  * Use this when you need to map custom collection pages with the correct URL slug
  */
-export function createCustomCollectionPageMapper(collectionSlug: string) {
-  return (data: any) => customCollectionPageMapper(data, collectionSlug);
+export function createCustomCollectionEntryMapper(collectionSlug: string) {
+  return (data: any) => customCollectionEntryMapper(data, collectionSlug);
 }
 
 export function shouldDisplay(a: any, currentDate: Date): boolean {
@@ -197,13 +198,24 @@ export function collectionUrlMapper(page: string) {
   return page ? `/${page}` : null;
 }
 
+export function collectionEntryUrlMapper(collectionType: string, page: string) {
+  return page ? `/${collectionType}/${page}` : null;
+}
+
 export function linkMapper(link): LinkModel {
   let result: LinkModel = null;
   switch (link?.blockType) {
+    case "link":
+      result = {
+        text: link?.label,
+        url: link?.url,
+        externalLink: true,
+      };
+      break;
     case "slimExternalLink":
     case "externalLink":
       result = {
-        text: link?.name,
+        text: link?.label,
         url: link?.url,
         externalLink: true,
       };
@@ -211,7 +223,7 @@ export function linkMapper(link): LinkModel {
     case "slimPageLink":
     case "pageLink":
       result = {
-        text: link?.name,
+        text: link?.label,
         url: pageUrlMapper(link?.page),
         externalLink: false,
       };
@@ -219,15 +231,25 @@ export function linkMapper(link): LinkModel {
     case "slimCollectionLink":
     case "collectionLink":
       result = {
-        text: link?.name,
+        text: link?.label,
         url: collectionUrlMapper(link?.page),
         externalLink: false,
       };
       break;
-    case "customCollectionLink":
+    case "collectionEntryLink":
       result = {
-        text: link?.name,
-        url: collectionUrlMapper(link?.customCollection?.slug),
+        text: link?.label,
+        url: collectionEntryUrlMapper(
+          link?.collectionEntry?.collectionSlug,
+          link?.collectionEntry?.slug,
+        ),
+        externalLink: false,
+      };
+      break;
+    case "collectionTypeLink":
+      result = {
+        text: link?.label,
+        url: collectionUrlMapper(link?.collectionType?.slug),
         externalLink: false,
       };
       break;
@@ -262,7 +284,7 @@ export function footerMapper(i: any, pf: any): FooterModel {
 }
 
 export interface RelatedItem {
-  title: string;
+  label: string;
   description?: string;
   link: string;
   externalLink: boolean;
@@ -283,7 +305,7 @@ export function relatedItemsMapper(
       // Handle external links
       if (block.blockType === "externalLink") {
         return {
-          title: block.title || "",
+          label: block.label || "",
           description: block.description || "",
           link: block.url || "",
           externalLink: true,
@@ -304,7 +326,7 @@ export function relatedItemsMapper(
         // Map the internal item using the provided mapper
         const mapped = collectionMapper(item);
         return {
-          title: mapped.title || item.title || "",
+          label: mapped.label || item.label || "",
           description: block.description || mapped.description || "",
           link: mapped.link || "",
           externalLink: false,

@@ -270,14 +270,14 @@ describe("Filters Search Utility, search", () => {
 
     await search(
       pagefind,
-      { filters: { category: "news" } },
+      { filters: { tag: "news" } },
       collectionList,
       pagination,
       filtersData,
     );
 
     expect(pagefind.search).toHaveBeenCalledWith(null, {
-      filters: { category: "news" },
+      filters: { tag: "news" },
     });
 
     expect(render.renderResults).toHaveBeenCalledWith(
@@ -337,7 +337,7 @@ describe("Filters Search Utility, search", () => {
     await expect(
       search(
         pagefind,
-        { filters: { category: "news" } },
+        { filters: { tag: "news" } },
         collectionList,
         pagination,
         filtersData,

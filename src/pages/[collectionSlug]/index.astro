@@ -7,8 +7,8 @@ import PageWithSideNav from "@/components/PageWithSideNav.astro";
 import RichText from "@/components/RichText.astro";
 import Media from "@/components/Media.astro";
 import {
-  fetchCustomCollectionPages,
-  createCustomCollectionPageMapper,
+  fetchCollectionEntries,
+  createCustomCollectionEntryMapper,
   fetchCollection,
   fetchSlug,
 } from "@/utilities/fetch";
@@ -20,7 +20,7 @@ const { collectionSlug } = Astro.params;
 
 // Check if this slug matches a custom collection config
 const collectionConfig = await fetchSlug(
-  "custom-collections",
+  "collection-types",
   collectionSlug || "",
 );
 
@@ -40,9 +40,8 @@ if (!collectionConfig) {
   }
 } else {
   // Fetch pages for this custom collection
-  const collectionPagesData = await fetchCustomCollectionPages(
-    collectionConfig.id,
-  );
+  const collectionPagesData = await fetchCollectionEntries(collectionConfig.id);
+
   collectionPages = collectionPagesData?.docs || [];
 
   // Sort by publishedAt
@@ -61,14 +60,13 @@ if (!collectionConfig) {
   const paginatedItems = paginationResult.paginatedItems;
 
   // Map items
-  const mapper = createCustomCollectionPageMapper(collectionSlug || "");
+  const mapper = createCustomCollectionEntryMapper(collectionSlug || "");
   items = paginatedItems.map(mapper);
 }
-
 export async function getStaticPaths() {
   // Fetch all custom collection configs to generate static paths
   try {
-    const data = await fetchCollection("custom-collections");
+    const data = await fetchCollection("collection-types");
     const configs = data?.docs || [];
 
     // Also fetch all pages to exclude their slugs from matching this route
@@ -106,7 +104,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         sideNavId={page.sideNavigation?.id}
       >
         {page.image && <Media media={page.image} />}
-        <RichText content={page.content} />
+        <RichText content={page?.content[0]?.content} />
       </PageWithSideNav>
     </Layout>
   ) : collectionConfig ? (

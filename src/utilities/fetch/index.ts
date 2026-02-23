@@ -7,9 +7,10 @@ export {
   fetchCollection,
   fetchFooter,
   fetchPreFooter,
-  fetchCustomCollectionPages,
-  fetchCustomCollectionPageBySlug,
+  fetchCollectionEntries,
+  fetchCustomCollectionEntryBySlug,
   fetchNotFoundPage,
+  fetchCollectionEntry,
 } from "./queries";
 export { getPaginatedCollectionData } from "./collectionDataFetch";
 export {
@@ -28,10 +29,11 @@ export {
   reportMapper,
   leadershipMapper,
   resourceMapper,
-  customCollectionPageMapper,
-  createCustomCollectionPageMapper,
+  customCollectionEntryMapper,
+  createCustomCollectionEntryMapper,
   alertsMapper,
   footerMapper,
   relatedItemsMapper,
   policyMapper,
 } from "./contentMapper";
+export { buildMenuWithCollectionSlugs } from "./buildMenuWithCollectionSlugs";

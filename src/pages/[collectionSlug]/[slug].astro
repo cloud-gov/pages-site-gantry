@@ -1,7 +1,7 @@
 ---
 import {
-  fetchCustomCollectionPageBySlug,
-  createCustomCollectionPageMapper,
+  fetchCustomCollectionEntryBySlug,
+  createCustomCollectionEntryMapper,
   fetchSlug,
 } from "@/utilities/fetch";
 import { tryParseDateParts } from "@/utilities/dates";
@@ -18,7 +18,7 @@ const { collectionSlug, slug: pageSlug } = Astro.params;
 
 // Check if this slug matches a custom collection config
 const collectionConfig = await fetchSlug(
-  "custom-collections",
+  "collection-types",
   collectionSlug || "",
 );
 
@@ -30,7 +30,7 @@ if (!collectionConfig) {
 let data: any;
 
 if (!Astro.isPrerendered) {
-  data = await fetchCustomCollectionPageBySlug(
+  data = await fetchCustomCollectionEntryBySlug(
     collectionConfig.id,
     pageSlug || "",
   );
@@ -41,7 +41,7 @@ if (!Astro.isPrerendered) {
 }
 
 // Map the page
-const mapper = createCustomCollectionPageMapper(collectionSlug || "");
+const mapper = createCustomCollectionEntryMapper(collectionSlug || "");
 const item = mapper(data);
 const contentDate = data.contentDate
   ? tryParseDateParts(data.contentDate)
@@ -50,14 +50,14 @@ const contentDate = data.contentDate
 export async function getStaticPaths() {
   // Fetch all custom collection configs and their pages to generate static paths
   try {
-    const configsData = await fetchCollection("custom-collections");
+    const configsData = await fetchCollection("collection-types");
     const configs = configsData?.docs || [];
 
     const paths: any[] = [];
 
     for (const config of configs) {
       const pagesData = await fetchCollection(
-        `custom-collection-pages?where[collectionConfig][equals]=${config.id}&limit=0`,
+        `collection-entries?where[collectionType][id][equals]=${config.id}&limit=0`,
       );
       const pages = pagesData?.docs || [];
 
@@ -104,15 +104,15 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       {data.image && <Media media={data.image} />}
       {item.date && <p class="font-sans-sm text-italic" set:text={item.date} />}
       {
-        data.categories && data.categories.length > 0 && (
+        data.tags && data.tags.length > 0 && (
           <ul
             class="usa-collection__meta display-flex margin-top-2"
             aria-label="More information"
           >
             <Tags
-              tags={data.categories.map((cat) => ({
+              tags={data.tags.map((cat) => ({
                 label: cat.title,
-                url: `/${collectionSlug}?category=${cat.slug}`,
+                url: `/${collectionSlug}?tag=${cat.slug}`,
               }))}
             />
           </ul>
@@ -153,7 +153,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     {
       data.content && (
         <section class="margin-top-4">
-          <RichText content={data.content} />
+          <RichText content={data?.content[0]?.content} />
         </section>
       )
     }

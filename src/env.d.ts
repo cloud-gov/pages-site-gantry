@@ -32,7 +32,7 @@ export interface MediaValueProps {
   };
 }
 
-export interface CollectionCategoryProps {
+export interface CollectionTagProps {
   id: number;
   title: string;
   slug?: string | null;
@@ -40,9 +40,9 @@ export interface CollectionCategoryProps {
   site: {
     bucket: string;
   };
-  parent: CollectionCategoryProps | null;
+  parent: CollectionTagProps | null;
   breadcrumbs?: {
-    doc?: CollectionCategoryProps | null;
+    doc?: CollectionTagProps | null;
     url?: string | null;
     label?: string | null;
     id?: string | null;
@@ -338,3 +338,92 @@ export interface FilterSelection {
   filterName: string;
   selectedValue: string;
 }
+
+// Types for custom collection types menu items
+
+export type PageLink = {
+  blockType: "pageLink";
+  id: string;
+  label: string;
+  page: { id: number | string; title: string; slug: string };
+  blockName?: string | null;
+  [k: string]: unknown;
+};
+
+export type CollectionTypeLink = {
+  blockType: "collectionTypeLink";
+  id: string;
+  label: string;
+  collectionType: { id: number | string; title: string; slug: string };
+  blockName?: string | null;
+  [k: string]: unknown;
+};
+
+export type CollectionEntry = {
+  id: number | string;
+  title: string;
+  slug: string;
+  collectionSlug?: string; // to be added
+};
+
+export type CollectionEntryLink = {
+  blockType: "collectionEntryLink";
+  id: string;
+  label: string;
+  collectionEntry: CollectionEntry;
+  blockName?: string | null;
+  [k: string]: unknown;
+};
+
+export type Dropdown = {
+  blockType: "dropdown";
+  id: string;
+  label: string;
+  links: MenuItem[];
+  blockName?: string | null;
+  [k: string]: unknown;
+};
+
+export type NavItem = {
+  blockType: "navItem";
+  id: string;
+  label: string;
+  page: { slug: string };
+  blockName?: string | null;
+  [k: string]: unknown;
+};
+
+export type ExternalLink = {
+  blockType: "externalLink";
+  id: string;
+  label: string;
+  page: { slug: string };
+  blockName?: string | null;
+  [k: string]: unknown;
+};
+
+export type UnknownItem = {
+  blockType?: string;
+  [k: string]: unknown;
+};
+
+export type MenuItem =
+  | PageLink
+  | CollectionTypeLink
+  | CollectionEntryLink
+  | Dropdown
+  | NavItem
+  | ExternalLink
+  | UnknownItem;
+
+export type MenuRoot = {
+  id: number | string;
+  items: MenuItem[];
+  [k: string]: unknown;
+};
+
+export type FetchResult = {
+  docs?: Array<{
+    collectionType?: { slug?: string | null } | null;
+  }>;
+};
