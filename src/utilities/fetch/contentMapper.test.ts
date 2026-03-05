@@ -206,7 +206,7 @@ describe("Content Mapper Utility maps links", () => {
     expect(
       linkMapper({
         blockType: "externalLink",
-        name: "name",
+        label: "name",
         url: "url",
       }),
     ).toEqual({ text: "name", url: "url", externalLink: true });
@@ -219,7 +219,7 @@ describe("Content Mapper Utility maps links", () => {
     expect(
       linkMapper({
         blockType: "slimExternalLink",
-        name: "name",
+        label: "name",
         url: "url",
       }),
     ).toEqual({ text: "name", url: "url", externalLink: true });
@@ -232,7 +232,7 @@ describe("Content Mapper Utility maps links", () => {
     expect(
       linkMapper({
         blockType: "pageLink",
-        name: "name",
+        label: "name",
         page: {
           slug: "page-slug",
         },
@@ -247,7 +247,7 @@ describe("Content Mapper Utility maps links", () => {
     expect(
       linkMapper({
         blockType: "slimPageLink",
-        name: "name",
+        label: "name",
         page: {
           slug: "page-slug",
         },
@@ -262,7 +262,7 @@ describe("Content Mapper Utility maps links", () => {
     expect(
       linkMapper({
         blockType: "collectionLink",
-        name: "name",
+        label: "name",
         page: "page-slug",
       }),
     ).toEqual({ text: "name", url: "/page-slug", externalLink: false });
@@ -275,7 +275,7 @@ describe("Content Mapper Utility maps links", () => {
     expect(
       linkMapper({
         blockType: "slimCollectionLink",
-        name: "name",
+        label: "name",
         page: "page-slug",
       }),
     ).toEqual({ text: "name", url: "/page-slug", externalLink: false });

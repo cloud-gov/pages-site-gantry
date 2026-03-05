@@ -1,12 +1,14 @@
 ---
 import { Image } from "astro:assets";
-import type { CollectionEntry } from "astro:content";
 import Search from "./Search.astro";
 import Link from "./Link.astro";
 import close from "@uswds-images/usa-icons/close.svg";
+
+import type { MenuItem } from "@/env";
+
 interface Props {
   title: string;
-  items: CollectionEntry<"menu">["data"]["items"];
+  items: MenuItem[];
   searchAccessKey: string;
   searchAffiliate: string;
 }
@@ -51,15 +53,19 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
                     id={`nav-${item.id || Math.random().toString(36).slice(2, 11)}`}
                     class="usa-accordion__content usa-nav__submenu"
                   >
-                    {item.subitems?.map((subitem) => {
+                    {item.links?.map((subitem) => {
                       let subHref = "#";
 
                       if (subitem.blockType === "pageLink") {
                         subHref = `/${subitem.page.slug}`;
-                      } else if (subitem.blockType === "collectionLink") {
-                        subHref = `/${subitem.page}`;
-                      } else if (subitem.blockType === "customCollectionLink") {
-                        subHref = `/${subitem.customCollection?.slug || ""}`;
+                      } else if (subitem.blockType === "link") {
+                        subHref = `${subitem.url}`;
+                      } else if (subitem.blockType === "externalLink") {
+                        subHref = `${subitem.url}`;
+                      } else if (subitem.blockType === "collectionEntryLink") {
+                        subHref = `/${subitem.collectionEntry?.collectionSlug}/${subitem.collectionEntry?.slug || ""}`;
+                      } else if (subitem.blockType === "collectionTypeLink") {
+                        subHref = `/${subitem.collectionType?.slug || ""}`;
                       }
 
                       const isSubActive =
@@ -92,14 +98,18 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
             } else if (item.blockType === "externalLink") {
               href = item.url;
               label = item.label;
+            } else if (item.blockType === "link") {
+              // presently implemented same as externalLink
+              href = item.url;
+              label = item.label;
             } else if (item.blockType === "pageLink") {
               href = `/${item.page.slug}`;
               label = item.label;
-            } else if (item.blockType === "collectionLink") {
-              href = `/${item.page}`;
+            } else if (item.blockType === "collectionEntryLink") {
+              href = `/${item.collectionEntry?.collectionSlug}/${item.collectionEntry?.slug || ""}`;
               label = item.label;
-            } else if (item.blockType === "customCollectionLink") {
-              href = `/${item.customCollection?.slug || ""}`;
+            } else if (item.blockType === "collectionTypeLink") {
+              href = `/${item.collectionType?.slug || ""}`;
               label = item.label;
             }
 

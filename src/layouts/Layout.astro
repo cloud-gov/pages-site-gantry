@@ -1,6 +1,5 @@
 ---
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import GovIdentifier from "@/components/GovIdentifier.astro";
 import Menu from "@/components/Menu.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
@@ -16,12 +15,20 @@ import {
   fetchPreFooter,
   fetchCollection,
   alertsMapper,
+  fetchCollectionEntry,
+  buildMenuWithCollectionSlugs,
+  fetchFooter,
+  footerMapper,
 } from "@/utilities/fetch";
-import { type AlertModel, type FooterModel } from "@/env";
 import Alerts from "@/components/Alerts.astro";
-import { fetchFooter, footerMapper } from "@/utilities/fetch";
 import FiltersSlugMetaData from "@/components/FiltersSlugMetaData.astro";
-import type { FiltersSlugMetaDataModel } from "@/env";
+import type {
+  FiltersSlugMetaDataModel,
+  AlertModel,
+  FooterModel,
+  MenuRoot,
+} from "@/env";
+import { buildPreFooterWithCollectionSlugs } from "@/utilities/fetch/buildMenuWithCollectionSlugs";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -29,49 +36,115 @@ const footerCollectionName = "footer";
 const preFooterCollectionName = "preFooter";
 const alertsCollectionName = "alerts";
 
-let siteConfig: CollectionEntry<typeof siteConfigCollectionName>["data"];
-let menu: CollectionEntry<typeof menuCollectionName>["data"];
-let footerResponseData: CollectionEntry<typeof footerCollectionName>["data"];
-let preFooterResponseData: CollectionEntry<
-  typeof preFooterCollectionName
->["data"];
-let alertsResponseData;
-
-let alerts: AlertModel[];
-if (!Astro.isPrerendered) {
-  siteConfig = await fetchSiteConfig();
-  menu = await fetchMenu();
-  footerResponseData = await fetchFooter();
-  preFooterResponseData = await fetchPreFooter();
-  alertsResponseData = await fetchCollection(alertsCollectionName);
-  alerts = alertsMapper(alertsResponseData?.docs);
-} else {
-  const siteConfigResponseData = await getCollection(siteConfigCollectionName);
-  const menuResponseData = await getCollection(menuCollectionName);
-  alertsResponseData = await getCollection(alertsCollectionName);
-  alerts = alertsMapper(alertsResponseData, true);
-  const footerResponse = await getCollection(footerCollectionName);
-  footerResponseData = footerResponse[0]?.data;
-  const preFooterResponse = await getCollection(preFooterCollectionName);
-  preFooterResponseData = preFooterResponse[0]?.data;
-
-  siteConfig = {
-    agencyName:
-      siteConfigResponseData[0]?.data?.agencyName || "Agency Homepage",
-    searchAccessKey: siteConfigResponseData[0]?.data?.searchAccessKey,
-    searchAffiliate: siteConfigResponseData[0]?.data?.searchAffiliate,
-    dapAgencyCode: siteConfigResponseData[0]?.data?.dapAgencyCode,
-    dapSubAgencyCode: siteConfigResponseData[0]?.data?.dapSubAgencyCode,
-  };
-
-  menu = {
-    items: menuResponseData[0]?.data?.items || [],
-  };
+/** Helpers */
+async function getFirstData<TName extends string>(name: TName) {
+  // getCollection returns Array<CollectionEntry<TName>>
+  const items = await getCollection(name as any);
+  return items?.[0]?.data as CollectionEntry<TName>["data"] | undefined;
 }
 
+function ensureMenuShape(raw: Partial<MenuRoot> | undefined): MenuRoot {
+  return {
+    id: raw?.id ?? "menu",
+    items: raw?.items ?? [],
+    ...raw,
+  } as MenuRoot;
+}
+
+/** Unified data loader producing a single, consistent shape */
+async function loadData() {
+  if (!Astro.isPrerendered) {
+    // Runtime branch: use remote fetchers
+    const [siteConfigRaw, menuRaw, footerRaw, preFooterRaw, alertsRaw] =
+      await Promise.all([
+        fetchSiteConfig(),
+        fetchMenu(),
+        fetchFooter(),
+        fetchPreFooter(),
+        fetchCollection(alertsCollectionName),
+      ]);
+
+    const menuBase = ensureMenuShape(menuRaw);
+    const [collectionsMenu, preFooterWithSlugs] = await Promise.all([
+      buildMenuWithCollectionSlugs(menuBase, fetchCollectionEntry),
+      buildPreFooterWithCollectionSlugs(preFooterRaw, fetchCollectionEntry),
+    ]);
+
+    const alerts = alertsMapper(alertsRaw?.docs);
+
+    return {
+      siteConfig: {
+        agencyName: siteConfigRaw?.agencyName ?? "Agency Homepage",
+        searchAccessKey: siteConfigRaw?.searchAccessKey,
+        searchAffiliate: siteConfigRaw?.searchAffiliate,
+        dapAgencyCode: siteConfigRaw?.dapAgencyCode,
+        dapSubAgencyCode: siteConfigRaw?.dapSubAgencyCode,
+      },
+      menu: menuBase,
+      collectionsMenu,
+      footerCollectionResponse: footerRaw,
+      preFooterCollectionResponse: preFooterWithSlugs,
+      alerts,
+    };
+  } else {
+    // Prerendered branch: use local content
+    const [
+      siteConfigData,
+      menuEntries,
+      footerData,
+      preFooterData,
+      alertsEntries,
+    ] = await Promise.all([
+      getFirstData<typeof siteConfigCollectionName>(siteConfigCollectionName),
+      getCollection(menuCollectionName),
+      getFirstData<typeof footerCollectionName>(footerCollectionName),
+      getFirstData<typeof preFooterCollectionName>(preFooterCollectionName),
+      getCollection(alertsCollectionName),
+    ]);
+
+    const menuBase = ensureMenuShape({
+      id: menuEntries?.[0]?.id ?? "menu",
+      items: menuEntries?.[0]?.data?.items ?? [],
+    });
+
+    const [collectionsMenu, preFooterWithSlugs, footerWithSlugs] =
+      await Promise.all([
+        buildMenuWithCollectionSlugs(menuBase, fetchCollectionEntry),
+        buildPreFooterWithCollectionSlugs(preFooterData, fetchCollectionEntry),
+        buildMenuWithCollectionSlugs(footerData, fetchCollectionEntry),
+      ]);
+
+    const alerts: AlertModel[] = alertsMapper(alertsEntries, true);
+
+    return {
+      siteConfig: {
+        agencyName: siteConfigData?.agencyName ?? "Agency Homepage",
+        searchAccessKey: siteConfigData?.searchAccessKey,
+        searchAffiliate: siteConfigData?.searchAffiliate,
+        dapAgencyCode: siteConfigData?.dapAgencyCode,
+        dapSubAgencyCode: siteConfigData?.dapSubAgencyCode,
+      },
+      menu: menuBase,
+      collectionsMenu,
+      footerCollectionResponse: footerWithSlugs,
+      preFooterCollectionResponse: preFooterWithSlugs,
+      alerts,
+    };
+  }
+}
+
+const {
+  siteConfig,
+  menu,
+  collectionsMenu,
+  footerCollectionResponse,
+  preFooterCollectionResponse,
+  alerts,
+} = await loadData();
+
 const footer: FooterModel = footerMapper(
-  footerResponseData,
-  preFooterResponseData,
+  footerCollectionResponse,
+  preFooterCollectionResponse,
 );
 
 interface Props {
@@ -100,8 +173,8 @@ const {
 } = Astro.props;
 
 const metaTitle = title
-  ? `${title} | ${siteConfig.agencyName || "Agency Homepage"}`
-  : siteConfig.agencyName || "Agency Homepage";
+  ? `${title} | ${siteConfig.agencyName ?? "Agency Homepage"}`
+  : (siteConfig.agencyName ?? "Agency Homepage");
 
 // Get proper URL for social image
 const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
@@ -116,19 +189,16 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <title>{metaTitle}</title>
     {description && <meta name="description" content={description} />}
     {canonical && <link rel="canonical" href={canonical} />}
-
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={metaTitle} />
     {description && <meta property="og:description" content={description} />}
     {socialImageUrl && <meta property="og:image" content={socialImageUrl} />}
-
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={metaTitle} />
     {description && <meta name="twitter:description" content={description} />}
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
-
     <FiltersSlugMetaData filtersSlugMetaData={filtersSlugMetaData} />
   </head>
   <body>
@@ -137,7 +207,7 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <Alerts alertsData={alerts} />
     <Menu
       title={siteConfig.agencyName}
-      items={menu?.items || []}
+      items={collectionsMenu?.items ?? []}
       searchAccessKey={siteConfig?.searchAccessKey}
       searchAffiliate={siteConfig.searchAffiliate}
     />
@@ -177,7 +247,6 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
       margin-left: auto;
       margin-right: auto;
     }
-
     @media (min-width: 1024px) {
       .usa-in-page-nav {
         position: sticky;
@@ -185,7 +254,6 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
         right: calc(50% - 32rem - 1rem);
       }
     }
-
     @media (max-width: 1023px) {
       .usa-in-page-nav {
         display: none;

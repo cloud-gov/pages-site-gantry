@@ -25,12 +25,12 @@ const { items = [] } = Astro.props;
                     rel="noopener noreferrer"
                     class="usa-link usa-link--external"
                   >
-                    {item.title}
+                    {item.label}
                     <span class="usa-sr-only"> (opens in new tab)</span>
                   </a>
                 ) : (
                   <a href={item.link} class="usa-link">
-                    {item.title}
+                    {item.label}
                   </a>
                 )}
               </h3>

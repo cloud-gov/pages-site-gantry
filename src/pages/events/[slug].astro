@@ -72,12 +72,12 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
   }
   <PagesSection heading={data.title}>
     {
-      data.categories && data.categories.length > 0 && (
+      data.tags && data.tags.length > 0 && (
         <div class="margin-bottom-3">
           <Tags
-            tags={data.categories.map((cat) => ({
+            tags={data.tags.map((cat) => ({
               label: cat.title,
-              url: `/events?category=${cat.slug}`,
+              url: `/events?tag=${cat.slug}`,
             }))}
           />
         </div>

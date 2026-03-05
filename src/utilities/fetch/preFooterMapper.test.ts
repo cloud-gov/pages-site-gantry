@@ -50,7 +50,7 @@ const defaultConfiguration = {
 
 const slimPreFooterResponseData = {
   contactCenter: [{ phone: "(123)-456-7890", email: "email@gsa.gov" }],
-  slimLink: [{ blockType: "externalLink", name: "name", url: "url" }],
+  slimLink: [{ blockType: "externalLink", label: "name", url: "url" }],
 };
 
 const slimPreFooterBuilt = {
@@ -76,7 +76,7 @@ const bigPreFooterResponseData = {
   linkGroup: [
     {
       groupName: "groupName",
-      link: [{ blockType: "externalLink", name: "name", url: "url" }],
+      link: [{ blockType: "externalLink", label: "name", url: "url" }],
     },
   ],
 };
@@ -409,7 +409,7 @@ describe("PreFooter Data Fetch Utility", () => {
         linkGroup: [
           {
             groupName: null,
-            link: [{ blockType: null, name: null, url: null }],
+            link: [{ blockType: null, label: null, url: null }],
           },
         ],
       },
@@ -425,7 +425,7 @@ describe("PreFooter Data Fetch Utility", () => {
         linkGroup: [
           {
             groupName: null,
-            link: [{ blockType: "externalLink", name: null, url: null }],
+            link: [{ blockType: "externalLink", label: null, url: null }],
           },
         ],
       },
@@ -447,7 +447,7 @@ describe("PreFooter Data Fetch Utility", () => {
         linkGroup: [
           {
             groupName: "groupName",
-            link: [{ blockType: "externalLink", name: "name", url: "url" }],
+            link: [{ blockType: "externalLink", label: "name", url: "url" }],
           },
         ],
       },

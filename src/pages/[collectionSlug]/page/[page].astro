@@ -4,8 +4,8 @@ import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import PaginationNav from "@/components/PaginationNav.astro";
 import {
-  fetchCustomCollectionPages,
-  createCustomCollectionPageMapper,
+  fetchCollectionEntries,
+  createCustomCollectionEntryMapper,
   fetchCollection,
   fetchSlug,
 } from "@/utilities/fetch";
@@ -17,7 +17,7 @@ const currentPage = parseInt(page) || 1;
 
 // Check if this slug matches a custom collection config
 const collectionConfig = await fetchSlug(
-  "custom-collections",
+  "collection-types",
   collectionSlug || "",
 );
 
@@ -26,9 +26,7 @@ if (!collectionConfig) {
 }
 
 // Fetch pages for this custom collection
-const collectionPagesData = await fetchCustomCollectionPages(
-  collectionConfig.id,
-);
+const collectionPagesData = await fetchCollectionEntries(collectionConfig.id);
 const collectionPages = collectionPagesData?.docs || [];
 
 // Sort by publishedAt
@@ -44,21 +42,22 @@ const hasPaginationNav = sorted.length >= PAGE_SIZE;
 const { totalPages, paginatedItems } = paginate(sorted, currentPage, PAGE_SIZE);
 
 // Map items
-const mapper = createCustomCollectionPageMapper(collectionSlug || "");
+const mapper = createCustomCollectionEntryMapper(collectionSlug || "");
 const items = paginatedItems.map(mapper);
 
 export async function getStaticPaths() {
   // Fetch all custom collection configs to generate static paths
   try {
-    const data = await fetchCollection("custom-collections");
+    const data = await fetchCollection("collection-types");
     const configs = data?.docs || [];
 
     const paths: any[] = [];
 
     for (const config of configs) {
       const pagesData = await fetchCollection(
-        `custom-collection-pages?where[collectionConfig][equals]=${config.id}&limit=0`,
+        `collection-entries?where[collectionType][id][equals]=${config.id}&limit=0`,
       );
+
       const pages = pagesData?.docs || [];
       const totalPages = pages.length;
       const totalPagesCount = Math.ceil(totalPages / PAGE_SIZE);

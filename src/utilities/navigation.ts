@@ -8,27 +8,27 @@ export interface NavItem {
   href: string;
   children?: NavItem[];
   order?: number;
-  category?: string;
+  tag?: string;
 }
 
 /**
- * Organizes navigation items by category and sorts them
+ * Organizes navigation items by tag and sorts them
  */
 export function organizeNavItems(items: NavItem[]): NavItem[] {
-  // Group items by category
+  // Group items by tag
   const categorized = items.reduce(
     (acc, item) => {
-      const category = item.category || "general";
-      if (!acc[category]) {
-        acc[category] = [];
+      const tag = item.tag || "general";
+      if (!acc[tag]) {
+        acc[tag] = [];
       }
-      acc[category].push(item);
+      acc[tag].push(item);
       return acc;
     },
     {} as Record<string, NavItem[]>,
   );
 
-  // Sort items within each category and create organized structure
+  // Sort items within each tag and create organized structure
   const organized: NavItem[] = [];
 
   // Add general items first
@@ -38,11 +38,11 @@ export function organizeNavItems(items: NavItem[]): NavItem[] {
     );
   }
 
-  // Add other categories
+  // Add other tags
   Object.entries(categorized)
-    .filter(([category]) => category !== "general")
+    .filter(([tag]) => tag !== "general")
     .sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([category, items]) => {
+    .forEach(([tag, items]) => {
       const sortedItems = items.sort((a, b) => (a.order || 0) - (b.order || 0));
       organized.push(...sortedItems);
     });
@@ -61,7 +61,7 @@ export function createNavFromPages(pages: any[]): NavItem[] {
       label: page.title,
       href: `/${page.slug}`,
       order: page.order || 0,
-      category: page.category || "general",
+      tag: page.tag || "general",
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 }

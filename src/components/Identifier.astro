@@ -8,7 +8,6 @@ interface Props {
   colors: IdentifierColors;
 }
 const { identifier, colors } = Astro.props;
-
 const siteDomain = identifier?.siteDomain;
 const links = identifier?.links;
 const logos = identifier?.logos;
@@ -23,6 +22,8 @@ const richTextIdentifier = {
   textColor: "--" + identityDomainColor,
   linkColor: "--" + primaryLinkColor,
 };
+const baseUrl = import.meta.env.BASEURL || "";
+const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
 ---
 
 <div class={`usa-identifier bg-${bkgColor}`}>
@@ -76,7 +77,7 @@ const richTextIdentifier = {
               links.map((link) => (
                 <li class="usa-identifier__required-links-item">
                   <a
-                    href={link.url}
+                    href={cleanBaseUrl + link.url}
                     class={`usa-identifier__required-link usa-link text-${secondaryLinkColor}`}
                   >
                     {link.text}
