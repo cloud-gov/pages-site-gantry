@@ -22,18 +22,11 @@ export {
 export { collectionLoader } from "./collectionLoader";
 export { preFooterMapper } from "./preFooterMapper";
 export {
-  newsMapper,
   contentMapper,
-  eventsMapper,
-  postsMapper,
-  reportMapper,
-  leadershipMapper,
-  resourceMapper,
   customCollectionEntryMapper,
   createCustomCollectionEntryMapper,
   alertsMapper,
   footerMapper,
   relatedItemsMapper,
-  policyMapper,
 } from "./contentMapper";
 export { buildMenuWithCollectionSlugs } from "./buildMenuWithCollectionSlugs";
