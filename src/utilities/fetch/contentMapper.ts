@@ -74,68 +74,6 @@ export function contentMapper(
   };
 }
 
-export function eventsMapper(data: any) {
-  return {
-    ...contentMapper(data, {
-      baseUrl: "/events",
-      dateField: "startDate",
-      dateConversionFunction: safeParse,
-    }),
-    description: data.description || data.excerpt || "",
-  };
-}
-
-export function leadershipMapper(data: CollectionEntry<"leadership">["data"]) {
-  return {
-    title: data.title,
-    description: data.description,
-    jobTitle: data.jobTitle,
-    isLeadership: true,
-    media: data.image,
-    imageAlt: data.image?.altText || data.title,
-    link: `/leadership/${data.slug}`,
-  };
-}
-
-export function newsMapper(data: CollectionEntry<"news">["data"]) {
-  return contentMapper(data, {
-    baseUrl: "/news",
-    dateField: "newsDate",
-    dateConversionFunction: safeParse,
-  });
-}
-
-export function policyMapper(data: CollectionEntry<"policies">["data"]) {
-  return contentMapper(data, {
-    baseUrl: "/policies",
-    dateConversionFunction: safeParse,
-  });
-}
-
-export function postsMapper(data: CollectionEntry<"posts">["data"]) {
-  return contentMapper(data, {
-    baseUrl: "/posts",
-    dateField: "postsDate",
-    dateConversionFunction: safeParse,
-  });
-}
-
-export function reportMapper(data: CollectionEntry<"reports">["data"]) {
-  return contentMapper(data, {
-    baseUrl: "/reports",
-    dateField: "reportDate",
-    dateConversionFunction: formatDate,
-  });
-}
-
-export function resourceMapper(data: CollectionEntry<"resources">["data"]) {
-  return contentMapper(data, {
-    baseUrl: "/resources",
-    dateField: "resourceDate",
-    dateConversionFunction: formatDate,
-  });
-}
-
 export function customCollectionEntryMapper(data: any, collectionSlug: string) {
   return contentMapper(data, {
     baseUrl: `/${collectionSlug}`,
