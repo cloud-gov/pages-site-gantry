@@ -1,0 +1,30 @@
+:root {
+  --primary-color: #112f4e;
+  --blue-70v: #0b4778;
+  --secondary-color: #005EA2;
+  --blue-40v: #2491ff;
+  --accent-color: #8B0A03;
+  --color-white: #ffffff;
+  --color-white-80: rgba(255, 255, 255, 0.8);
+  --color-ink: #1b1b1b;
+  --color-gray-1: #fcfcfc;
+  --color-gray-2: #f9f9f9;
+  --color-gray-3: #f6f6f6;
+  --color-gray-4: #f3f3f3;
+  --color-gray-5: #f0f0f0;
+  --color-gray-10: #e6e6e6;
+  --color-gray-60: #5c5c5c;
+  --blue-warm-10v: #D4E5ff; 
+  --blue-warm-20v: #B2D4FF;
+  --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --gray-cool-60: #565c65;
+  --max-width: 75rem;
+  --breakpoint-mobile: 0;
+  --breakpoint-tablet: 40rem;
+  --breakpoint-desktop: 64rem;
+  --breakpoint-desktop-lg: 75rem;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', Times, serif;
+  --councils-waves-url: url(/src/assets/backgrounds/waves_2.svg);
+}
