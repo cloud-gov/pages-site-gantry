@@ -1,0 +1,143 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-regular-400.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-medium-500.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-semibold-600.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-bold-700.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-regular-400-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-medium-500-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-semibold-600-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/inter/inter-bold-700-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-regular-400.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-medium-500.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-semibold-600.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-bold-700.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-black-900.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-regular-400-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-medium-500-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-semibold-600-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-bold-700-italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url(var(--asset-path)/fonts/playfair-display-black-900-italic.ttf) format('truetype');
+}

@@ -10,29 +10,31 @@ const baseUrl = import.meta.env.LOCAL_DEV
   : (import.meta.env.BASEURL || "") + "/";
 ---
 
-<form
-  id="search_form"
-  class="usa-search usa-search--small"
-  action=`${baseUrl}search`
-  accept-charset="UTF-8"
-  method="get"
->
-  <input name="utf8" type="hidden" value="✓" />
-  <input name="affiliate" type="hidden" value={searchAffiliate} />
+<section aria-label="Search component">
+  <form
+    id="search_form"
+    class="usa-search usa-search--small"
+    action=`${baseUrl}search`
+    accept-charset="UTF-8"
+    method="get"
+  >
+    <input name="utf8" type="hidden" value="✓" />
+    <input name="affiliate" type="hidden" value={searchAffiliate} />
 
-  <div role="search">
-    <label class="usa-sr-only" for="extended-search-field-small"
-      >Search small</label
-    >
-    <input
-      class="usa-input usagov-search-autocomplete"
-      id="extended-search-field-small"
-      type="search"
-      name="query"
-      autocomplete="off"
-    />
-    <button class="usa-button" type="submit">
-      <Image src={search} class="usa-search__submit-icon" alt="Search" />
-    </button>
-  </div>
-</form>
+    <div role="search">
+      <label class="usa-sr-only" for="extended-search-field-small"
+        >Search small</label
+      >
+      <input
+        class="usa-input usagov-search-autocomplete"
+        id="extended-search-field-small"
+        type="search"
+        name="query"
+        autocomplete="off"
+      />
+      <button class="usa-button" type="submit">
+        <Image src={search} class="usa-search__submit-icon" alt="Search" />
+      </button>
+    </div>
+  </form>
+</section>

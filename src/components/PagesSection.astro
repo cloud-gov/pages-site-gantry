@@ -9,6 +9,7 @@ import type { FilteredPageConfig } from "@/env";
 
 interface Props {
   heading?: string;
+  subheading?: string;
   classes?: string;
   id?: string;
   color?: string;
@@ -18,6 +19,7 @@ interface Props {
 
 const {
   heading = false,
+  subheading = false,
   color = "white",
   align = "left",
   classes = "",
@@ -31,32 +33,45 @@ const {
   class={`usa-section section section--${color} align-${align} ${classes}`}
 >
   <div class="grid-container">
-    <div class="grid-row">
+    <div class="section__container">
       <div class="section__intro">
-        {heading && <h1 class="margin-bottom-2">{heading}</h1>}
-      </div>
-    </div>
-    <div class="grid-row">
-      <div class="main-section grid-col-8">
-        <div class="section__container">
-          <div class="section__slot">
-            <slot />
-          </div>
-        </div>
-      </div>
-      <div class="sidebar-section grid-col-4">
         {
-          filteredPageConfig && (
-            <div class="grid-row margin-left-1">
-              <Filters filteredPageConfig={filteredPageConfig} />
+          heading && (
+            <div class="grid-container">
+              <h1>{heading}</h1>
+              {subheading && (
+                <p class="usa-intro font-md margin-top-2 margin-bottom-1">
+                  {subheading}
+                </p>
+              )}
             </div>
           )
         }
-        <div class="grid-row margin-left-1">
-          <slot name="sidebar" />
-        </div>
       </div>
     </div>
+    <section class="grid-container usa-section">
+      <div class="grid-row">
+        <div class="sidebar-section grid-col-4">
+          {
+            filteredPageConfig && (
+              <div class="grid-row margin-left-1">
+                <Filters filteredPageConfig={filteredPageConfig} />
+              </div>
+            )
+          }
+          <div class="grid-row margin-left-1">
+            <slot name="sidebar" />
+          </div>
+        </div>
+        <div class="main-section grid-col-8">
+          <div class="section__container">
+            <div class="section__slot">
+              <slot />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </section>
 

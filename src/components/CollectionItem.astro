@@ -69,7 +69,7 @@ const hasValidDate = !!(
       {
         hasValidDate && (
           <ul class="usa-collection__meta" aria-label="More information">
-            <li class="usa-collection__meta-item">
+            <li class="usa-collection__meta-item collection-item-date">
               <time datetime={dateParts.raw.toISOString()}>
                 {dateParts.full}
               </time>
@@ -80,7 +80,7 @@ const hasValidDate = !!(
       {
         hasTags && (
           <ul
-            class="usa-collection__meta display-flex margin-top-2"
+            class="usa-collection__meta display-flex margin-top-2 collection-item-tags"
             aria-label="Tag links"
           >
             <Tags tags={tags} />
