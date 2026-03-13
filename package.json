@@ -1,6 +1,6 @@
 {
   "name": "pages-site-gantry",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "This repo contains Github templates (pull request, issue, etc) for the cloud-gov organization.",
   "main": "index.js",
   "scripts": {
