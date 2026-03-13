@@ -78,14 +78,14 @@ const bkgColor = colors?.bkgColorLightest;
                             style="display: contents;"
                           >
                             {topic.links.map((link, index) => (
-                              <div class="usa-footer__secondary-content usa-footer__secondary-link">
+                              <li class="usa-footer__secondary-content usa-footer__secondary-link">
                                 <Link
                                   className="usa-footer__secondary-link"
                                   href={link.url}
                                 >
                                   {link.text}
                                 </Link>
-                              </div>
+                              </li>
                             ))}
                           </ul>
                         </div>
