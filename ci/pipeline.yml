@@ -59,6 +59,8 @@ jobs:
         #@ if/end env == 'dev':
         -  #@ pr_hook("success", "test-pages-site-gantry")
 
+  #! Temp until we deploy prod app
+  #@ if/end env != 'production':
   - name: new-deploys
     plan:
       - get: src
@@ -108,6 +110,8 @@ jobs:
         #@ if/end env == 'dev':
         -  #@ pr_hook("success", "deploy-pages-site-gantry-previews")
 
+  #! Temp until we deploy prod app
+  #@ if/end env != 'production':
   - name: delete-deploys
     plan:
       - get: src
@@ -149,6 +153,34 @@ jobs:
       in_parallel:
         -  #@ slack_hook("success", "delete site preview apps")
 
+  #@ if/end env == 'staging':
+  - name: update-release-branch
+    plan:
+      - get: src
+        passed:
+          - new-deploys
+        trigger: true
+      - get: general-task
+      - get: pipeline-tasks
+      - task: update-release-branch
+        image: general-task
+        file: pipeline-tasks/tasks/update-release-branch.yml
+
+  #@ if/end env == 'production':
+  - name: release
+    plan:
+      - get: src
+        params: { depth: 1 }
+        trigger: true
+        passed: [test]
+      -  #@ template.replace(data.values.release_steps)
+      - put: slack-cg-pages
+        params:
+          text_file: src/slackrelease.md
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: ((slack-icon-url))
+
 #!  RESOURCES
 
 resources:
@@ -173,10 +205,36 @@ resources:
       commit_verification_keys: ((cloud-gov-pages-gpg-keys))
       private_key: ((pages-gpg-operations-github-sshkey.private_key))
 
+  #@ if env == 'production':
+  - name: src
+    type: git
+    icon: github
+    source:
+      uri: ((git-base-url))/((pages-website-watcher-repository-path))
+      branch: main
+      commit_verification_keys: ((cloud-gov-pages-gpg-keys))
+      tag_filter: 0.*.*
+      fetch_tags: true
+
+  - name: pages-release
+    type: github-release
+    source:
+      owner: cloud-gov
+      repository: pages-site-gantry
+      access_token: ((pages-operations-ci-github-token))
+
+  - name: slack-cg-pages
+    type: slack-notification
+    source:
+      url: ((slack-webhook-url-cg-pages))
+  #@ end
+
   - name: general-task
   - name: node22
   - name: pipeline-tasks
 
+  #! Temp until we deploy prod app
+  #@ if/end env != 'production':
   - name: s3-active-site-configs
     type: s3-resource
     source:
@@ -186,6 +244,8 @@ resources:
       bucket: ((editor-site-data-bucket-((deploy-env))))
       region: us-gov-west-1
 
+  #! Temp until we deploy prod app
+  #@ if/end env != 'production':
   - name: s3-deleted-site-configs
     type: s3-resource
     source:
@@ -205,3 +265,5 @@ resource_types:
   - name: slack-notification
   #@ if/end env == 'dev':
   - name: pull-request
+  #@ if/end env == 'production':
+  - name: github-release
