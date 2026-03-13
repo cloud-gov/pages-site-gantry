@@ -102,20 +102,32 @@ if (showSideNav && sideNavItems.length === 0) {
             </aside>
             <main class="main-content">
               <div class="section__intro">
-                {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+                {heading && (
+                  <div class="grid-container">
+                    <h1 class="margin-bottom-2">{heading}</h1>
+                  </div>
+                )}
               </div>
               <div class="section__slot">
-                <slot />
+                <div class="grid-container">
+                  <slot />
+                </div>
               </div>
             </main>
           </div>
         ) : (
           <>
             <div class="section__intro">
-              {heading && <h1 class="margin-bottom-2">{heading}</h1>}
+              {heading && (
+                <div class="grid-container">
+                  <h1 class="margin-bottom-2">{heading}</h1>
+                </div>
+              )}
             </div>
             <div class="section__slot">
-              <slot />
+              <div class="grid-container">
+                <slot />
+              </div>
             </div>
           </>
         )

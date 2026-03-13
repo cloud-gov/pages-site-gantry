@@ -862,36 +862,69 @@ $councils-gap: 2rem;
 }
 
 /* Councils: hero + breadcrumb */
-.council-breadcrumb {
-  background-color: var(--primary-color);
-  padding: 0.75rem 0;
-}
-
-.council-breadcrumb .usa-breadcrumb__list {
-  max-width: var(--max-width);
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  box-sizing: border-box;
-}
-
-@media (min-width: 640px) {
-  .council-breadcrumb .usa-breadcrumb__list {
-    padding-left: 2rem;
-    padding-right: 2rem;
+.grid-container.breadcrumb {
+  max-width: none;
+  padding: 0;
+  .usa-breadcrumb {
+    background-color: var(--primary-color);
+    padding: .75rem 0;
+    font-size: inherit;
+    .usa-breadcrumb__list {
+      max-width: var(--max-width);
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      box-sizing: border-box;
+    }
+    @media (min-width: 640px) {
+      .usa-breadcrumb__list {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+    }
+    .usa-breadcrumb__link,
+    .usa-breadcrumb__current {
+      color: white;
+      &:hover {
+        color: white;
+        text-decoration: none;
+      }
+    }
   }
 }
 
-.council-breadcrumb .usa-breadcrumb__link,
-.council-breadcrumb .usa-breadcrumb__current {
-  color: white;
-}
-
-.council-breadcrumb .usa-breadcrumb__link:hover {
-  color: white; 
-  text-decoration: none; 
+#main-content > .usa-section {
+  padding-top: 0;
+  & > .grid-container {
+    max-width: none;
+    padding: 0;
+    .section__intro {
+      background-color: var(--primary-color);
+      background-image: var(--councils-waves-url);
+      background-repeat: repeat;
+      border-bottom: 6px solid var(--accent-color);
+      background-size: 30%;
+      background-blend-mode: color;
+      .grid-container {
+        max-width: var(--max-width);
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        h1 {
+          color: white;
+          font-weight: 400;
+          margin-top: 1rem;
+          margin-bottom: 0;
+          font-size: 3rem;
+        }
+      }
+    }
+  }
 }
 
 .council-hero {
@@ -901,7 +934,6 @@ $councils-gap: 2rem;
   border-bottom: 6px solid var(--accent-color);
   background-size: 30%;
   background-blend-mode: color;
-
 }
 
 /* Consistent top spacing for main content below council hero (fixes uneven spacing e.g. EOC) */
