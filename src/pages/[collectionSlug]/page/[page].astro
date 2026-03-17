@@ -91,12 +91,10 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
   currentPage={currentPage}
   totalPages={totalPages}
 >
-  <PagesSection heading={collectionConfig.title}>
-    {
-      collectionConfig.description && (
-        <p class="margin-bottom-3">{collectionConfig.description}</p>
-      )
-    }
+  <PagesSection
+    heading={collectionConfig.title}
+    subheading={collectionConfig.description}
+  >
     <CollectionItemList items={items} />
     {
       hasPaginationNav && (

@@ -7,9 +7,7 @@ export interface Props {
   content?: any;
   bgImage?: any;
 }
-
 const { title, content, bgImage } = Astro.props;
-
 const backgroundImageUrl = bgImage ? getMediaUrl(bgImage) : null;
 ---
 
@@ -38,7 +36,7 @@ const backgroundImageUrl = bgImage ? getMediaUrl(bgImage) : null;
 }
 {
   !bgImage && (
-    <section class="usa-section">
+    <section class="usa-section text-block">
       <div class="grid-container">
         <div class="maxw-4xl">
           {title && <h2 class="font-heading-xl margin-bottom-3">{title}</h2>}

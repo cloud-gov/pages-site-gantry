@@ -2,7 +2,7 @@
 import CollectionItem from "@/components/CollectionItem.astro";
 import { COLLECTION_ITEM_LIST_ID } from "@/utilities/filter";
 
-const { items = [], showEvent = false } = Astro.props;
+const { items = [], showEvent = false, currentPage = 1 } = Astro.props;
 ---
 
 <div>

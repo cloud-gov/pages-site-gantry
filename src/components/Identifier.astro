@@ -75,10 +75,10 @@ const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
           {
             links &&
               links.map((link) => (
-                <li class="usa-identifier__required-links-item">
+                <li class={`usa-identifier__required-links-item`}>
                   <a
                     href={cleanBaseUrl + link.url}
-                    class={`usa-identifier__required-link usa-link text-${secondaryLinkColor}`}
+                    class={`usa-identifier__required-link usa-link text-${secondaryLinkColor}${link.externalLink && " usa-link--external"}`}
                   >
                     {link.text}
                   </a>

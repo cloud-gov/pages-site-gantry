@@ -6,7 +6,7 @@ import Breadcrumb from "@/components/Breadcrumb.astro";
 import Footer from "@/components/Footer.astro";
 import Config from "@/config.astro";
 import { getMediaUrl } from "@/utilities/media";
-import "../styles/index.scss";
+import "@theme";
 import DigitalAnalytics from "@/components/DigitalAnalytics.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 import {
@@ -178,6 +178,7 @@ const metaTitle = title
 
 // Get proper URL for social image
 const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
+const isHome = Astro.url.pathname === "/";
 ---
 
 <!doctype html>
@@ -199,6 +200,16 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
     <meta name="twitter:title" content={metaTitle} />
     {description && <meta name="twitter:description" content={description} />}
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
     <FiltersSlugMetaData filtersSlugMetaData={filtersSlugMetaData} />
   </head>
   <body>
@@ -220,12 +231,17 @@ const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
       useInPageNav ? (
         <div class="usa-in-page-nav-container">
           <slot name="in-page-nav" />
-          <main id="main-content">
+          <main id="main-content" class="used-in">
             <slot />
           </main>
         </div>
       ) : (
-        <main id="main-content">
+        <main
+          id="main-content"
+          class:list={{
+            home: isHome,
+          }}
+        >
           <slot />
         </main>
       )

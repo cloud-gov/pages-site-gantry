@@ -19,7 +19,7 @@ if (MODE !== "static") {
 const isTestEnvironment =
   process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const hasRequiredEnvVars = env.EDITOR_APP_URL && env.PAYLOAD_API_KEY;
-
+const customTheme = String(env.USE_USWSDS_THEME).toLowerCase() != "true";
 if (!isTestEnvironment && !hasRequiredEnvVars) {
   console.error("Unable to build site:");
   console.error(
@@ -70,6 +70,12 @@ export default defineConfig({
         {
           find: "@",
           replacement: "/src",
+        },
+        {
+          find: "@theme",
+          replacement: customTheme
+            ? "@/styles/custom/index.scss"
+            : "@/styles/index.scss",
         },
       ],
     },
