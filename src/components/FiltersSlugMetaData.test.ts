@@ -20,7 +20,7 @@ describe("FiltersConfig", () => {
   it("adds pagefind metadata", async () => {
     let collectionName = "events";
     let collectionItem = {
-      tags: [{ label: "GEOGRAPHY" }, { label: "HISTORY" }],
+      tags: [{ title: "GEOGRAPHY" }, { title: "HISTORY" }],
       yearTag: "2025",
       sortField: "2026-01-05T17:23:16.181Z",
     };

@@ -44,7 +44,7 @@ export interface CollectionTagProps {
   breadcrumbs?: {
     doc?: CollectionTagProps | null;
     url?: string | null;
-    label?: string | null;
+    title?: string | null;
     id?: string | null;
   };
   updatedAt: string;
@@ -323,7 +323,7 @@ export interface FilterOption {
 }
 
 export interface Tag {
-  label: string;
+  title: string;
   url: string;
 }
 
@@ -363,6 +363,7 @@ export type CollectionEntry = {
   id: number | string;
   title: string;
   slug: string;
+  publishedAt?: string;
   collectionSlug?: string; // to be added
 };
 

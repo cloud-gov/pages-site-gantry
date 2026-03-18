@@ -24,11 +24,11 @@ export function getFiltersSlugMetaData(
   if (!collectionName || !collectionItem || !slug) return null;
 
   const tags: FilterAttribute[] = collectionItem?.tags
-    ?.filter((tag: Tag) => tag?.label)
+    ?.filter((tag: Tag) => tag?.title)
     .map((tag: Tag) => {
       return {
         attributeValue: `${getPagefindFilterName(collectionName, FILTER_NAME_TAG)}[content]`,
-        content: tag?.label?.toUpperCase(),
+        content: tag?.title?.toUpperCase(),
       };
     });
 

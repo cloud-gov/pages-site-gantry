@@ -24,13 +24,20 @@ const dataAttributes = getFiltersDataAttributes(
 );
 ---
 
-<aside class="sidenav-container">
-  {
-    dataAttributes && (
-      <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
-    )
-  }
-  {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+<aside class="sidenav-container sidebar-layout__sidebar">
+  <div class="filter-sidebar">
+    <div class="filter-sidebar__header">
+      <h2 class="font-sans-lg">Filters</h2>
+    </div>
+    <div>
+      {
+        dataAttributes && (
+          <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
+        )
+      }
+      {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+    </div>
+  </div>
 </aside>
 
 <script>

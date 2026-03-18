@@ -103,8 +103,8 @@ describe("CollectionItem", () => {
       title: "With Tags",
       link: "/tags",
       tags: [
-        { label: "News", url: "/?tag=news" },
-        { label: "UX", url: "/?tag=ux" },
+        { title: "News", url: "/?tag=news" },
+        { title: "UX", url: "/?tag=ux" },
       ],
     });
 
