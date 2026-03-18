@@ -3,6 +3,7 @@ import {
   fetchCustomCollectionEntryBySlug,
   createCustomCollectionEntryMapper,
   fetchSlug,
+  fetchCollectionEntry,
 } from "@/utilities/fetch";
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
@@ -13,6 +14,11 @@ import Media from "@/components/Media.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
 import PreviewReload from "@/components/PreviewReload.astro";
 import { fetchCollection } from "@/utilities/fetch";
+import RelatedItems from "@/components/RelatedItems.astro";
+import { buildRelatedItemsWithCollectionSlugs } from "@/utilities/fetch/buildRelatedItemsWithCollectionSlugs";
+import { getFiltersSlugMetaData } from "@/utilities/filter";
+import type { FiltersSlugMetaDataModel } from "@/env";
+import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 
 const { collectionSlug, slug: pageSlug } = Astro.params;
 
@@ -48,29 +54,28 @@ const contentDate = data.contentDate
   : null;
 
 export async function getStaticPaths() {
-  // Fetch all custom collection configs and their pages to generate static paths
   try {
     const configsData = await fetchCollection("collection-types");
-    const configs = configsData?.docs || [];
+    const configs = configsData?.docs ?? [];
 
-    const paths: any[] = [];
+    const paths = [];
 
     for (const config of configs) {
+      // fetch entries ONLY for this config
       const pagesData = await fetchCollection(
-        `collection-entries?where[collectionType][id][equals]=${config.id}&limit=0`,
+        `collection-entries?where[collectionType.slug][equals]=${config.slug}&limit=0`,
       );
-      const pages = pagesData?.docs || [];
+
+      const pages = pagesData?.docs ?? [];
 
       for (const page of pages) {
-        if (page.slug) {
-          paths.push({
-            params: {
-              collectionSlug: config.slug,
-              slug: page.slug,
-            },
-            props: { data: page, collectionConfig: config },
-          });
-        }
+        paths.push({
+          params: {
+            collectionSlug: config.slug,
+            slug: page.slug,
+          },
+          props: { data: page, collectionConfig: config },
+        });
       }
     }
 
@@ -83,102 +88,154 @@ export async function getStaticPaths() {
     return [];
   }
 }
-
+const relatedItems = await buildRelatedItemsWithCollectionSlugs(
+  data.relatedItems,
+  fetchCollectionEntry,
+);
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+
+const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
+  collectionSlug,
+  item,
+  pageSlug,
+);
 ---
 
 <Layout
   title={item.title}
   useInPageNav={item.showInPageNav}
   useBreadcrumbTitle={true}
+  filtersSlugMetaData={filtersSlugMetaData}
 >
-  {
-    item.showInPageNav && (
-      <Fragment slot="in-page-nav">
-        <InPageNavigation />
-      </Fragment>
-    )
-  }
   <PagesSection heading={data.title}>
-    <div class="flex-column margin-bottom-5">
-      {data.image && <Media media={data.image} />}
-      {item.date && <p class="font-sans-sm text-italic" set:text={item.date} />}
-      {
-        data.tags && data.tags.length > 0 && (
-          <ul
-            class="usa-collection__meta display-flex margin-top-2"
-            aria-label="More information"
-          >
-            <Tags
-              tags={data.tags.map((cat) => ({
-                label: cat.title,
-                url: `/${collectionSlug}?tag=${cat.slug}`,
-              }))}
-            />
-          </ul>
-        )
-      }
-    </div>
-
-    {
-      contentDate && (
+    <article class="grid-container padding-top-0 usa-section">
+      <div class="grid-row grid-gap grid-gap-6">
+        {/* set colum width if related items are present */}
         <div
-          class="usa-summary-box maxw-tablet margin-bottom-2"
-          role="region"
-          aria-labelledby={`content-details-${data.slug}`}
+          class={data.relatedItems?.length > 0 || item.showInPageNav
+            ? "tablet:grid-col-9"
+            : "tablet:grid-col-12"}
         >
-          <div class="usa-summary-box__body">
-            <h2
-              class="usa-summary-box__heading"
-              id={`content-details-${data.slug}`}
-            >
-              Details
-            </h2>
-            <div class="usa-summary-box__text">
-              <ul class="usa-list">
-                {contentDate && (
-                  <li>
-                    <b>Date:</b> {contentDate.full}
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    {data.excerpt && <p class="margin-bottom-2">{data.excerpt}</p>}
-
-    {
-      data.content && (
-        <section class="margin-top-4">
-          <RichText content={data?.content[0]?.content} />
-        </section>
-      )
-    }
-
-    {
-      data.files && data.files.length > 0 && (
-        <section class="margin-top-4">
-          <h3>Files</h3>
-          <ul class="usa-list">
-            {data.files.map((fileItem) => (
-              <li>
-                <a
-                  href={fileItem.file?.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+          {
+            data.image && (
+              <div class="entry-thumbnail margin-y-2">
+                <Media media={data.image} />
+              </div>
+            )
+          }
+          <div class="maxw-72 margin-bottom-4">
+            <p class="text-gray-50">
+              {
+                item.date && (
+                  <p class="font-sans-sm text-italic" set:text={item.date} />
+                )
+              }
+            </p>
+            {
+              /* possible deprecated feature */
+              contentDate && (
+                <div
+                  class="usa-summary-box maxw-tablet margin-bottom-2"
+                  role="region"
+                  aria-labelledby={`content-details-${data.slug}`}
                 >
-                  {fileItem.label || fileItem.file?.filename || "Download"}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
+                  <div class="usa-summary-box__body">
+                    <h2
+                      class="usa-summary-box__heading"
+                      id={`content-details-${data.slug}`}
+                    >
+                      Details
+                    </h2>
+                    <div class="usa-summary-box__text">
+                      <ul class="usa-list">
+                        {contentDate && (
+                          <li>
+                            <b>Date:</b> {contentDate.full}
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
+            {
+              /* main content entry body */
+              data.content && (
+                <section class="margin-top-4">
+                  <RichText content={data?.content[0]?.content} />
+                </section>
+              )
+            }
+          </div>
+          <>
+            {
+              data.tags && data.tags.length > 0 && (
+                <ul
+                  class="usa-list usa-list--unstyled margin-top-4 content-tags"
+                  aria-label="More information"
+                >
+                  <Tags
+                    tags={data.tags.map((cat) => ({
+                      title: cat.title,
+                      url: `/${collectionSlug}?tag=${cat.slug}`,
+                    }))}
+                  />
+                </ul>
+              )
+            }
+          </>
+          <>
+            {
+              data.files && data.files.length > 0 && (
+                <section class="margin-top-4">
+                  <h3>Files</h3>
+                  <ul class="usa-list">
+                    {data.files.map((fileItem) => (
+                      <li>
+                        <a
+                          href={fileItem.file?.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {fileItem.label ||
+                            fileItem.file?.filename ||
+                            "Download"}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )
+            }
+          </>
+        </div>
+        {
+          (data.relatedItems.length > 0 || item.showInPageNav) && (
+            <aside
+              class="tablet:grid-col-3 related-links-sidebar"
+              aria-label="Related Items"
+            >
+              {item.showInPageNav && (
+                <Fragment slot="in-page-nav">
+                  <InPageNavigation />
+                </Fragment>
+              )}
+              {data.relatedItems.length > 0 && (
+                <RelatedItems items={relatedItems} />
+              )}
+            </aside>
+          )
+        }
+      </div>
+      <div class="flex-column margin-bottom-5"></div>
+    </article>
   </PagesSection>
 </Layout>
-
+<FiltersCollectionItemTemplate
+  item={item}
+  showEvent={false}
+  filtersSlugMetaData={filtersSlugMetaData}
+/>
 <PreviewReload />

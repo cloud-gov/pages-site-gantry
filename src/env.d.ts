@@ -44,7 +44,7 @@ export interface CollectionTagProps {
   breadcrumbs?: {
     doc?: CollectionTagProps | null;
     url?: string | null;
-    label?: string | null;
+    title?: string | null;
     id?: string | null;
   };
   updatedAt: string;
@@ -282,6 +282,7 @@ export interface FilteredPageConfig {
   collectionName?: string;
   pageSize?: number | string;
   currentPage?: number | string;
+  totalItems?: number;
 }
 
 export type PageNavItemType = "prev" | "next" | "overflow" | "page";
@@ -303,6 +304,7 @@ export interface FiltersData {
   pageSize: string;
   currentPage: string;
   collectionName: string;
+  totalItems: number;
 }
 
 export interface FilterConfig {
@@ -323,7 +325,7 @@ export interface FilterOption {
 }
 
 export interface Tag {
-  label: string;
+  title: string;
   url: string;
 }
 
@@ -363,6 +365,7 @@ export type CollectionEntry = {
   id: number | string;
   title: string;
   slug: string;
+  publishedAt?: string;
   collectionSlug?: string; // to be added
 };
 

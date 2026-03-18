@@ -2,6 +2,7 @@ import { formatDate } from "../formatting";
 import { type DateParts, getYearTag, parseDateParts } from "../dates";
 import {
   type AlertModel,
+  type CollectionEntry,
   type CollectionTagProps,
   type FooterModel,
   type LinkModel,
@@ -38,7 +39,7 @@ export function filteredContentMapper(data, baseUrl, yearTag) {
   return {
     tags: (data.tags ?? []).map(
       (c): Tag => ({
-        label: c.title,
+        title: c.title,
         url: `${baseUrl}?tag=${c.slug}`,
       }),
     ),
@@ -59,7 +60,7 @@ export function contentMapper(
     date: dateConversionFunction(data[dateField] || data.publishedAt || ""),
     startDate: safeParse(data.startDate || ""),
     endDate: safeParse(endSrc),
-    description: data.excerpt || "",
+    description: data.description || "",
     media: data.image,
     imageAlt: data.image?.altText || data.title,
     link: `${baseUrl}/${data.slug}`,
@@ -222,7 +223,8 @@ export function footerMapper(i: any, pf: any): FooterModel {
 export interface RelatedItem {
   label: string;
   description?: string;
-  link: string;
+  link?: string;
+  collectionEntry?: CollectionEntry;
   externalLink: boolean;
   media?: MediaValueProps;
   date?: DateParts | string;

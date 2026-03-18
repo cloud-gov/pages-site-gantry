@@ -15,7 +15,7 @@ if (!page) return Astro.redirect("/404");
 
 export const getStaticPaths = createStaticPathsForPagesSlug();
 
-export const prerender = import.meta.env.PREVIEW_MODE || false;
+export const prerender = import.meta.env.PREVIEW_MODE ?? false;
 ---
 
 <Layout title={page.title} useBreadcrumbTitle={true}>
@@ -26,6 +26,6 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
     sideNavId={page.sideNavigation?.id}
   >
     {page.image && <Media media={page.image} />}
-    <RichText content={page.content} />
+    <RichText content={page?.content[0]?.content} />
   </PageWithSideNav>
 </Layout>

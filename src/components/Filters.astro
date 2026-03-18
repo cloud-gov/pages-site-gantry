@@ -24,13 +24,20 @@ const dataAttributes = getFiltersDataAttributes(
 );
 ---
 
-<aside class="sidenav-container">
-  {
-    dataAttributes && (
-      <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
-    )
-  }
-  {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+<aside class="sidenav-container sidebar-layout__sidebar">
+  <div class="filter-sidebar">
+    <div class="filter-sidebar__header">
+      <h2 class="font-sans-lg">Filters</h2>
+    </div>
+    <div>
+      {
+        dataAttributes && (
+          <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
+        )
+      }
+      {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+    </div>
+  </div>
 </aside>
 
 <script>
@@ -52,6 +59,7 @@ const dataAttributes = getFiltersDataAttributes(
     getFiltersSelections,
   } from "../utilities/filter";
   import { type ElementsPair, type FiltersData } from "../env.d";
+  import { updatePaginationStatus } from "@/utilities/filter/filtersRender";
 
   let collectionListPair: ElementsPair;
   let paginationPair: ElementsPair;
@@ -81,6 +89,7 @@ const dataAttributes = getFiltersDataAttributes(
             updateHistoryState(filtersSelections);
             if (!filtersSelections) {
               displayOriginals(collectionListPair, paginationPair);
+              updatePaginationStatus(data.totalItems, 1, data.pageSize);
             } else {
               await search(
                 pagefind,
