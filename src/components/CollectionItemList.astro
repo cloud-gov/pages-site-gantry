@@ -2,18 +2,53 @@
 import CollectionItem from "@/components/CollectionItem.astro";
 import { COLLECTION_ITEM_LIST_ID } from "@/utilities/filter";
 
-const { items = [], showEvent = false, currentPage = 1 } = Astro.props;
+const {
+  items = [],
+  showEvent = false,
+  currentPage = 1,
+  filteredLength = 1,
+} = Astro.props;
+const PAGE_SIZE = import.meta.env.PAGE_SIZE ?? 10;
+const resultsRangeStart = (currentPage - 1) * PAGE_SIZE + 1;
+const resultsRangeEnd = Math.min(currentPage * PAGE_SIZE, filteredLength);
+const resultsCountText =
+  filteredLength > 0
+    ? `Showing ${resultsRangeStart}-${resultsRangeEnd} of ${filteredLength} results`
+    : null;
+const resultsCountTextSr =
+  filteredLength > 0
+    ? `Showing ${resultsRangeStart} to ${resultsRangeEnd} of ${filteredLength} results`
+    : null;
 ---
 
-<div>
-  {items.length === 0 && <p>No items found</p>}
-  {
-    items.length > 0 && (
-      <ul class="usa-collection measure-6" id={COLLECTION_ITEM_LIST_ID}>
-        {items.map((n) => (
-          <CollectionItem {...n} showEvent={showEvent} />
-        ))}
-      </ul>
-    )
-  }
-</div>
+<>
+  <p
+    class="font-sans-sm text-bold margin-top-0 margin-bottom-2"
+    aria-live="polite"
+    aria-atomic="true"
+    role="status"
+    id="pagination-status"
+  >
+    {
+      resultsCountText ? (
+        <>
+          <span aria-hidden="true">{resultsCountText}</span>
+          <span class="usa-sr-only">{resultsCountTextSr}</span>
+        </>
+      ) : (
+        "No results match the selected filters"
+      )
+    }
+  </p>
+  <div>
+    {
+      filteredLength > 0 && (
+        <ul class="usa-collection measure-6" id={COLLECTION_ITEM_LIST_ID}>
+          {items.map((n) => (
+            <CollectionItem {...n} showEvent={showEvent} />
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</>

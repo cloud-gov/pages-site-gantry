@@ -1,0 +1,78 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import PagesSection from "@/components/PagesSection.astro";
+import CollectionItemList from "@/components/CollectionItemList.astro";
+import PaginationNav from "@/components/PaginationNav.astro";
+import FilterSidebar from "@/components/FilterSidebar.astro";
+
+import {
+  loadCollectionConfig,
+  loadCollectionEntries,
+  filterEntriesByTag,
+  extractTagsFromEntries,
+  paginateEntries,
+  mapEntries,
+} from "@/utilities/collectionRoutes";
+
+import { buildTagPaginationPaths } from "@/utilities/collectionPaths";
+
+export const PAGE_SIZE = import.meta.env.PAGE_SIZE ?? 10;
+
+const { collectionSlug, tag, page } = Astro.params;
+const currentPage = parseInt(page, 10);
+
+const config = await loadCollectionConfig(collectionSlug);
+if (!config) return Astro.redirect("/404");
+
+const allEntries = await loadCollectionEntries(config);
+
+const allTags = extractTagsFromEntries(allEntries);
+
+const filtered = filterEntriesByTag(allEntries, tag);
+
+const pagination = paginateEntries(filtered, currentPage, PAGE_SIZE);
+const items = mapEntries(pagination.paginatedItems, collectionSlug);
+const totalPages = pagination.totalPages;
+const filteredLength = filtered.length;
+export async function getStaticPaths() {
+  return buildTagPaginationPaths();
+}
+
+export const prerender = import.meta.env.PREVIEW_MODE ?? false;
+---
+
+<Layout
+  title={`${config.title} — ${tag}`}
+  currentPage={currentPage}
+  totalPages={totalPages}
+>
+  <PagesSection heading={`Tag: ${tag}`} subheading={config.description}>
+    <div class="grid-row grid-gap sidebar-layout">
+      <FilterSidebar
+        tags={allTags}
+        collectionSlug={collectionSlug}
+        selectedTag={tag}
+      />
+      <div
+        class="sidebar-layout__main"
+        role="region"
+        aria-label="Filter results"
+      >
+        <CollectionItemList
+          items={items}
+          currentPage={currentPage}
+          filteredLength={filteredLength}
+        />
+      </div>
+    </div>
+    {
+      totalPages > 1 && (
+        <PaginationNav
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath={`/${collectionSlug}/tag/${tag}/page`}
+        />
+      )
+    }
+  </PagesSection>
+</Layout>

@@ -30,6 +30,7 @@ let items: any[] = [];
 let currentPage = 1;
 let totalPages = 1;
 let hasPaginationNav = false;
+let sorted = null;
 
 if (!collectionConfig) {
   // Check if this is a regular page - if so, render it here since this route matched first
@@ -45,7 +46,7 @@ if (!collectionConfig) {
   collectionPages = collectionPagesData?.docs || [];
 
   // Sort by publishedAt
-  const sorted = collectionPages.sort((a: any, b: any) => {
+  sorted = collectionPages.sort((a: any, b: any) => {
     return (
       new Date(b.publishedAt || 0).getTime() -
       new Date(a.publishedAt || 0).getTime()
@@ -58,40 +59,26 @@ if (!collectionConfig) {
   const paginationResult = paginate(sorted, currentPage, PAGE_SIZE);
   totalPages = paginationResult.totalPages;
   const paginatedItems = paginationResult.paginatedItems;
-
   // Map items
   const mapper = createCustomCollectionEntryMapper(collectionSlug || "");
   items = paginatedItems.map(mapper);
 }
 export async function getStaticPaths() {
-  // Fetch all custom collection configs to generate static paths
-  try {
-    const data = await fetchCollection("collection-types");
-    const configs = data?.docs || [];
+  const data = await fetchCollection("collection-types");
+  const configs = data?.docs ?? [];
 
-    // Also fetch all pages to exclude their slugs from matching this route
-    const { fetchCollection: fetchPages } = await import("@/utilities/fetch");
-    const pagesData = await fetchPages("pages");
-    const pageSlugs = new Set(
-      (pagesData?.docs || []).map((page: any) => page.slug),
-    );
-
-    // Only return paths for custom collections that aren't also page slugs
-    return configs
-      .filter((config: any) => !pageSlugs.has(config.slug))
-      .map((config: any) => ({
-        params: { collectionSlug: config.slug },
-      }));
-  } catch (error) {
-    console.warn(
-      "Could not generate static paths for custom collections:",
-      error,
-    );
-    return [];
-  }
+  return configs.map((config) => ({
+    params: { collectionSlug: config.slug },
+  }));
 }
 
-export const prerender = import.meta.env.PREVIEW_MODE || false;
+const filteredPageConfig = {
+  collectionName: collectionSlug,
+  pageSize: PAGE_SIZE,
+  currentPage: 1,
+};
+
+export const prerender = import.meta.env.PREVIEW_MODE ?? false;
 ---
 
 {
@@ -107,7 +94,7 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         <RichText content={page?.content[0]?.content} />
       </PageWithSideNav>
     </Layout>
-  ) : collectionConfig ? (
+  ) : (
     <Layout
       title={collectionConfig.title}
       currentPage={currentPage}
@@ -116,8 +103,13 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
       <PagesSection
         heading={collectionConfig.title}
         subheading={collectionConfig.description}
+        filteredPageConfig={filteredPageConfig}
       >
-        <CollectionItemList items={items} />
+        <CollectionItemList
+          items={items}
+          currentPage="1"
+          filteredLength={sorted.length}
+        />
         {hasPaginationNav && (
           <PaginationNav
             currentPage={currentPage}
@@ -127,5 +119,5 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
         )}
       </PagesSection>
     </Layout>
-  ) : null
+  )
 }

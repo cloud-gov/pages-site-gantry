@@ -1,11 +1,6 @@
 ---
-import Filters from "./Filters.astro";
-interface Button {
-  label: string;
-  url: string;
-  variant?: string;
-}
 import type { FilteredPageConfig } from "@/env";
+import Filters from "./Filters.astro";
 
 interface Props {
   heading?: string;
@@ -50,11 +45,11 @@ const {
       </div>
     </div>
     <section class="grid-container usa-section">
-      <div class="grid-row">
-        <div class="sidebar-section grid-col-4">
+      <div class=`grid-row grid-gap ${filteredPageConfig && "sidebar-layout"}`>
+        <div class="sidebar-layout__sidebar">
           {
             filteredPageConfig && (
-              <div class="grid-row margin-left-1">
+              <div class="filter-sidebar">
                 <Filters filteredPageConfig={filteredPageConfig} />
               </div>
             )
@@ -63,7 +58,7 @@ const {
             <slot name="sidebar" />
           </div>
         </div>
-        <div class="main-section grid-col-8">
+        <div class="sidebar-layout__main">
           <div class="section__container">
             <div class="section__slot">
               <slot />

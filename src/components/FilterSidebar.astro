@@ -1,0 +1,76 @@
+---
+const { tags = [], collectionSlug, selectedTag = null } = Astro.props;
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? ""
+  : (import.meta.env.BASEURL || "") + "/";
+---
+
+<aside
+  class="sidebar-layout__sidebar"
+  role="region"
+  aria-label="Filter collection by tag"
+>
+  <div class="filter-sidebar">
+    <div class="filter-sidebar__header">
+      <h2 class="font-sans-lg" tabindex="-1">Filters</h2>
+    </div>
+
+    <div class="usa-accordion" data-allow-multiple="true">
+      <h3 class="usa-accordion__heading">
+        <button
+          type="button"
+          class="usa-accordion__button"
+          aria-expanded="true"
+          aria-controls="filter-tags"
+        >
+          Tags
+        </button>
+      </h3>
+
+      <div id="filter-tags" class="usa-accordion__content usa-prose">
+        <div class="filter-options">
+          {
+            tags.map((tag) => (
+              <div class="usa-checkbox">
+                <input
+                  class="usa-checkbox__input js-filter-tag"
+                  id={`filter-${tag.slug}`}
+                  type="checkbox"
+                  checked={selectedTag === tag.slug}
+                  data-tag-slug={tag.slug}
+                  data-collection-slug={collectionSlug}
+                  data-baseurl={baseUrl}
+                />
+                <label for={`filter-${tag.slug}`} class="usa-checkbox__label">
+                  {tag.title}
+                </label>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".js-filter-tag").forEach((el) => {
+        el.addEventListener("change", (e) => {
+          const checkbox = e.target;
+          const baseUrl = checkbox.getAttribute("data-baseurl");
+          const tagSlug = checkbox.getAttribute("data-tag-slug");
+          const collectionSlug = checkbox.getAttribute("data-collection-slug");
+
+          // CHECKED → go to tag
+          if (checkbox.checked) {
+            window.location.href = `${baseUrl}/${collectionSlug}/tag/${tagSlug}`;
+            return;
+          }
+
+          // UNCHECKED → go back to the unfiltered root collection page
+          window.location.href = `${baseUrl}/${collectionSlug}/`;
+        });
+      });
+    });
+  </script>
+</aside>

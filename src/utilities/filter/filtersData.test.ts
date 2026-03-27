@@ -15,7 +15,7 @@ describe("Filters Utility, getFiltersSlugMetaData", () => {
   it("creates filters metadata for a slug", () => {
     let collectionName: string;
     let collectionItem: {
-      tags: { label: string }[];
+      tags: { title: string }[];
       yearTag: string | number;
       sortField: string;
     };
@@ -55,7 +55,7 @@ describe("Filters Utility, getFiltersSlugMetaData", () => {
 
     collectionName = "events";
     collectionItem = {
-      tags: [{ label: "GEOGRAPHY" }],
+      tags: [{ title: "GEOGRAPHY" }],
       yearTag: "2025",
       sortField: "2025",
     };
@@ -79,7 +79,7 @@ describe("Filters Utility, getFiltersSlugMetaData", () => {
 
     collectionName = "events";
     collectionItem = {
-      tags: [{ label: "GEOGRAPHY" }, { label: "HISTORY" }],
+      tags: [{ title: "GEOGRAPHY" }, { title: "HISTORY" }],
       yearTag: "2025",
       sortField: "2025",
     };
