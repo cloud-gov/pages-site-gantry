@@ -10,6 +10,7 @@ export interface Props {
   title: string;
   description?: string;
   date?: string | DateParts;
+  publishedAt?: string | DateParts;
   tags?: Tag[];
   media?: MediaValueProps;
   link?: string;
@@ -23,6 +24,7 @@ const {
   tags = [],
   media = null,
   link = "",
+  publishedAt = null,
 } = Astro.props;
 
 function normalizeDate(input?: string | DateParts): DateParts | null {
@@ -33,7 +35,7 @@ function normalizeDate(input?: string | DateParts): DateParts | null {
     : null;
 }
 
-const dateParts = normalizeDate(date);
+const dateParts = date ? normalizeDate(date) : normalizeDate(publishedAt);
 
 const hasTags = tags?.length > 0;
 const hasDescription = !!description?.trim();
@@ -60,13 +62,6 @@ const hasValidDate = !!(
         <Link href={link}>{title}</Link>
       </SectionHeader>
       {
-        hasDescription && (
-          <div class="usa-collection__description">
-            <p set:html={description.replace(/\n/g, "<br>")} />
-          </div>
-        )
-      }
-      {
         hasValidDate && (
           <ul class="usa-collection__meta" aria-label="More information">
             <li class="usa-collection__meta-item collection-item-date">
@@ -85,6 +80,13 @@ const hasValidDate = !!(
           >
             <Tags tags={tags} />
           </ul>
+        )
+      }
+      {
+        hasDescription && (
+          <div class="usa-collection__description">
+            <p set:html={description.replace(/\n/g, "<br>")} />
+          </div>
         )
       }
     </div>

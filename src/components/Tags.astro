@@ -3,7 +3,7 @@
 import Link from "@/components/Link.astro";
 
 export interface Tag {
-  label: string;
+  title: string;
   url?: string;
 }
 interface Props {
@@ -18,12 +18,16 @@ const { tags } = Astro.props;
     if (tag.url) {
       return (
         <li class="usa-collection__meta-item">
-          <span class="usa-tag">{tag.label}</span>
+          <span class="usa-tag">{tag.title}</span>
         </li>
       );
     }
 
-    return <span class="usa-tag">{tag.label}</span>;
+    return (
+      <li class="usa-collection__meta-item">
+        <span class="usa-tag">{tag.title}</span>
+      </li>
+    );
   })
 }
 

@@ -227,25 +227,14 @@ const isHome = Astro.url.pathname === "/";
       totalPages={totalPages}
       breadcrumbTitle={useBreadcrumbTitle ? title : null}
     />
-    {
-      useInPageNav ? (
-        <div class="usa-in-page-nav-container">
-          <slot name="in-page-nav" />
-          <main id="main-content" class="used-in">
-            <slot />
-          </main>
-        </div>
-      ) : (
-        <main
-          id="main-content"
-          class:list={{
-            home: isHome,
-          }}
-        >
-          <slot />
-        </main>
-      )
-    }
+    <main
+      id="main-content"
+      class:list={{
+        home: isHome,
+      }}
+    >
+      <slot />
+    </main>
     <Footer footer={footer} />
     {
       siteConfig.dapAgencyCode && (

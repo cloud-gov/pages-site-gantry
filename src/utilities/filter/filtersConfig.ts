@@ -4,8 +4,8 @@ export const FILTER_NAME_TAG = "tag";
 export const FILTER_NAME_YEAR = "year";
 
 export const FILTERS_CONFIG: FilterConfig[] = [
-  { filterName: FILTER_NAME_TAG, filterLabel: "Filter by document type" },
-  { filterName: FILTER_NAME_YEAR, filterLabel: "Filter by year" },
+  { filterName: FILTER_NAME_TAG, filterLabel: "Tags" },
+  { filterName: FILTER_NAME_YEAR, filterLabel: "Year" },
 ];
 
 export const FILTERS_DATA_ID = "pagefind-data";
@@ -23,4 +23,5 @@ export const DATASET_KEYS = {
   PAGE_SIZE: "pagesize",
   CURRENT_PAGE: "currentpage",
   COLLECTION_NAME: "collectionname",
+  TOTAL_ITEMS: "totalitems",
 } as const;

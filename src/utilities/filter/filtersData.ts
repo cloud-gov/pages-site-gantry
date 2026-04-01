@@ -24,11 +24,11 @@ export function getFiltersSlugMetaData(
   if (!collectionName || !collectionItem || !slug) return null;
 
   const tags: FilterAttribute[] = collectionItem?.tags
-    ?.filter((tag: Tag) => tag?.label)
+    ?.filter((tag: Tag) => tag?.title)
     .map((tag: Tag) => {
       return {
         attributeValue: `${getPagefindFilterName(collectionName, FILTER_NAME_TAG)}[content]`,
-        content: tag?.label?.toUpperCase(),
+        content: tag?.title?.toUpperCase(),
       };
     });
 
@@ -73,6 +73,9 @@ export function getFiltersDataAttributes(
   dataAttributes[`data-${DATASET_KEYS.COLLECTION_NAME}`] =
     filteredPageConfig.collectionName;
 
+  dataAttributes[`data-${DATASET_KEYS.TOTAL_ITEMS}`] = Number(
+    filteredPageConfig?.totalItems ?? 0,
+  );
   return dataAttributes;
 }
 
@@ -104,6 +107,7 @@ export function getElementFiltersData(dataset: DOMStringMap): FiltersData {
     pageSize: dataset[DATASET_KEYS.PAGE_SIZE],
     currentPage: dataset[DATASET_KEYS.CURRENT_PAGE],
     collectionName: dataset[DATASET_KEYS.COLLECTION_NAME],
+    totalItems: Number(dataset[DATASET_KEYS.TOTAL_ITEMS]),
   };
 }
 

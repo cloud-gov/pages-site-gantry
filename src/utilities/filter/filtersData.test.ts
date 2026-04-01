@@ -15,7 +15,7 @@ describe("Filters Utility, getFiltersSlugMetaData", () => {
   it("creates filters metadata for a slug", () => {
     let collectionName: string;
     let collectionItem: {
-      tags: { label: string }[];
+      tags: { title: string }[];
       yearTag: string | number;
       sortField: string;
     };
@@ -55,7 +55,7 @@ describe("Filters Utility, getFiltersSlugMetaData", () => {
 
     collectionName = "events";
     collectionItem = {
-      tags: [{ label: "GEOGRAPHY" }],
+      tags: [{ title: "GEOGRAPHY" }],
       yearTag: "2025",
       sortField: "2025",
     };
@@ -79,7 +79,7 @@ describe("Filters Utility, getFiltersSlugMetaData", () => {
 
     collectionName = "events";
     collectionItem = {
-      tags: [{ label: "GEOGRAPHY" }, { label: "HISTORY" }],
+      tags: [{ title: "GEOGRAPHY" }, { title: "HISTORY" }],
       yearTag: "2025",
       sortField: "2025",
     };
@@ -135,6 +135,7 @@ describe("Filters Utility, getFiltersDataAttributes", () => {
       "data-baseurl": null,
       "data-currentpage": "1",
       "data-pagesize": "10",
+      "data-totalitems": 0,
     });
 
     filtersConfig = FILTERS_CONFIG;
@@ -153,6 +154,7 @@ describe("Filters Utility, getFiltersDataAttributes", () => {
       "data-pagefindfiltertag": "events_tag",
       "data-pagefindfilteryear": "events_year",
       "data-pagesize": "10",
+      "data-totalitems": 0,
     });
   });
 
@@ -182,6 +184,7 @@ describe("Filters Utility, getElementFiltersData", () => {
       pagesize: "2",
       currentpage: "1",
       baseurl: "/",
+      totalitems: "11",
     };
 
     expect(getElementFiltersData(dataset)).toEqual({
@@ -205,6 +208,7 @@ describe("Filters Utility, getElementFiltersData", () => {
         ],
       ]),
       pageSize: "2",
+      totalItems: 11,
     });
   });
 });

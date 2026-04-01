@@ -84,6 +84,11 @@ export async function getStaticPaths() {
 }
 
 export const prerender = import.meta.env.PREVIEW_MODE || false;
+const filteredPageConfig = {
+  collectionName: collectionSlug,
+  pageSize: PAGE_SIZE,
+  currentPage,
+};
 ---
 
 <Layout
@@ -94,8 +99,13 @@ export const prerender = import.meta.env.PREVIEW_MODE || false;
   <PagesSection
     heading={collectionConfig.title}
     subheading={collectionConfig.description}
+    filteredPageConfig={filteredPageConfig}
   >
-    <CollectionItemList items={items} />
+    <CollectionItemList
+      items={items}
+      currentPage={currentPage}
+      filteredLength={sorted.length}
+    />
     {
       hasPaginationNav && (
         <PaginationNav

@@ -122,6 +122,12 @@ export async function renderResults(
   );
   if (filteredResultsFragment) {
     displayFiltered(collectionList, filteredResultsFragment);
+    // added update for pagination status
+    updatePaginationStatus(
+      results?.length,
+      filtersData.currentPage,
+      filtersData.pageSize,
+    );
   }
 
   const paginationFragment = getFilteredPaginationFragment(
@@ -168,6 +174,36 @@ export function hideBoth(elementsPair: ElementsPair) {
   }
 }
 
+export function updatePaginationStatus(
+  resultSize: number,
+  currentPage: number | string,
+  pageSize: number | string,
+) {
+  // get element by id: pagination-status
+  // assemble updated status text
+  const statusEl = document.getElementById("pagination-status");
+  if (!statusEl) return;
+
+  const page = Number(currentPage);
+  const size = Number(pageSize);
+  const total = Number(resultSize);
+
+  if (!total || total <= 0) {
+    statusEl.innerHTML = "";
+    return;
+  }
+  const resultsRangeStart = (page - 1) * size + 1;
+  const resultsRangeEnd = Math.min(page * size, total);
+
+  const resultsCountText = `Showing ${resultsRangeStart}-${resultsRangeEnd} of ${total} results`;
+  const resultsCountTextSr = `Showing ${resultsRangeStart} to ${resultsRangeEnd} of ${total} results`;
+
+  statusEl.innerHTML = `
+    <span aria-hidden="true">${resultsCountText}</span>
+    <span class="usa-sr-only">${resultsCountTextSr}</span>
+  `;
+}
+
 function getElementByName(filter: string): HTMLElement {
   const targetElement: NodeListOf<HTMLElement> =
     document.getElementsByName(filter);
@@ -190,7 +226,8 @@ export function getFirstPageLinkUrl() {
   if (!link || link.tagName !== "A") {
     return null;
   }
-  return link.href;
+  const linkHref = (link as HTMLAnchorElement).href;
+  return linkHref;
 }
 
 export function navigateToTheFirstPage(

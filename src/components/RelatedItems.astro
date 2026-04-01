@@ -1,15 +1,19 @@
 ---
-import CollectionItem from "@/components/CollectionItem.astro";
 import type { RelatedItem } from "@/utilities/fetch/contentMapper";
 import Media from "@/components/Media.astro";
 
 const { items = [] } = Astro.props;
+const baseUrl = import.meta.env.LOCAL_DEV
+  ? "/"
+  : (import.meta.env.BASEURL || "") + "/";
 ---
 
 {
   items.length > 0 && (
-    <section class="margin-top-6">
-      <h2 class="font-heading-lg margin-bottom-3">Related Items</h2>
+    <section class="related-links-sidebar">
+      <h2 class="font-sans-lg font-heading-lg margin-bottom-3">
+        Related Items
+      </h2>
       <ul class="usa-collection measure-6">
         {items.map((item: RelatedItem) => (
           <li class="usa-collection__item maxw-tablet">
@@ -22,14 +26,22 @@ const { items = [] } = Astro.props;
                   <a
                     href={item.link}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer font-sans"
                     class="usa-link usa-link--external"
                   >
                     {item.label}
                     <span class="usa-sr-only"> (opens in new tab)</span>
                   </a>
                 ) : (
-                  <a href={item.link} class="usa-link">
+                  <a
+                    href={
+                      baseUrl +
+                      item.collectionEntry?.collectionSlug +
+                      "/" +
+                      item.collectionEntry?.slug
+                    }
+                    class="usa-link font-sans"
+                  >
                     {item.label}
                   </a>
                 )}
@@ -39,19 +51,11 @@ const { items = [] } = Astro.props;
                   <p set:html={item.description.replace(/\n/g, "<br>")} />
                 </div>
               )}
-              {item.date && !item.externalLink && (
+              {item.collectionEntry?.publishedAt && !item.externalLink && (
                 <ul class="usa-collection__meta" aria-label="More information">
                   <li class="usa-collection__meta-item">
-                    <time
-                      datetime={
-                        typeof item.date === "string"
-                          ? item.date
-                          : item.date.raw.toISOString()
-                      }
-                    >
-                      {typeof item.date === "string"
-                        ? item.date
-                        : item.date.full}
+                    <time datetime={item.collectionEntry?.publishedAt}>
+                      {item.collectionEntry?.publishedAt}
                     </time>
                   </li>
                 </ul>

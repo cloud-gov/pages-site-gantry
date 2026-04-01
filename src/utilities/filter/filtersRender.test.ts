@@ -412,6 +412,53 @@ describe("Filters Render Utility, renderResults", () => {
     expect(pagination.filtered.childNodes.length).toBe(3);
   });
 
+  it("renders correct pagination status", async () => {
+    vi.restoreAllMocks();
+    // Arrange
+    document.body.innerHTML = `
+    <p id="pagination-status"></p>
+  `;
+
+    const collection = createElementsPair();
+    const pagination = createElementsPair();
+
+    const results = Array.from({ length: 24 }, (_, i) => ({ id: i + 1 }));
+    const filtersData = { currentPage: 2, pageSize: 10 } as any;
+
+    // Mock fragments as usual
+    vi.spyOn(searchModule, "getFilteredResultFragment").mockResolvedValue(
+      fragmentWithChildren(2),
+    );
+
+    vi.spyOn(paginationModule, "getFilteredPaginationFragment").mockReturnValue(
+      fragmentWithChildren(3),
+    );
+
+    // Act
+    renderResults(results, collection, pagination, filtersData);
+    await Promise.resolve(); // allow async render pipeline to complete
+
+    // Assert pagination status element exists
+    const statusEl = document.getElementById("pagination-status");
+    expect(statusEl).not.toBeNull();
+
+    // Compute expected text for currentPage=2, pageSize=10, total=24
+    const expectedVisible = "Showing 11-20 of 24 results";
+    const expectedSr = "Showing 11 to 20 of 24 results";
+
+    expect(statusEl!.innerHTML).toContain(expectedVisible);
+    expect(statusEl!.innerHTML).toContain(expectedSr);
+
+    // Assert the two-span structure
+    expect(statusEl!.querySelector('[aria-hidden="true"]')?.textContent).toBe(
+      expectedVisible,
+    );
+
+    expect(statusEl!.querySelector(".usa-sr-only")?.textContent).toBe(
+      expectedSr,
+    );
+  });
+
   it("hides pagination when pagination fragment is empty", async () => {
     const collection = createElementsPair();
     const pagination = createElementsPair();
