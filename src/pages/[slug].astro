@@ -2,9 +2,15 @@
 // src/pages/[slug].astro
 import Layout from "@/layouts/Layout.astro";
 import PageWithSideNav from "@/components/PageWithSideNav.astro";
-import { fetchSlug, createStaticPathsForPagesSlug } from "@/utilities/fetch";
+import {
+  fetchSlug,
+  createStaticPathsForPagesSlug,
+  buildRelatedItemsWithCollectionSlugs,
+} from "@/utilities/fetch";
 import RichText from "@/components/RichText.astro";
 import Media from "@/components/Media.astro";
+import { fetchCollectionEntry } from "@/utilities/fetch";
+import RelatedItems from "@/components/RelatedItems.astro";
 
 const { slug } = Astro.params;
 
@@ -15,6 +21,11 @@ if (!page) return Astro.redirect("/404");
 
 export const getStaticPaths = createStaticPathsForPagesSlug();
 
+const relatedItems = await buildRelatedItemsWithCollectionSlugs(
+  page.relatedItems,
+  fetchCollectionEntry,
+);
+
 export const prerender = import.meta.env.PREVIEW_MODE ?? false;
 ---
 
@@ -24,8 +35,30 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
     showSideNav={true}
     currentPath={`/${page.slug}`}
     sideNavId={page.sideNavigation?.id}
+    heroImage={page.image}
+    description={page.description}
   >
-    {page.image && <Media media={page.image} />}
-    <RichText content={page?.content[0]?.content} />
+    <div class="grid-row grid-gap grid-gap-6">
+      <div
+        class={page.relatedItems?.length > 0
+          ? "tablet:grid-col-9"
+          : "tablet:grid-col-12"}
+      >
+        <RichText content={page?.content[0]?.content} />
+        {/* related items */}
+      </div>
+      {
+        page.relatedItems.length > 0 && (
+          <aside
+            class="tablet:grid-col-3 related-links-sidebar"
+            aria-label="Related Items"
+          >
+            {page.relatedItems.length > 0 && (
+              <RelatedItems items={relatedItems} />
+            )}
+          </aside>
+        )
+      }
+    </div>
   </PageWithSideNav>
 </Layout>

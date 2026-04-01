@@ -30,3 +30,4 @@ export {
   relatedItemsMapper,
 } from "./contentMapper";
 export { buildMenuWithCollectionSlugs } from "./buildMenuWithCollectionSlugs";
+export { buildRelatedItemsWithCollectionSlugs } from "./buildRelatedItemsWithCollectionSlugs";

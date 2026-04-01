@@ -45,7 +45,9 @@ const {
       </div>
     </div>
     <section class="grid-container usa-section">
-      <div class=`grid-row grid-gap ${filteredPageConfig && "sidebar-layout"}`>
+      <div
+        class=`grid-row grid-gap ${filteredPageConfig ? "sidebar-layout" : ""}`
+      >
         <div class="sidebar-layout__sidebar">
           {
             filteredPageConfig && (
@@ -104,6 +106,12 @@ const {
     .sidebar-section {
       flex: 0 0 100%;
       max-width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .grid-row.grid-gap {
+      display: block;
     }
   }
 </style>
