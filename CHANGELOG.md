@@ -1,3 +1,36 @@
+## 0.3.0 (2026-04-02)
+
+### Added
+
+- add styling for collections
+
+### Fixed
+
+- non collection page view content area
+- relative basepath in filter component
+- tag label vs title association, date, and layout tweak for slug view
+- run mapped content through filter template. refactor tests to expect correct object labels for tags
+- static path generation for collection items
+- disappearing border on filtered clone
+- remove unneeded filter changes, tag route, fix issue with page status
+- remove console log and clean up styles
+
+### Maintenance
+
+- refactor collection items and filtering (#204)
+- collection entries in line with councils
+- update related items so links match schema changes. add date
+- added page n of n to collection list views
+- **ci**: Remove deprecated security-considerations automation
+- incorporate pagefind filter into collection items
+- **ci**: Remove deprecated security-considerations automation
+- add function to update pagination status text
+- added test for pagination status message
+- **ci**: Remove deprecated security-considerations automation
+- integrate councils based theme (#201)
+- integrate councils theme
+- page content styling
+
 ## 0.2.0 (2026-03-13)
 
 ### Added
