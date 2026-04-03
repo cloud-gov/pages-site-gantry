@@ -4,15 +4,17 @@ import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
 import PaginationNav from "@/components/PaginationNav.astro";
 import PageWithSideNav from "@/components/PageWithSideNav.astro";
-import RichText from "@/components/RichText.astro";
-import Media from "@/components/Media.astro";
 import {
   fetchCollectionEntries,
   createCustomCollectionEntryMapper,
   fetchCollection,
   fetchSlug,
+  buildRelatedItemsWithCollectionSlugs,
+  fetchCollectionEntry,
 } from "@/utilities/fetch";
 import { paginate } from "@/utilities/pagination";
+import ContentBlocks from "@/components/ContentBlocks.astro";
+import RelatedItems from "@/components/RelatedItems.astro";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 
@@ -31,6 +33,7 @@ let currentPage = 1;
 let totalPages = 1;
 let hasPaginationNav = false;
 let sorted = null;
+let relatedItems = null;
 
 if (!collectionConfig) {
   // Check if this is a regular page - if so, render it here since this route matched first
@@ -39,6 +42,10 @@ if (!collectionConfig) {
   if (!page) {
     return Astro.redirect("/404");
   }
+  relatedItems = await buildRelatedItemsWithCollectionSlugs(
+    page.relatedItems,
+    fetchCollectionEntry,
+  );
 } else {
   // Fetch pages for this custom collection
   const collectionPagesData = await fetchCollectionEntries(collectionConfig.id);
@@ -66,8 +73,7 @@ if (!collectionConfig) {
 export async function getStaticPaths() {
   const data = await fetchCollection("collection-types");
   const configs = data?.docs ?? [];
-
-  return configs.map((config) => ({
+  return configs.map((config: { slug: any }) => ({
     params: { collectionSlug: config.slug },
   }));
 }
@@ -91,8 +97,27 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
         currentPath={`/${collectionSlug}`}
         sideNavId={page.sideNavigation?.id}
       >
-        {page.image && <Media media={page.image} />}
-        <RichText content={page?.content[0]?.content} />
+        <div class="grid-row grid-gap grid-gap-6">
+          <div
+            class={
+              page.relatedItems?.length > 0
+                ? "tablet:grid-col-9"
+                : "tablet:grid-col-12"
+            }
+          >
+            <ContentBlocks contentBlocks={page?.content} />
+          </div>
+          {page.relatedItems.length > 0 && (
+            <aside
+              class="tablet:grid-col-3 related-links-sidebar"
+              aria-label="Related Items"
+            >
+              {page.relatedItems.length > 0 && (
+                <RelatedItems items={relatedItems} />
+              )}
+            </aside>
+          )}
+        </div>
       </PageWithSideNav>
     </Layout>
   ) : (
@@ -109,7 +134,7 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
         <CollectionItemList
           items={items}
           currentPage="1"
-          filteredLength={sorted.length}
+          filteredLength={sorted?.length}
         />
         {hasPaginationNav && (
           <PaginationNav

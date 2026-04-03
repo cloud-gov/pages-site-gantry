@@ -1,0 +1,102 @@
+---
+import CardGrid from "./CardGrid.astro";
+import Hero from "./Hero.astro";
+import RichText from "./RichText.astro";
+import TextBlockImageBg from "./TextBlockImageBg.astro";
+
+type RichTextProps = {
+  blockType: "richText";
+  content: any;
+};
+
+type CardGridProps = {
+  blockType: "cardGrid";
+  cards: {
+    title: string;
+    description: string;
+    image: string;
+    ctaText: string;
+    ctaURL: string;
+  }[];
+  title: string;
+};
+
+type HeroProps = {
+  blockType: "hero";
+  title: string;
+  subtitle: string;
+  description: string;
+  bgImage: string;
+  ctaButton: {
+    text: string;
+    url: string;
+  };
+};
+
+type TextBlockProps = {
+  blockType: "textBlock";
+  title: string;
+  content: RichTextProps[];
+  bgImage: string;
+};
+
+export interface Props {
+  contentBlocks?: (
+    | RichTextProps
+    | CardGridProps
+    | HeroProps
+    | TextBlockProps
+  )[];
+}
+
+const { contentBlocks = [] } = Astro.props;
+---
+
+{
+  contentBlocks &&
+    contentBlocks.map((block: any) => {
+      switch (block.blockType) {
+        case "richText":
+          return <RichText content={block.content} />;
+
+        case "hero":
+          return (
+            <Hero
+              title={block.title}
+              subtitle={block.subtitle}
+              description={block.description}
+              bgImage={block.bgImage}
+              ctaButton={block.ctaButton}
+            />
+          );
+
+        case "cardGrid":
+          return (
+            <CardGrid
+              title={block.title}
+              cards={
+                block.cards?.map((card: any) => ({
+                  title: card.title,
+                  description: card.description,
+                  image: card.image,
+                  ctaText: card.link?.text,
+                  ctaURL: card.link?.url,
+                })) || []
+              }
+            />
+          );
+
+        case "textBlock":
+          return (
+            <TextBlockImageBg
+              title={block.title}
+              content={block.content}
+              bgImage={block.bgImage}
+            />
+          );
+
+        default:
+          return null;
+      }
+    })
+}
