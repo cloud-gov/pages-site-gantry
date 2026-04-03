@@ -1,4 +1,5 @@
 ---
+import type { MediaValueProps } from "@/env";
 import SideNav from "./SideNav.astro";
 import { payloadFetch } from "@/utilities/fetch/payload-fetch";
 import {
@@ -6,6 +7,7 @@ import {
   organizeNavItems,
   convertMenuToSideNav,
 } from "@/utilities/navigation";
+import Media from "./Media.astro";
 
 interface NavItem {
   id: string;
@@ -25,6 +27,8 @@ interface Props {
   currentPath?: string;
   navTitle?: string;
   sideNavId?: string;
+  heroImage?: MediaValueProps;
+  description?: string;
 }
 
 const {
@@ -38,6 +42,8 @@ const {
   currentPath = Astro.url.pathname,
   navTitle = "Page Navigation",
   sideNavId = null,
+  heroImage = null,
+  description = "",
 } = Astro.props;
 
 // Fetch navigation items from CMS if not provided
@@ -91,36 +97,68 @@ if (showSideNav && sideNavItems.length === 0) {
     <div class="section__container">
       {
         sideNavEnabled && navItems.length > 0 ? (
-          <div class="page-with-sidenav">
-            <aside class="sidenav-container">
-              <SideNav
-                items={navItems}
-                currentPath={currentPath}
-                title={sideNavTitle}
-                id="sidenav"
-              />
-            </aside>
-            <main class="main-content">
-              <div class="section__intro">
-                {heading && (
-                  <div class="grid-container">
-                    <h1 class="margin-bottom-2">{heading}</h1>
-                  </div>
-                )}
-              </div>
-              <div class="section__slot">
+          <>
+            <div class="section__intro">
+              {heading && (
                 <div class="grid-container">
-                  <slot />
+                  {heroImage && (
+                    <div class="grid-row grid-gap sidebar-layout page-hero">
+                      <div class="sidebar-layout__sidebar">
+                        <div class="council-hero__logo-container">
+                          <Media media={heroImage} />
+                        </div>
+                      </div>
+                      <div class="sidebar-layout__main flex-justify-center">
+                        <div class="council-hero__content">
+                          <p class="council-hero__brow">{description}</p>
+                          <h1 class="margin-bottom-2">{heading}</h1>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {!heroImage && <h1 class="margin-bottom-2">{heading}</h1>}
+                </div>
+              )}
+            </div>
+            <div class="section__slot">
+              <div class="grid-container">
+                <div class="page-with-sidenav">
+                  <aside class="sidenav-container">
+                    <SideNav
+                      items={navItems}
+                      currentPath={currentPath}
+                      title={sideNavTitle}
+                      id="sidenav"
+                    />
+                  </aside>
+                  <div class="grid-container">
+                    <slot />
+                  </div>
                 </div>
               </div>
-            </main>
-          </div>
+            </div>
+          </>
         ) : (
           <>
             <div class="section__intro">
               {heading && (
                 <div class="grid-container">
-                  <h1 class="margin-bottom-2">{heading}</h1>
+                  {heroImage && (
+                    <div class="grid-row grid-gap sidebar-layout page-hero">
+                      <div class="sidebar-layout__sidebar">
+                        <div class="council-hero__logo-container">
+                          <Media media={heroImage} />
+                        </div>
+                      </div>
+                      <div class="sidebar-layout__main flex-justify-center">
+                        <div class="council-hero__content">
+                          <p class="council-hero__brow">{description}</p>
+                          <h1 class="margin-bottom-2">{heading}</h1>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {!heroImage && <h1 class="margin-bottom-2">{heading}</h1>}
                 </div>
               )}
             </div>
@@ -148,20 +186,13 @@ if (showSideNav && sideNavItems.length === 0) {
     align-items: start;
     min-height: 400px;
   }
-
-  .sidenav-container {
-    position: sticky;
-    top: 2rem;
-    z-index: 10;
-  }
-
   .main-content {
     min-width: 0; /* Prevents grid blowout */
     max-width: none;
   }
 
   .section__slot {
-    padding: 1rem 0;
+    padding: 3rem 0;
   }
 
   /* Responsive design */
@@ -190,7 +221,7 @@ if (showSideNav && sideNavItems.length === 0) {
 
   @media (max-width: 480px) {
     .page-with-sidenav {
-      gap: 1rem;
+      display: block;
     }
   }
 

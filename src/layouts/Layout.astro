@@ -29,6 +29,7 @@ import type {
   MenuRoot,
 } from "@/env";
 import { buildPreFooterWithCollectionSlugs } from "@/utilities/fetch/buildMenuWithCollectionSlugs";
+import type { DataEntryMap } from "astro:content";
 
 const siteConfigCollectionName = "siteConfig";
 const menuCollectionName = "menu";
@@ -37,10 +38,10 @@ const preFooterCollectionName = "preFooter";
 const alertsCollectionName = "alerts";
 
 /** Helpers */
-async function getFirstData<TName extends string>(name: TName) {
+async function getFirstData<TName extends keyof DataEntryMap>(name: TName) {
   // getCollection returns Array<CollectionEntry<TName>>
-  const items = await getCollection(name as any);
-  return items?.[0]?.data as CollectionEntry<TName>["data"] | undefined;
+  const items = await getCollection(name);
+  return items?.[0]?.data;
 }
 
 function ensureMenuShape(raw: Partial<MenuRoot> | undefined): MenuRoot {

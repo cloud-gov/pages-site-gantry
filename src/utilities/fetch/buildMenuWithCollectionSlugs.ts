@@ -99,7 +99,7 @@ export async function buildMenuWithCollectionSlugs<T>(
 
 export async function buildPreFooterWithCollectionSlugs<
   T extends {
-    slimLink: any;
+    slimLink?: any;
     linkGroup?: Array<{ link?: unknown[] }>;
   },
 >(

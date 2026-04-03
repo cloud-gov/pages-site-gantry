@@ -155,6 +155,9 @@ export interface SiteConfig {
   primaryFont?: string;
   favicon?: any;
   logo?: any;
+  agencyName?: string;
+  dapAgencyCode?: string;
+  dapSubAgencyCode?: string;
   collectionDisplayNames?: {
     collectionSlug: string;
     displayName: string;

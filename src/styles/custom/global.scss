@@ -15,6 +15,8 @@ $type-scale: (
   '3xl': 3rem,
 );
 
+$councils-gap: 2rem;
+
 :focus {
   outline: none;
 }
@@ -457,19 +459,6 @@ footer.usa-footer .footer-grid-container,
   top: 0;
 }
 
-/* Home: councils grid */
-.council-logo,
-.council-logo-large,
-.cioc-logo-about,
-.coffa-logo-fullwidth {
-  display: block;
-  height: auto;
-}
-
-.coffa-logo-fullwidth {
-  width: 100%;
-}
-
 .usa-card__media {
   height: 200px;
   display: flex;
@@ -491,144 +480,6 @@ footer.usa-footer .footer-grid-container,
 .usa-card__img img {
   max-width: 100%;
   max-height: 100%;
-}
-
-/* Home page council cards: keep logos (e.g. CIOC) inside the 200px area, centered, no overflow */
-.councils-grid .usa-card__media {
-  overflow: hidden;
-}
-.councils-grid .usa-card__img {
-  overflow: hidden;
-
-  img {
-    max-height: 100%;
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-/* Placeholder for cards without a logo - preserves spacing */
-.councils-grid .usa-card__img--placeholder {
-  background: transparent;
-}
-
-$councils-gap: 2rem;
-
-.councils-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: $councils-gap;
-
-  /* Override USWDS .usa-card :last-child margin so the last card matches the others */
-  a {
-    border-bottom: 8px solid var(--secondary-color);
-    display: flex;
-    min-height: 0;
-    margin-bottom: 0 !important;
-    flex: 0 0 100%;
-  }
-
-  a:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  a .usa-card__container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  a .usa-card__footer {
-    margin-top: auto;
-  }
-
-  .usa-card__heading {
-    font-family: var(--font-serif);
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1.4;
-  }
-
-  .usa-card__footer {
-    .usa-button {
-      background-color: var(--blue-warm-10v);
-      color: var(--color-ink);
-      border: none;
-      padding: 1rem 1.5rem;
-      font-weight: 500;
-    }
-  }
-}
-
-.councils-grid a:hover .usa-button,
-.councils-grid a:focus-visible .usa-button {
-  background-color: var(--blue-warm-20v);
-}
-
-@media (min-width: $breakpoint-tablet) {
-  .councils-grid a {
-    flex: 0 0 calc((100% - #{$councils-gap}) / 2);
-  }
-}
-
-@media (min-width: $breakpoint-desktop) {
-  .councils-grid a {
-    flex: 0 0 calc((100% - #{$councils-gap * 2}) / 3);
-  }
-}
-
-.councils-grid .usa-card__container {
-  background-color: var(--color-white);
-  border-radius: 0;
-}
-
-/* When focused, hide container border so only the link outline shows (no layering) */
-.councils-grid a:focus-visible .usa-card__container {
-  border-color: transparent;
-}
-
-.councils-grid a {
-  &:focus:not(:focus-visible) {
-    outline: none;
-  }
-
-  &:focus-visible {
-    outline: 0.25rem solid var(--blue-40v);
-    outline-offset: 0.125rem;
-  }
-}
-
-.councils-section {
-  width: 100%;
-  padding: 3rem 0 1rem;
-  position: relative;
-}
-
-.councils-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: var(--councils-waves-url);
-  background-size: 30%;
-  background-repeat: repeat;
-  background-blend-mode: multiply;
-  opacity: 0.1;
-  z-index: -1;
-}
-
-.councils-section h2, .home-page .usa-section h2 {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 500;
 }
 
 .home-page .usa-section {
@@ -864,8 +715,8 @@ main.home + .usa-footer:before{
         margin-left: auto;
         margin-right: auto;
         box-sizing: border-box;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
         h1 {
           color: white;
           font-weight: 400;
@@ -894,42 +745,20 @@ main.home + .usa-footer:before{
   }
 }
 
-/* council styles to be used as reference for page hero sections */
-.council-hero {
-  background-color: var(--primary-color);
-  background-image: var(--council-waves-url);
-  background-repeat: repeat;
-  border-bottom: 6px solid var(--accent-color);
-  background-size: 30%;
-  background-blend-mode: color;
-}
-
-/* Consistent top spacing for main content below council hero (fixes uneven spacing e.g. EOC) */
-.council-hero + .usa-section {
-  padding-top: 3rem;
-}
-
 /* Vertically center brow + title in the hero (sidebar-layout main column) */
-.council-hero .sidebar-layout__main {
+.page-hero .sidebar-layout__main {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.council-hero__logo-container {
+.page-hero__logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
   padding: 0.5rem;
   min-height: 225px;
-}
-
-.council-hero__logo {
-  max-height: 250px;
-  width: auto;
-  height: auto;
-  display: block;
 }
 
 .council-hero__content {
@@ -947,24 +776,6 @@ main.home + .usa-footer:before{
   margin: 0; 
   font-family: var(--font-sans);
   line-height: 1;
-}
-
-.council-hero__title {
-  color: white;
-  font-weight: 400;
-  margin-top: 1rem;
-  margin-bottom: 0;
-}
-
-@media (min-width: 640px) {
-  .council-hero__logo {
-    max-height: 250px;
-  }
-}
-
-.sidebar-layout__main h2,
-.tablet\:grid-col-9 h2 {
-  margin-top: 0;
 }
 
 .sidebar-layout__main h2:not(:first-of-type),
@@ -1246,24 +1057,6 @@ footer.usa-footer .container,
   }
 }
 
-.footer-councils-heading {
-  margin: 1.5rem 0 1rem;
-  color: var(--color-white);
-  font-family: var(--font-serif);
-}
-
-.footer-councils-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-
-  @media (min-width: $breakpoint-tablet) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 .footer-quick-links {
   list-style: none;
   margin: 0;
@@ -1278,52 +1071,6 @@ footer.usa-footer .container,
 
   @media (min-width: $breakpoint-desktop) {
     grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.footer-council-card {
-  display: block;
-  background-color: var(--color-white);
-  border-bottom: 5px solid var(--accent-color);
-  padding: 1.5rem;
-  color: var(--color-ink);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-  height: 100%;
-
-  &:hover {
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
-    text-decoration: none;
-    color: var(--color-ink);
-  }
-
-  &__content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  &__logo {
-    flex-shrink: 0;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &__logo-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-
-  &__name {
-    flex: 1;
-    font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.4;
-    font-family: var(--font-serif);
   }
 }
 
@@ -1732,15 +1479,6 @@ footer.usa-footer .container,
       min-width: 0;
     }
   }
-
-  /* When no logo: no grid columns, full width, left aligned */
-  &.council-hero__row--no-logo {
-    @media (min-width: $breakpoint-tablet) {
-      grid-template-columns: 1fr;
-      width: 100%;
-      align-items: flex-start;
-    }
-  }
 }
 
 .filter-sidebar .filter-options {
@@ -2022,191 +1760,6 @@ footer.usa-footer .container,
   background-color: var(--color-gray-1);
 }
 
-.council-hero {
-  background-color: var(--primary-color);
-  background-image: var(--council-waves-url);
-  background-repeat: repeat;
-  border-bottom: 6px solid var(--accent-color);
-  background-size: 30%;
-  background-blend-mode: color;
-
-  /* Allow grid children to shrink on mobile (prevents logo overflow on iOS) */
-  .sidebar-layout > * {
-    min-width: 0;
-  }
-
-  & + .usa-section {
-    padding-top: 3rem;
-    background-color: var(--color-gray-1); 
-  }
-
-  .sidebar-layout__main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  &__logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    padding: 0.5rem;
-    min-height: 225px;
-
-    @media (max-width: ($breakpoint-tablet - 0.0625rem)) {
-      min-width: 0;
-      min-height: 0;
-      padding: 0.5rem;
-      aspect-ratio: 2 / 1;
-      max-height: 180px;
-      max-width: 100%;
-      overflow: hidden;
-    }
-
-    &--square {
-      @media (max-width: ($breakpoint-tablet - 0.0625rem)) {
-        aspect-ratio: 1;
-        /* Cap size so square fits in viewport; prevents overflow/clipping on small screens */
-        max-height: min(180px, 50vw);
-        max-width: min(180px, 50vw);
-      }
-    }
-  }
-
-  &__logo-container img {
-    @media (max-width: ($breakpoint-tablet - 0.0625rem)) {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-    }
-  }
-
-  &__logo {
-    max-height: 250px;
-    width: auto;
-    height: auto;
-    display: block;
-
-    @media (max-width: ($breakpoint-tablet - 0.0625rem)) {
-      max-height: 200px;
-    }
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    color: white;
-  }
-
-  &__brow {
-    color: white;
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin: 0;
-    font-family: var(--font-sans);
-    line-height: 1;
-    @media (max-width: $breakpoint-tablet) {
-      font-size: 1rem;
-    }
-  }
-
-  &__title {
-    color: white;
-    font-weight: 400;
-    margin-top: 1rem;
-    margin-bottom: 0;
-    font-size: 3rem;
-    @media (max-width: $breakpoint-tablet) {
-      font-size: 2rem;
-    }
-  }
-}
-
-.council-breadcrumb {
-  background-color: var(--primary-color);
-  padding: 0.75rem 0;
-
-  .usa-breadcrumb__list {
-    max-width: var(--max-width);
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    box-sizing: border-box;
-
-    @media (min-width: $breakpoint-tablet) {
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
-  }
-
-  .usa-breadcrumb__link,
-  .usa-breadcrumb__current {
-    color: white;
-    @media (max-width: $breakpoint-mobile) {
-     padding: 0 1rem !important; 
-    }
-  }
-
-  .usa-breadcrumb__link:hover {
-    color: white;
-    text-decoration: none;
-  }
-}
-
-.council-logo,
-.council-logo-large,
-.cioc-logo-about,
-.coffa-logo-fullwidth {
-  display: block;
-  height: auto;
-}
-
-.coffa-logo-fullwidth {
-  width: 100%;
-}
-
-.council-logo-large,
-.cioc-logo-about {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.councils-section {
-  width: 100%;
-  padding: 3rem 0 1rem;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: var(--councils-waves-url);
-    background-size: 30%;
-    background-repeat: repeat;
-    background-blend-mode: multiply;
-    opacity: 0.1;
-    z-index: -1;
-  }
-
-  h2,
-  .home-page .usa-section h2 {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 500;
-  }
-}
-
 .home-page .usa-section {
   padding-top: 3rem;
 
@@ -2214,89 +1767,6 @@ footer.usa-footer .container,
     width: 60%;
     background-color: var(--accent-color);
     height: 4px;
-  }
-}
-
-.councils-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: $councils-gap;
-
-  a {
-    border-bottom: 6px solid var(--secondary-color);
-    display: flex;
-    min-height: 0;
-    margin-bottom: 0 !important;
-    flex: 0 0 100%;
-
-    &:last-child {
-      margin-bottom: 0 !important;
-    }
-
-    .usa-card__container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      border-bottom: 0; 
-    }
-
-    .usa-card__footer {
-      margin-top: auto;
-      padding: 1rem 1.5rem;
-    }
-
-    .usa-card__heading {
-      font-family: var(--font-serif);
-      font-weight: 500;
-      font-size: 1.5rem;
-      line-height: 1.4;
-    }
-
-    .usa-card__footer .usa-button {
-      background-color: var(--blue-warm-10v);
-      color: var(--color-ink);
-      border: none;
-      padding: 1rem 1.5rem;
-      font-weight: 500;
-    }
-
-    &:hover .usa-button,
-    &:focus-visible .usa-button {
-      background-color: var(--blue-warm-20v);
-    }
-  }
-
-  @media (min-width: $breakpoint-tablet) {
-    a {
-      flex: 0 0 calc((100% - #{$councils-gap}) / 2);
-    }
-  }
-
-  @media (min-width: $breakpoint-desktop) {
-    a {
-      flex: 0 0 calc((100% - #{$councils-gap * 2}) / 3);
-    }
-  }
-
-  .usa-card__container {
-    background-color: var(--color-white);
-    border-radius: 0;
-  }
-
-  .usa-card__media {
-    overflow: hidden;
-  }
-
-  .usa-card__img img {
-    max-height: 100%;
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 
@@ -2498,22 +1968,5 @@ footer.usa-footer .container,
   text-decoration: underline;
   &:hover:not(:disabled) {
     text-decoration: none;
-  }
-}
-
-/* Safari/iOS: background-blend-mode renders incorrectly. Disable blend and use smaller
-   tile size (under 256px) so pattern displays correctly. */
-@media not all and (min-resolution: 0.001dpcm) {
-  @supports (-webkit-appearance: none) {
-    .council-hero,
-    .resources-hero {
-      background-blend-mode: normal;
-      background-size: 180px;
-    }
-
-    .councils-section::before {
-      background-blend-mode: normal;
-      background-size: 180px;
-    }
   }
 }
