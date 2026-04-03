@@ -3,8 +3,8 @@
 import Layout from "@/layouts/Layout.astro";
 import PageWithSideNav from "@/components/PageWithSideNav.astro";
 import { fetchSlug, createStaticPathsForPagesSlug } from "@/utilities/fetch";
-import RichText from "@/components/RichText.astro";
 import Media from "@/components/Media.astro";
+import ContentBlocks from "@/components/ContentBlocks.astro";
 
 const { slug } = Astro.params;
 
@@ -16,6 +16,7 @@ if (!page) return Astro.redirect("/404");
 export const getStaticPaths = createStaticPathsForPagesSlug();
 
 export const prerender = import.meta.env.PREVIEW_MODE ?? false;
+const contentBlocks = page?.content || [];
 ---
 
 <Layout title={page.title} useBreadcrumbTitle={true}>
@@ -26,6 +27,6 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
     sideNavId={page.sideNavigation?.id}
   >
     {page.image && <Media media={page.image} />}
-    <RichText content={page?.content[0]?.content} />
+    <ContentBlocks contentBlocks={contentBlocks} />
   </PageWithSideNav>
 </Layout>

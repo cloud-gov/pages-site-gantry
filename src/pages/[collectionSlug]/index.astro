@@ -13,6 +13,7 @@ import {
   fetchSlug,
 } from "@/utilities/fetch";
 import { paginate } from "@/utilities/pagination";
+import ContentBlocks from "@/components/ContentBlocks.astro";
 
 export const PAGE_SIZE = import.meta.env.PAGE_SIZE || 10;
 
@@ -31,6 +32,7 @@ let currentPage = 1;
 let totalPages = 1;
 let hasPaginationNav = false;
 let sorted = null;
+let contentBlocks = [];
 
 if (!collectionConfig) {
   // Check if this is a regular page - if so, render it here since this route matched first
@@ -39,6 +41,8 @@ if (!collectionConfig) {
   if (!page) {
     return Astro.redirect("/404");
   }
+
+  contentBlocks = page?.content || [];
 } else {
   // Fetch pages for this custom collection
   const collectionPagesData = await fetchCollectionEntries(collectionConfig.id);
@@ -66,8 +70,7 @@ if (!collectionConfig) {
 export async function getStaticPaths() {
   const data = await fetchCollection("collection-types");
   const configs = data?.docs ?? [];
-
-  return configs.map((config) => ({
+  return configs.map((config: { slug: any }) => ({
     params: { collectionSlug: config.slug },
   }));
 }
@@ -92,7 +95,7 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
         sideNavId={page.sideNavigation?.id}
       >
         {page.image && <Media media={page.image} />}
-        <RichText content={page?.content[0]?.content} />
+        <ContentBlocks contentBlocks={contentBlocks} />
       </PageWithSideNav>
     </Layout>
   ) : (
@@ -109,7 +112,7 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
         <CollectionItemList
           items={items}
           currentPage="1"
-          filteredLength={sorted.length}
+          filteredLength={sorted?.length}
         />
         {hasPaginationNav && (
           <PaginationNav
