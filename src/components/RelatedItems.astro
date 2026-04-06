@@ -11,9 +11,7 @@ const baseUrl = import.meta.env.LOCAL_DEV
 {
   items.length > 0 && (
     <section class="related-links-sidebar">
-      <h2 class="font-sans-lg font-heading-lg margin-bottom-3">
-        Related Items
-      </h2>
+      <h2 class="font-sans-lg font-heading-lg margin-y-2">Related Items</h2>
       <ul class="usa-collection measure-6">
         {items.map((item: RelatedItem) => (
           <li class="usa-collection__item maxw-tablet">
