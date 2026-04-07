@@ -8,7 +8,6 @@ import {
 import { tryParseDateParts } from "@/utilities/dates";
 import PagesSection from "@/components/PagesSection.astro";
 import Layout from "@/layouts/Layout.astro";
-import RichText from "@/components/RichText.astro";
 import Tags from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import InPageNavigation from "@/components/InPageNavigation.astro";
@@ -19,6 +18,19 @@ import { buildRelatedItemsWithCollectionSlugs } from "@/utilities/fetch/buildRel
 import { getFiltersSlugMetaData } from "@/utilities/filter";
 import type { FiltersSlugMetaDataModel } from "@/env";
 import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
+import ContentBlocks from "@/components/ContentBlocks.astro";
+
+export interface TagProps {
+  title: string;
+  slug: string;
+}
+export interface DataFilesProps {
+  file: {
+    url: string | URL | null | undefined;
+    filename: string;
+  };
+  label: string;
+}
 
 const { collectionSlug, slug: pageSlug } = Astro.params;
 
@@ -163,8 +175,8 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
             {
               /* main content entry body */
               data.content && (
-                <section class="margin-top-4">
-                  <RichText content={data?.content[0]?.content} />
+                <section>
+                  <ContentBlocks contentBlocks={data?.content} />
                 </section>
               )
             }
@@ -177,9 +189,9 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
                   aria-label="More information"
                 >
                   <Tags
-                    tags={data.tags.map((cat) => ({
-                      title: cat.title,
-                      url: `/${collectionSlug}?tag=${cat.slug}`,
+                    tags={data.tags.map((tag: TagProps) => ({
+                      title: tag.title,
+                      url: `/${collectionSlug}?tag=${tag.slug}`,
                     }))}
                   />
                 </ul>
@@ -192,7 +204,7 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
                 <section class="margin-top-4">
                   <h3>Files</h3>
                   <ul class="usa-list">
-                    {data.files.map((fileItem) => (
+                    {data.files.map((fileItem: DataFilesProps) => (
                       <li>
                         <a
                           href={fileItem.file?.url}

@@ -7,10 +7,9 @@ import {
   createStaticPathsForPagesSlug,
   buildRelatedItemsWithCollectionSlugs,
 } from "@/utilities/fetch";
-import RichText from "@/components/RichText.astro";
-import Media from "@/components/Media.astro";
 import { fetchCollectionEntry } from "@/utilities/fetch";
 import RelatedItems from "@/components/RelatedItems.astro";
+import ContentBlocks from "@/components/ContentBlocks.astro";
 
 const { slug } = Astro.params;
 
@@ -44,8 +43,7 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
           ? "tablet:grid-col-9"
           : "tablet:grid-col-12"}
       >
-        <RichText content={page?.content[0]?.content} />
-        {/* related items */}
+        <ContentBlocks contentBlocks={page?.content} />
       </div>
       {
         page.relatedItems.length > 0 && (

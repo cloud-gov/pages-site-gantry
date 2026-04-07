@@ -30,6 +30,13 @@ const baseUrl = import.meta.env.LOCAL_DEV
                     {item.label}
                     <span class="usa-sr-only"> (opens in new tab)</span>
                   </a>
+                ) : item.page ? (
+                  <a
+                    href={baseUrl + item.page?.slug}
+                    class="usa-link font-sans"
+                  >
+                    {item.label}
+                  </a>
                 ) : (
                   <a
                     href={

@@ -228,6 +228,7 @@ export interface RelatedItem {
   externalLink: boolean;
   media?: MediaValueProps;
   date?: DateParts | string;
+  page?: CollectionEntry;
 }
 
 export function relatedItemsMapper(
