@@ -29,7 +29,7 @@ const dataAttributes = getFiltersDataAttributes(
     <div class="filter-sidebar__header">
       <h2 class="font-sans-lg">Filters</h2>
     </div>
-    <div>
+    <div class="usa-accordion" data-allow-multiple="true">
       {
         dataAttributes && (
           <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
@@ -58,6 +58,7 @@ const dataAttributes = getFiltersDataAttributes(
     getFirstPageLinkUrl,
     getFiltersSelections,
   } from "../utilities/filter";
+  import { handleFiltersChanged } from "@/utilities/filter/filtersSelect";
   import { type ElementsPair, type FiltersData } from "../env.d";
   import { updatePaginationStatus } from "@/utilities/filter/filtersRender";
 
@@ -79,10 +80,14 @@ const dataAttributes = getFiltersDataAttributes(
         collectionListPair &&
         renderFilters(data.filtersMap, filtersFromQueryParams, pagefindFilters)
       ) {
+        handleFiltersChanged(data.filtersMap);
         paginationPair = createFilteredPagination();
 
         addFiltersEventListeners(data.filtersMap, async function (e) {
           const filtersSelections = getFiltersSelections(data.filtersMap, e);
+
+          handleFiltersChanged(data.filtersMap);
+
           if (data.currentPage !== "1") {
             navigateToTheFirstPage(firstPageUrl, filtersSelections);
           } else {

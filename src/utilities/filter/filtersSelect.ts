@@ -8,6 +8,10 @@ import {
   FILTERS_CONFIG,
   UNSPECIFIED_FILTER_VALUE,
 } from "@/utilities/filter/filtersConfig";
+import { renderActiveFilters } from "./filtersRender";
+import { buildAnyFilters } from "./buildAnyFilters";
+
+type SearchOptionsValue = string | { any: string[] };
 
 export function getCollectionFilters(
   pagefindFilters: Map<string, any> | {},
@@ -55,68 +59,88 @@ export function sortFilterOptions(options: { value: string }[]) {
   });
 }
 
+export function handleFiltersChanged(filtersMap: Map<string, any>) {
+  const filtersSelections = getFiltersSelections(filtersMap);
+
+  // update url
+  updateHistoryState(filtersSelections);
+
+  // update active filter pills
+  renderActiveFilters(filtersSelections);
+}
+
 export function getSearchOptionsFromQuery(
   collectionName: string,
-  filtersMap: Map<string, FilterMapEntry>,
+  filtersMap: Map<string, string>,
 ) {
   if (!filtersMap || filtersMap.size === 0) return null;
 
-  const searchOptions = {};
+  const entries: Array<[string, string]> = [];
+
   for (const [key, value] of filtersMap.entries()) {
-    searchOptions[`${collectionName}_${key}`] = value;
+    entries.push([`${collectionName}_${key}`, value]);
   }
 
-  return { filters: searchOptions };
+  return buildAnyFilters(entries);
 }
 
 export function getFiltersSelections(
   filtersMap: Map<string, FilterMapEntry>,
-  e?: CustomEvent,
-): Map<string, FilterSelection> {
+): Map<string, FilterSelection> | null {
   const filters: Map<string, FilterSelection> = new Map();
 
   filtersMap.forEach(({ filterElement, filterName }) => {
     if (!filterElement) return;
 
-    if (e && e.target.name === filterName) {
-      e.target.value &&
-        filters.set(filterName, { filterName, selectedValue: e.target.value });
-    } else {
-      const selectedValue = (
-        filterElement as HTMLInputElement | HTMLSelectElement
-      ).value;
+    // Checkbox-based filters (multi-select)
+    const checkboxes = document.querySelectorAll(
+      `input[type="checkbox"][name="${filterName}"]:checked`,
+    ) as NodeListOf<HTMLInputElement>;
 
-      const input: HTMLInputElement = document.getElementById(
+    if (checkboxes.length > 0) {
+      const selectedValues = Array.from(checkboxes).map((cb) => cb.value);
+
+      filters.set(filterName, {
         filterName,
-      ) as HTMLInputElement;
+        selectedValue: selectedValues.join(","), // URL-safe format
+      });
 
-      if (
-        selectedValue &&
-        selectedValue.trim() !== "" &&
-        input?.value?.trim() !== ""
-      ) {
-        filters.set(filterName, { filterName, selectedValue });
-      }
+      return;
+    }
+
+    // Fallback for select / single-input filters
+    const input = filterElement as HTMLInputElement | HTMLSelectElement;
+    const value = input.value?.trim();
+
+    if (value) {
+      filters.set(filterName, {
+        filterName,
+        selectedValue: value,
+      });
     }
   });
 
-  return filters.size == 0 ? null : filters;
+  return filters.size === 0 ? null : filters;
 }
 
 export function getSearchOptionsFromSelectedFilters(
   filtersMap: Map<string, FilterMapEntry>,
   filtersSelections: Map<string, FilterSelection>,
 ) {
-  const filters = {};
+  if (!filtersMap || !filtersSelections || filtersSelections.size === 0) {
+    return null;
+  }
+
+  const entries: Array<[string, string]> = [];
 
   filtersMap.forEach((filter) => {
-    const filterSelection = filtersSelections.get(filter.filterName);
-    if (filterSelection) {
-      filters[filter.pagefindfilter] = filterSelection.selectedValue;
-    }
+    const selection = filtersSelections.get(filter.filterName);
+    if (!selection?.selectedValue) return;
+
+    entries.push([filter.pagefindfilter, selection.selectedValue]);
   });
 
-  return { filters };
+  return buildAnyFilters(entries);
 }
 
 export function addFiltersEventListeners(filtersMap, handleFilterChange: any) {

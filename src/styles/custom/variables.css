@@ -27,4 +27,5 @@
     Arial, sans-serif;
   --font-serif: 'Playfair Display', Georgia, 'Times New Roman', Times, serif;
   --councils-waves-url: url(/src/assets/backgrounds/waves_2.svg);
+  --filter-pill-bg-url: url(/src/assets/usa-icons/close.svg);
 }
