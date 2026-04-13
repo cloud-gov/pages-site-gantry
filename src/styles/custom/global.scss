@@ -1464,6 +1464,8 @@ footer.usa-footer .container,
   height: 1rem;
   flex-shrink: 0;
   filter: brightness(0) invert(1);
+  background-image: var(--filter-pill-bg-url);
+  background-size: 1rem;
 }
 
 /* Sidebar + main layout: sidebar has min-width, main area flexes. Used on council pages, resources, news/events. */
@@ -1528,14 +1530,14 @@ footer.usa-footer .container,
     background-color: transparent;
     color: var(--color-ink);
     border-top: 1px solid var(--color-ink);
-    background-image: url("/assets/img/usa-icons/expand%20arrow.svg");
+    background-image: url("/src/assets/usa-icons/expand%20arrow.svg");
     background-size: 1.25rem;
     background-position: right 0 center;
     background-repeat: no-repeat;
     padding: 1rem 0;
   }
   .usa-accordion__button[aria-expanded="true"] {
-    background-image: url("/assets/img/usa-icons/collapse%20arrow.svg");
+    background-image: url("/src/assets/usa-icons/collapse%20arrow.svg");
   }
   .usa-checkbox {
     background-color: transparent;
@@ -1870,14 +1872,14 @@ footer.usa-footer .container,
       background-color: transparent;
       color: var(--color-ink);
       border-top: 1px solid var(--color-ink);
-      background-image: url("/assets/img/usa-icons/expand%20arrow.svg");
+      background-image: url("/src/assets/usa-icons/expand%20arrow.svg");
       background-size: 1.25rem;
       background-position: right 0 center;
       background-repeat: no-repeat;
       padding: 1rem 0;
 
       &[aria-expanded="true"] {
-        background-image: url("/assets/img/usa-icons/collapse%20arrow.svg");
+        background-image: url("/src/assets/usa-icons/collapse%20arrow.svg");
       }
     }
     .usa-checkbox {

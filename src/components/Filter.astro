@@ -7,22 +7,27 @@ interface Props {
 }
 const { filter } = Astro.props;
 const { filterName, filterLabel } = filter;
+const navId = getFilterNavId(filterName);
 ---
 
-<nav
-  hidden
-  class="usa-sidenav"
-  aria-label=`Filter ${filterName}`
-  id={getFilterNavId(filterName)}
->
-  <label class="usa-label" for={filterName}>{filterLabel}</label>
-  <div class="usa-combo-box" data-disable-filtering="true">
-    <select class="usa-select" name={filterName} id={filterName}> </select>
-  </div>
-</nav>
+<h3 class="usa-accordion__heading" id={navId} hidden>
+  <button
+    type="button"
+    class="usa-accordion__button"
+    aria-expanded="true"
+    aria-controls={`filter-${filterName}`}
+  >
+    {filterLabel}
+  </button>
+</h3>
 
-<style is:global>
-  .usa-combo-box__list {
-    overflow-y: auto !important;
-  }
-</style>
+<div id={`filter-${filterName}`} class="usa-accordion__content usa-prose">
+  <div class="filter-options" data-filter-name={filterName}>
+    {
+      /*
+      Checkbox inputs will be injected here
+      by renderFilter()
+    */
+    }
+  </div>
+</div>

@@ -12,8 +12,15 @@ import { getFilteredPaginationFragment } from "@/utilities/filter/filtersPaginat
 import { getPaginationItemId } from "@/utilities/pagination";
 import { appendQuery } from "@/utilities/filter/filtersUtils";
 
+const ACTIVE_FILTERS_ID = "active-filters";
 export function getFilterNavId(filterName: string) {
   return `${FILTER_NAV_ID_PREFIX}${filterName}`;
+}
+
+function getFilterContainer(filterName: string): HTMLElement | null {
+  return document.querySelector(
+    `.filter-options[data-filter-name="${filterName}"]`,
+  );
 }
 
 export function renderFilters(
@@ -26,24 +33,23 @@ export function renderFilters(
   filtersMap?.forEach((filterMapEntry) => {
     const { filterName, pagefindfilter } = filterMapEntry;
 
-    const el: HTMLElement = getElementByName(filterName);
-    const navEl: HTMLElement = document.getElementById(
-      getFilterNavId(filterName),
+    const el = getFilterContainer(filterName);
+    const navEl = document.getElementById(getFilterNavId(filterName));
+
+    if (!el || !navEl) return;
+
+    filterMapEntry.filterElement = el;
+    filterMapEntry.navElement = navEl;
+
+    const displayedFilter = renderFilter(
+      filterName,
+      getCollectionFilters(pagefindFilters, pagefindfilter),
+      el,
+      navEl,
+      filtersFromQueryParams?.get(filterName),
     );
 
-    if (el && navEl) {
-      filterMapEntry.filterElement = el;
-      filterMapEntry.navElement = navEl;
-
-      const displayedFilter = renderFilter(
-        filterName,
-        getCollectionFilters(pagefindFilters, pagefindfilter),
-        el,
-        navEl,
-        filtersFromQueryParams?.get(filterName),
-      );
-      displayedFilters ||= displayedFilter;
-    }
+    displayedFilters ||= displayedFilter;
   });
 
   return displayedFilters;
@@ -56,43 +62,44 @@ function renderFilter(
   navElement: HTMLElement,
   selectedValue: string,
 ): boolean {
-  let displayedFilter = false;
-  if (targetElement instanceof HTMLSelectElement) {
-    filterOptions?.forEach((filterOption) => {
-      if (targetElement.options.length == 0) {
-        const placeholder: HTMLOptionElement = document.createElement("option");
-        placeholder.value = "";
-        placeholder.textContent = "Select ...";
-        placeholder.disabled = true;
-        placeholder.hidden = true;
-        targetElement.add(placeholder);
-      }
-      const option: HTMLOptionElement = document.createElement("option");
-      option.value = filterOption.value;
-      option.textContent = filterOption.textContent;
-      option.text = filterOption.textContent;
-      option.disabled = false;
-      option.hidden = false;
-      targetElement.add(option);
-
-      if (selectedValue && filterOption.value === selectedValue) {
-        option.defaultSelected = true;
-        const input = document.getElementById(filterName);
-        if (input) {
-          (input as HTMLInputElement).value = option.textContent;
-          const parentNode = input.parentElement;
-          parentNode?.classList.add("usa-combo-box--pristine");
-        }
-      }
-    });
+  if (!filterOptions || filterOptions.length === 0) {
+    return false;
   }
 
-  if (filterOptions?.length > 0) {
-    navElement.hidden = false;
-    displayedFilter = true;
-  }
+  const selectedValues = selectedValue ? selectedValue.split(",") : [];
 
-  return displayedFilter;
+  // Reset checkbox container
+  targetElement.replaceChildren();
+
+  filterOptions.forEach((filterOption) => {
+    const optionId = `filter-${filterName}-${filterOption.value.toLowerCase()}`;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "usa-checkbox";
+
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.className = "usa-checkbox__input";
+    input.id = optionId;
+    input.name = filterName;
+    input.value = filterOption.value;
+
+    if (selectedValues.includes(filterOption.value)) {
+      input.checked = true;
+    }
+
+    const label = document.createElement("label");
+    label.className = "usa-checkbox__label";
+    label.htmlFor = optionId;
+    label.textContent = filterOption.textContent;
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(label);
+    targetElement.appendChild(wrapper);
+  });
+
+  navElement.hidden = false;
+  return true;
 }
 
 export function getPageResults(results: any[], filtersData: FiltersData) {
@@ -106,39 +113,54 @@ export function getPageResults(results: any[], filtersData: FiltersData) {
 }
 
 export async function renderResults(
-  results: any,
+  results: any[],
   collectionList: ElementsPair,
   pagination: ElementsPair,
   filtersData: FiltersData,
 ) {
+  // Handle zero results explicitly
   if (!results || results.length === 0) {
     hideBoth(collectionList);
     hideBoth(pagination);
+
+    updatePaginationStatus(0, 0, filtersData.pageSize);
+
     return;
   }
+
+  hideNoResultsMessage();
 
   const filteredResultsFragment = await getFilteredResultFragment(
     getPageResults(results, filtersData),
   );
+
   if (filteredResultsFragment) {
     displayFiltered(collectionList, filteredResultsFragment);
-    // added update for pagination status
+
     updatePaginationStatus(
-      results?.length,
+      results.length,
       filtersData.currentPage,
       filtersData.pageSize,
     );
   }
 
   const paginationFragment = getFilteredPaginationFragment(
-    results?.length,
+    results.length,
     filtersData.currentPage,
     filtersData.pageSize,
   );
+
   if (paginationFragment && paginationFragment.children?.length > 0) {
     displayFiltered(pagination, paginationFragment);
   } else {
     hideBoth(pagination);
+  }
+}
+
+function hideNoResultsMessage() {
+  const el = document.getElementById("no-results-message");
+  if (el) {
+    el.style.display = "none";
   }
 }
 
@@ -189,7 +211,10 @@ export function updatePaginationStatus(
   const total = Number(resultSize);
 
   if (!total || total <= 0) {
-    statusEl.innerHTML = "";
+    statusEl.innerHTML = `
+      <span aria-hidden="true">No results found</span>
+      <span class="usa-sr-only">No results found</span>
+    `;
     return;
   }
   const resultsRangeStart = (page - 1) * size + 1;
@@ -202,6 +227,56 @@ export function updatePaginationStatus(
     <span aria-hidden="true">${resultsCountText}</span>
     <span class="usa-sr-only">${resultsCountTextSr}</span>
   `;
+}
+
+export function renderActiveFilters(
+  filtersSelections: Map<string, FilterSelection>,
+) {
+  const container = document.getElementById(ACTIVE_FILTERS_ID);
+  if (!container) return;
+
+  container.replaceChildren();
+
+  if (!filtersSelections || filtersSelections.size === 0) {
+    return;
+  }
+
+  filtersSelections.forEach(({ filterName, selectedValue }) => {
+    if (!selectedValue) return;
+
+    const values = selectedValue.split(",");
+
+    values.forEach((value) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "usa-tag filter-pill";
+      button.setAttribute("aria-label", `Remove ${value}`);
+
+      button.innerHTML = `
+        <span class="filter-pill__label">${value}</span>
+        <span class="filter-pill__icon" aria-hidden="true"></span>
+      `;
+
+      button.addEventListener("click", () => {
+        removeFilterValue(filterName, value);
+      });
+
+      container.appendChild(button);
+    });
+  });
+}
+
+function removeFilterValue(filterName: string, valueToRemove: string) {
+  const checkbox = document.querySelector(
+    `input[type="checkbox"][name="${filterName}"][value="${valueToRemove}"]`,
+  ) as HTMLInputElement;
+
+  if (!checkbox) return;
+
+  checkbox.checked = false;
+
+  // Trigger the same change event Pagefind listens to
+  checkbox.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
 function getElementByName(filter: string): HTMLElement {

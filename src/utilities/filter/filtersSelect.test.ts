@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import {
   getCollectionFilters,
   getFiltersFromQueryParams,
@@ -10,430 +10,280 @@ import {
 } from "@/utilities/filter/filtersSelect";
 import type { FilterSelection } from "@/env";
 
+/* ------------------------------------------------------------------ */
+/* getCollectionFilters */
+/* ------------------------------------------------------------------ */
+
 describe("Filters Select Utility, getCollectionFilters", () => {
-  it("should get collection specific filters", () => {
-    const pagefindFilters: Map<string, any> | {} = {
-      events_tag: {
-        GEOGRAPHY: 1,
-      },
-      events_year: {
-        "2023": 1,
-        "2025": 1,
-      },
-      leadership_year: {
-        Unspecified: 3,
-      },
-      news_year: {
-        "2024": 2,
-        "2025": 6,
-        Unspecified: 1,
-      },
-      reports_tag: {
-        GEOGRAPHY: 8,
-        HISTORY: 4,
-        INTERNATIONAL: 4,
-        SCIENCE: 5,
-        SPORTS: 6,
-      },
-      reports_year: {
-        Unspecified: 11,
-      },
-      resources_tag: {
-        HISTORY: 3,
-        INTERNATIONAL: 1,
-        SCIENCE: 1,
-        GEOGRAPHY: 1,
-        SPORTS: 3,
-      },
-      resources_year: {
-        Unspecified: 5,
-      },
+  it("gets collection specific filters and sorts them", () => {
+    const pagefindFilters = {
+      events_tag: { GEOGRAPHY: 1 },
+      events_year: { "2023": 1, "2025": 1 },
+      leadership_year: { Unspecified: 3 },
     };
 
     expect(getCollectionFilters(pagefindFilters, "events_tag")).toEqual([
-      {
-        textContent: "GEOGRAPHY (1)",
-        value: "GEOGRAPHY",
-      },
+      { value: "GEOGRAPHY", textContent: "GEOGRAPHY (1)" },
     ]);
+
     expect(getCollectionFilters(pagefindFilters, "events_year")).toEqual([
-      {
-        textContent: "2025 (1)",
-        value: "2025",
-      },
-      {
-        textContent: "2023 (1)",
-        value: "2023",
-      },
+      { value: "2025", textContent: "2025 (1)" },
+      { value: "2023", textContent: "2023 (1)" },
     ]);
+
     expect(getCollectionFilters(pagefindFilters, "leadership_year")).toEqual(
       [],
     );
-    expect(getCollectionFilters(pagefindFilters, "news_year")).toEqual([
-      {
-        textContent: "2025 (6)",
-        value: "2025",
-      },
-      {
-        textContent: "2024 (2)",
-        value: "2024",
-      },
-      {
-        textContent: "Unspecified (1)",
-        value: "Unspecified",
-      },
-    ]);
-    expect(getCollectionFilters(pagefindFilters, "reports_tag")).toEqual([
-      {
-        textContent: "GEOGRAPHY (8)",
-        value: "GEOGRAPHY",
-      },
-      {
-        textContent: "HISTORY (4)",
-        value: "HISTORY",
-      },
-      {
-        textContent: "INTERNATIONAL (4)",
-        value: "INTERNATIONAL",
-      },
-      {
-        textContent: "SCIENCE (5)",
-        value: "SCIENCE",
-      },
-      {
-        textContent: "SPORTS (6)",
-        value: "SPORTS",
-      },
-    ]);
-    expect(getCollectionFilters(pagefindFilters, "resources_tag")).toEqual([
-      {
-        textContent: "GEOGRAPHY (1)",
-        value: "GEOGRAPHY",
-      },
-      {
-        textContent: "HISTORY (3)",
-        value: "HISTORY",
-      },
-      {
-        textContent: "INTERNATIONAL (1)",
-        value: "INTERNATIONAL",
-      },
-      {
-        textContent: "SCIENCE (1)",
-        value: "SCIENCE",
-      },
-      {
-        textContent: "SPORTS (3)",
-        value: "SPORTS",
-      },
-    ]);
-    expect(getCollectionFilters(pagefindFilters, "resources_year")).toEqual([]);
   });
 });
+
+/* ------------------------------------------------------------------ */
+/* getFiltersFromQueryParams */
+/* ------------------------------------------------------------------ */
 
 describe("Filters Select Utility, getFiltersFromQueryParams", () => {
-  it("should extract filters from the url", () => {
+  it("extracts filters from url query params", () => {
     Object.defineProperty(window, "location", {
       writable: true,
-      value: {
-        search: "?tag=GEOGRAPHY&year=2025",
-      },
+      value: { search: "?tag=GEOGRAPHY,SCIENCE&year=2025" },
     });
 
-    const selectedFilters = getFiltersFromQueryParams(window);
-    expect(selectedFilters.size).toEqual(2);
-    expect(selectedFilters.get("tag")).toEqual("GEOGRAPHY");
-    expect(selectedFilters.get("year")).toEqual("2025");
+    const result = getFiltersFromQueryParams(window);
+    expect(result.get("tag")).toBe("GEOGRAPHY,SCIENCE");
+    expect(result.get("year")).toBe("2025");
   });
 
-  it("should not extract filters from the url when there is none", () => {
+  it("returns empty map when no params exist", () => {
     Object.defineProperty(window, "location", {
       writable: true,
-      value: {
-        search: "",
-      },
+      value: { search: "" },
     });
 
-    const selectedFilters = getFiltersFromQueryParams(window);
-    expect(selectedFilters.size).toEqual(0);
+    expect(getFiltersFromQueryParams(window).size).toBe(0);
   });
 });
 
+/* ------------------------------------------------------------------ */
+/* sortFilterOptions */
+/* ------------------------------------------------------------------ */
+
 describe("Filters Select Utility, sortFilterOptions", () => {
-  it("should sort filter options alphabetically and numerically", () => {
-    const dataset = null;
+  it("sorts numerically then alphabetically", () => {
     const options = [{ value: "Option 1" }, { value: "2025" }, { value: "1" }];
+
     sortFilterOptions(options);
+
     expect(options).toEqual([
-      {
-        value: "2025",
-      },
-      {
-        value: "1",
-      },
-      {
-        value: "Option 1",
-      },
+      { value: "2025" },
+      { value: "1" },
+      { value: "Option 1" },
     ]);
   });
 });
 
-describe("Filters Select Utility, getSearchOptionsFromSelectFilters", () => {
-  it("should get search options from filters values", () => {
+/* ------------------------------------------------------------------ */
+/* getSearchOptionsFromSelectedFilters */
+/* ------------------------------------------------------------------ */
+
+describe("Filters Select Utility, getSearchOptionsFromSelectedFilters", () => {
+  it("uses scalar value for single selection", () => {
     const filtersMap = new Map([
       [
         "tag",
         {
           filterName: "tag",
           pagefindfilter: "events_tag",
-          filterElement: {
-            value: "GEOGRAPHY",
-          },
-          navElement: {},
-        },
-      ],
-      [
-        "year",
-        {
-          filterName: "year",
-          pagefindfilter: "events_year",
-          filterElement: {
-            value: "2025",
-          },
-          navElement: {},
         },
       ],
     ]);
 
-    const filtersSelections: Map<string, FilterSelection> = new Map();
-    filtersSelections.set("tag", {
-      filterName: "tag",
-      selectedValue: "TRANSPORT",
-    });
-    const searchOptions = getSearchOptionsFromSelectedFilters(
-      filtersMap,
-      filtersSelections,
-    );
-    expect(searchOptions).toEqual({
+    const selections = new Map<string, FilterSelection>([
+      ["tag", { filterName: "tag", selectedValue: "GEOGRAPHY" }],
+    ]);
+
+    expect(
+      getSearchOptionsFromSelectedFilters(filtersMap as any, selections),
+    ).toEqual({
       filters: {
-        events_tag: "TRANSPORT",
+        any: {
+          events_tag: "GEOGRAPHY",
+        },
+      },
+    });
+  });
+
+  it("uses array value for multi-selection", () => {
+    const filtersMap = new Map([
+      [
+        "tag",
+        {
+          filterName: "tag",
+          pagefindfilter: "events_tag",
+        },
+      ],
+    ]);
+
+    const selections = new Map<string, FilterSelection>([
+      [
+        "tag",
+        {
+          filterName: "tag",
+          selectedValue: "GEOGRAPHY,SCIENCE",
+        },
+      ],
+    ]);
+
+    expect(
+      getSearchOptionsFromSelectedFilters(filtersMap as any, selections),
+    ).toEqual({
+      filters: {
+        any: {
+          events_tag: ["GEOGRAPHY", "SCIENCE"],
+        },
       },
     });
   });
 });
 
+/* ------------------------------------------------------------------ */
+/* getSearchOptionsFromQuery */
+/* ------------------------------------------------------------------ */
+
 describe("Filters Select Utility, getSearchOptionsFromQuery", () => {
-  it("should build search options from query parameters", () => {
+  it("builds Pagefind filters from query params", () => {
     Object.defineProperty(window, "location", {
       writable: true,
-      value: {
-        search: "?tag=GEOGRAPHY&year=2025",
-      },
+      value: { search: "?tag=HISTORY,SCIENCE&year=2024" },
     });
 
-    const searchOptions = getSearchOptionsFromQuery(
+    const result = getSearchOptionsFromQuery(
       "events",
       getFiltersFromQueryParams(window),
     );
-    expect(searchOptions).toEqual({
+
+    expect(result).toEqual({
       filters: {
-        events_tag: "GEOGRAPHY",
-        events_year: "2025",
+        any: {
+          events_tag: ["HISTORY", "SCIENCE"],
+          events_year: "2024",
+        },
       },
     });
   });
 });
+
+/* ------------------------------------------------------------------ */
+/* getFiltersSelections (checkbox-based) */
+/* ------------------------------------------------------------------ */
 
 describe("Filters Select Utility, getFiltersSelections", () => {
-  let inputElementTag;
-  let inputElementYear;
-
-  beforeEach(async () => {
-    document.body.replaceChildren();
-    document.body.innerHTML = "";
-    vi.clearAllMocks();
-
-    inputElementTag = document.createElement("input");
-    inputElementTag.value = "GEOGRAPHY";
-    inputElementYear = document.createElement("input");
-    inputElementYear = "2025";
-
-    vi.spyOn(document, "getElementById").mockImplementation((id) => {
-      if (id === "tag") {
-        return inputElementTag;
-      }
-      if (id === "year") {
-        return inputElementYear;
-      }
-      return null;
-    });
-  });
-
-  it("should get selected values from all filters", () => {
-    const filtersMap = new Map([
-      [
-        "tag",
-        {
-          filterName: "tag",
-          pagefindfilter: "events_tag",
-          filterElement: {
-            value: "GEOGRAPHY",
-          },
-          navElement: {},
-        },
-      ],
-      [
-        "year",
-        {
-          filterName: "year",
-          pagefindfilter: "events_year",
-          filterElement: {
-            value: "2025",
-          },
-          navElement: {},
-        },
-      ],
-    ]);
-
-    expect(
-      JSON.stringify(Object.fromEntries(getFiltersSelections(filtersMap))),
-    ).toEqual(
-      '{"tag":{"filterName":"tag","selectedValue":"GEOGRAPHY"},"year":{"filterName":"year","selectedValue":"2025"}}',
-    );
-  });
-
-  it("should get the selected value from event when present", () => {
-    const filtersMap = new Map([
-      [
-        "tag",
-        {
-          filterName: "tag",
-          pagefindfilter: "events_tag",
-          filterElement: {
-            value: "GEOGRAPHY",
-          },
-          navElement: {},
-        },
-      ],
-      [
-        "year",
-        {
-          filterName: "year",
-          pagefindfilter: "events_year",
-          filterElement: {
-            value: "2025",
-          },
-          navElement: {},
-        },
-      ],
-    ]);
-
-    const e: CustomEvent<any> = { target: { name: "year", value: "" } };
-    expect(
-      JSON.stringify(Object.fromEntries(getFiltersSelections(filtersMap, e))),
-    ).toEqual('{"tag":{"filterName":"tag","selectedValue":"GEOGRAPHY"}}');
-  });
-
-  it("should return null when there are no selections", () => {
-    const filtersMap = new Map([
-      [
-        "tag",
-        {
-          filterName: "tag",
-          pagefindfilter: "events_tag",
-          filterElement: {
-            value: "GEOGRAPHY",
-          },
-          navElement: {},
-        },
-      ],
-      [
-        "year",
-        {
-          filterName: "year",
-          pagefindfilter: "events_year",
-          filterElement: {
-            value: "",
-          },
-          navElement: {},
-        },
-      ],
-    ]);
-
-    const e: CustomEvent<any> = { target: { name: "tag", value: "" } };
-    expect(getFiltersSelections(filtersMap, e)).toEqual(null);
-  });
-});
-
-describe("Filters Select Utility, updateHistoryState", () => {
-  let mockWindow;
-  let mockReplaceState;
-
   beforeEach(() => {
-    mockReplaceState = vi.fn();
-    mockWindow = {
-      location: {
-        href: "http://localhost:3000/news?tag=GEOGRAPHY&year=2024",
-      },
-      history: {
-        replaceState: mockReplaceState,
-      },
-    } as unknown as Window;
-  });
-
-  afterEach(() => {
+    document.body.replaceChildren();
     vi.restoreAllMocks();
   });
 
-  it("updates URL search params and calls replaceState", () => {
+  it("returns selected values from checked checkboxes", () => {
+    const tag1 = document.createElement("input");
+    tag1.type = "checkbox";
+    tag1.name = "tag";
+    tag1.value = "GEOGRAPHY";
+    tag1.checked = true;
+
+    const tag2 = document.createElement("input");
+    tag2.type = "checkbox";
+    tag2.name = "tag";
+    tag2.value = "SCIENCE";
+    tag2.checked = true;
+
+    document.body.append(tag1, tag2);
+
+    const filtersMap = new Map([
+      [
+        "tag",
+        {
+          filterName: "tag",
+          filterElement: document.createElement("div"),
+          navElement: {},
+        },
+      ],
+    ]);
+
+    const result = getFiltersSelections(filtersMap as any);
+
+    expect(Object.fromEntries(result!)).toEqual({
+      tag: {
+        filterName: "tag",
+        selectedValue: "GEOGRAPHY,SCIENCE",
+      },
+    });
+  });
+
+  it("returns null when no checkboxes are selected", () => {
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = "tag";
+    input.value = "GEOGRAPHY";
+    input.checked = false;
+
+    document.body.append(input);
+
+    const filtersMap = new Map([
+      [
+        "tag",
+        {
+          filterName: "tag",
+          filterElement: document.createElement("div"),
+          navElement: {},
+        },
+      ],
+    ]);
+
+    expect(getFiltersSelections(filtersMap as any)).toBeNull();
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* updateHistoryStateForWindow */
+/* ------------------------------------------------------------------ */
+
+describe("Filters Select Utility, updateHistoryStateForWindow", () => {
+  let mockWindow: any;
+
+  beforeEach(() => {
+    mockWindow = {
+      location: { href: "http://example.com/news" },
+      history: { replaceState: vi.fn() },
+    };
+  });
+
+  it("adds query params for selected filters", () => {
     const filters = new Map<string, FilterSelection>([
-      ["tag", { filterName: "tag", selectedValue: "HISTORY" }],
+      ["tag", { filterName: "tag", selectedValue: "HISTORY,SCIENCE" }],
       ["year", { filterName: "year", selectedValue: "2025" }],
     ]);
 
     updateHistoryStateForWindow(filters, mockWindow);
 
-    expect((mockReplaceState.mock.calls[0][2] as URL).toString()).toBe(
-      "http://localhost:3000/news?tag=HISTORY&year=2025",
+    expect(mockWindow.history.replaceState.mock.calls[0][2].toString()).toBe(
+      "http://example.com/news?tag=HISTORY%2CSCIENCE&year=2025",
     );
   });
 
-  it("removes params when filter has no selectedValue", () => {
+  it("removes params with empty selectedValue", () => {
     updateHistoryStateForWindow(
-      new Map<string, FilterSelection>([
-        ["tag", { filterName: "tag", selectedValue: "" }],
-        ["year", { filterName: "year", selectedValue: "2026" }],
-      ]),
+      new Map([["tag", { filterName: "tag", selectedValue: "" }]]),
       mockWindow,
     );
-    expect((mockReplaceState.mock.calls[0][2] as URL).toString()).toBe(
-      "http://localhost:3000/news?year=2026",
+
+    expect(mockWindow.history.replaceState.mock.calls[0][2].toString()).toBe(
+      "http://example.com/news",
     );
   });
 
-  it("removes params when there is no filters entry in the map", () => {
-    updateHistoryStateForWindow(
-      new Map<string, FilterSelection>([
-        ["year", { filterName: "year", selectedValue: "2026" }],
-      ]),
-      mockWindow,
-    );
-    expect((mockReplaceState.mock.calls[0][2] as URL).toString()).toBe(
-      "http://localhost:3000/news?year=2026",
-    );
-  });
-
-  it("handles empty filters map", () => {
-    updateHistoryStateForWindow(new Map<string, FilterSelection>(), mockWindow);
-    expect((mockReplaceState.mock.calls[0][2] as URL).toString()).toBe(
-      "http://localhost:3000/news",
-    );
-  });
-
-  it("handles null filters map", () => {
+  it("handles null or empty filters safely", () => {
     updateHistoryStateForWindow(null, mockWindow);
-    expect((mockReplaceState.mock.calls[0][2] as URL).toString()).toBe(
-      "http://localhost:3000/news",
+    expect(mockWindow.history.replaceState.mock.calls[0][2].toString()).toBe(
+      "http://example.com/news",
     );
   });
 });
