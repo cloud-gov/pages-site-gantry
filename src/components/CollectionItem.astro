@@ -15,6 +15,9 @@ export interface Props {
   media?: MediaValueProps;
   link?: string;
   linkText?: string;
+  itemType?: "list" | "grid";
+  collectionSlug?: string;
+  showEvent?: boolean;
 }
 
 const {
@@ -25,9 +28,11 @@ const {
   media = null,
   link = "",
   publishedAt = null,
+  itemType = null,
+  collectionSlug = null,
 } = Astro.props;
 
-function normalizeDate(input?: string | DateParts): DateParts | null {
+function normalizeDate(input?: string | DateParts | null): DateParts | null {
   return input
     ? typeof input === "string"
       ? parseDateParts(input)
@@ -47,22 +52,55 @@ const hasValidDate = !!(
 );
 ---
 
-<>
-  <li class="usa-collection__item maxw-tablet">
-    {
-      media?.thumbnailURL && (
+{
+  itemType === "grid" ? (
+    <div class="tablet:grid-col-6 desktop:grid-col-4">
+      <div class="usa-card display-block text-no-underline resource-card-link resource-card-link--bordered">
+        <div class="usa-card__container">
+          <header class="usa-card__header">
+            <h3 class="usa-card__heading">{title}</h3>
+            <div class="resource-date margin-top-1">
+              {hasValidDate && (
+                <time datetime={dateParts.raw.toISOString()}>
+                  {dateParts.full}
+                </time>
+              )}
+            </div>
+          </header>
+          <div class="usa-card__body">
+            {description && <p>{description}</p>}
+            <div class="margin-top-2 content-tags">
+              {hasTags && (
+                <ul
+                  class="usa-collection__meta display-flex flex-wrap margin-top-2 collection-item-tags"
+                  aria-label="Tag links"
+                >
+                  <Tags tags={tags} />
+                </ul>
+              )}
+            </div>
+          </div>
+          <div class="usa-card__footer">
+            <span class="usa-link usa-link--external font-sans-sm">
+              <Link href={link}>View {collectionSlug} item</Link>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <li class="usa-collection__item maxw-tablet">
+      {media?.thumbnailURL && (
         <Media className="usa-collection__img" media={media} />
-      )
-    }
-    <div class="usa-collection__body">
-      <SectionHeader
-        headingLevel="h2"
-        class="usa-collection__heading font-body-lg"
-      >
-        <Link href={link}>{title}</Link>
-      </SectionHeader>
-      {
-        hasValidDate && (
+      )}
+      <div class="usa-collection__body">
+        <SectionHeader
+          headingLevel="h2"
+          class="usa-collection__heading font-body-lg"
+        >
+          <Link href={link}>{title}</Link>
+        </SectionHeader>
+        {hasValidDate && (
           <ul class="usa-collection__meta" aria-label="More information">
             <li class="usa-collection__meta-item collection-item-date">
               <time datetime={dateParts.raw.toISOString()}>
@@ -70,28 +108,24 @@ const hasValidDate = !!(
               </time>
             </li>
           </ul>
-        )
-      }
-      {
-        hasTags && (
+        )}
+        {hasTags && (
           <ul
             class="usa-collection__meta display-flex margin-top-2 collection-item-tags"
             aria-label="Tag links"
           >
             <Tags tags={tags} />
           </ul>
-        )
-      }
-      {
-        hasDescription && (
+        )}
+        {hasDescription && (
           <div class="usa-collection__description">
             <p set:html={description.replace(/\n/g, "<br>")} />
           </div>
-        )
-      }
-    </div>
-  </li>
-</>
+        )}
+      </div>
+    </li>
+  )
+}
 
 <style is:global>
   .usa-collection__footer {
