@@ -27,6 +27,7 @@ if (!collectionConfig) {
 
 // Fetch pages for this custom collection
 const collectionPagesData = await fetchCollectionEntries(collectionConfig.id);
+const layoutType = collectionConfig?.layoutType;
 const collectionPages = collectionPagesData?.docs || [];
 
 // Sort by publishedAt
@@ -51,16 +52,14 @@ export async function getStaticPaths() {
     const data = await fetchCollection("collection-types");
     const configs = data?.docs || [];
 
-    const paths: any[] = [];
+    const pageSize = Number(PAGE_SIZE || 10);
+    const paths: { params: { collectionSlug: string; page: string } }[] = [];
 
     for (const config of configs) {
-      const pagesData = await fetchCollection(
-        `collection-entries?where[collectionType][id][equals]=${config.id}&limit=0`,
-      );
+      const entries = await fetchCollectionEntries(config.id);
 
-      const pages = pagesData?.docs || [];
-      const totalPages = pages.length;
-      const totalPagesCount = Math.ceil(totalPages / PAGE_SIZE);
+      const pages = entries?.docs || [];
+      const totalPagesCount = Math.max(1, Math.ceil(pages.length / pageSize));
 
       // Generate paths for each page
       for (let i = 1; i <= totalPagesCount; i++) {
@@ -104,6 +103,7 @@ const filteredPageConfig = {
     <CollectionItemList
       items={items}
       currentPage={currentPage}
+      layoutType={layoutType}
       filteredLength={sorted.length}
     />
     {

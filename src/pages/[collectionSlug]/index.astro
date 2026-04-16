@@ -34,6 +34,7 @@ let totalPages = 1;
 let hasPaginationNav = false;
 let sorted = null;
 let relatedItems = null;
+let layoutType = null;
 
 if (!collectionConfig) {
   // Check if this is a regular page - if so, render it here since this route matched first
@@ -47,11 +48,11 @@ if (!collectionConfig) {
     fetchCollectionEntry,
   );
 } else {
+  layoutType = collectionConfig?.layoutType;
   // Fetch pages for this custom collection
   const collectionPagesData = await fetchCollectionEntries(collectionConfig.id);
 
   collectionPages = collectionPagesData?.docs || [];
-
   // Sort by publishedAt
   sorted = collectionPages.sort((a: any, b: any) => {
     return (
@@ -135,6 +136,8 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
           items={items}
           currentPage="1"
           filteredLength={sorted?.length}
+          layoutType={layoutType}
+          collectionSlug={collectionSlug}
         />
         {hasPaginationNav && (
           <PaginationNav

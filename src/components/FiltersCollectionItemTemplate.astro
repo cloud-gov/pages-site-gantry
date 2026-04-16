@@ -6,17 +6,23 @@ interface Props {
   item: any;
   filtersSlugMetaData: FiltersSlugMetaDataModel;
   showEvent: boolean;
+  layoutType?: "grid" | "list";
 }
 
-const { item, filtersSlugMetaData, showEvent = false } = Astro.props;
+const {
+  item,
+  filtersSlugMetaData,
+  layoutType,
+  showEvent = false,
+} = Astro.props;
 ---
 
 {
   filtersSlugMetaData && (
     <template id={filtersSlugMetaData.collectionItemId}>
-      <div>
-        <CollectionItem {...item} showEvent={showEvent} />
-      </div>
+      <>
+        <CollectionItem {...item} itemType={layoutType} showEvent={showEvent} />
+      </>
     </template>
   )
 }

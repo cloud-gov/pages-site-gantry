@@ -1,13 +1,32 @@
 ---
 import CollectionItem from "@/components/CollectionItem.astro";
+import type { DateParts } from "@/utilities/dates";
 import { COLLECTION_ITEM_LIST_ID } from "@/utilities/filter";
+import type { Tag } from "./Tags.astro";
+import type { MediaValueProps } from "@/env";
 
 const {
   items = [],
   showEvent = false,
   currentPage = 1,
   filteredLength = 1,
+  layoutType = null,
+  collectionSlug = "",
 } = Astro.props;
+
+export interface CollectionItem {
+  title: string;
+  description?: string;
+  date?: string | DateParts;
+  publishedAt?: string | DateParts;
+  tags?: Tag[];
+  media?: MediaValueProps;
+  link?: string;
+  linkText?: string;
+  itemType?: "list" | "grid";
+  collectionSlug?: string;
+}
+
 const PAGE_SIZE = import.meta.env.PAGE_SIZE ?? 10;
 const resultsRangeStart = (currentPage - 1) * PAGE_SIZE + 1;
 const resultsRangeEnd = Math.min(currentPage * PAGE_SIZE, filteredLength);
@@ -41,15 +60,34 @@ const resultsCountTextSr =
     }
   </p>
   <div id="active-filters" class="filter-pills"></div>
-  <div>
-    {
-      filteredLength > 0 && (
-        <ul class="usa-collection measure-6" id={COLLECTION_ITEM_LIST_ID}>
-          {items.map((n) => (
-            <CollectionItem {...n} showEvent={showEvent} />
-          ))}
-        </ul>
-      )
-    }
-  </div>
+  {
+    layoutType === "grid" ? (
+      <div>
+        {filteredLength > 0 && (
+          <div
+            class="grid-row grid-gap resource-cards-grid"
+            id={COLLECTION_ITEM_LIST_ID}
+          >
+            {items.map((n: CollectionItem) => (
+              <CollectionItem
+                {...n}
+                itemType={layoutType}
+                collectionSlug={collectionSlug}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    ) : (
+      <div>
+        {filteredLength > 0 && (
+          <ul class="usa-collection measure-6" id={COLLECTION_ITEM_LIST_ID}>
+            {items.map((n: CollectionItem) => (
+              <CollectionItem {...n} showEvent={showEvent} />
+            ))}
+          </ul>
+        )}
+      </div>
+    )
+  }
 </>

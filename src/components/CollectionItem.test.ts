@@ -31,6 +31,7 @@ describe("CollectionItem", () => {
     expect(html).toContain("Test Report");
     expect(html).toContain("A report summary");
     expect(html).toContain('href="/test"');
+    expect(html).toContain("usa-collection__item");
   });
 
   it("hides description when omitted", async () => {
@@ -133,5 +134,16 @@ describe("CollectionItem", () => {
     expect(html).toContain("Bare minimum");
     expect(html).toContain('href="/bare"');
     expect(html).not.toContain("<img");
+  });
+
+  it("renders as a card grid", async () => {
+    const html = await renderHTML({
+      title: "Card",
+      link: "/card",
+      itemType: "grid",
+    });
+
+    expect(html).toContain("usa-card");
+    expect(html).not.toContain("usa-collection__item");
   });
 });
