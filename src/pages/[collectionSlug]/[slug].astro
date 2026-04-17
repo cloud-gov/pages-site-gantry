@@ -19,6 +19,7 @@ import { getFiltersSlugMetaData } from "@/utilities/filter";
 import type { FiltersSlugMetaDataModel } from "@/env";
 import FiltersCollectionItemTemplate from "@/components/FiltersCollectionItemTemplate.astro";
 import ContentBlocks from "@/components/ContentBlocks.astro";
+import PageWithSideNav from "@/components/PageWithSideNav.astro";
 
 export interface TagProps {
   title: string;
@@ -119,7 +120,12 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
   useBreadcrumbTitle={true}
   filtersSlugMetaData={filtersSlugMetaData}
 >
-  <PagesSection heading={data.title}>
+  <PageWithSideNav
+    heading={data.title}
+    showSideNav={true}
+    currentPath={`/${collectionSlug}/${pageSlug}`}
+    sideNavId={data.sideNavigation?.id}
+  >
     <article class="grid-container padding-top-0 usa-section">
       <div class="grid-row grid-gap grid-gap-6">
         {/* set colum width if related items are present */}
@@ -243,7 +249,7 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
       </div>
       <div class="flex-column margin-bottom-5"></div>
     </article>
-  </PagesSection>
+  </PageWithSideNav>
 </Layout>
 <FiltersCollectionItemTemplate
   item={item}

@@ -99,11 +99,11 @@ export function createBreadcrumbs(
       const newPath = [...path, item];
 
       if (item.href === currentPath) {
-        breadcrumbs.push(...newPath);
+        breadcrumbs.push(...(newPath as NavItem[]));
         return true;
       }
 
-      if (item.children && findPath(item.children, newPath)) {
+      if (item.children && findPath(item.children, newPath as string[])) {
         return true;
       }
     }
@@ -123,12 +123,21 @@ export function convertMenuToSideNav(menuItems: any[]): NavItem[] {
       let href = "#";
 
       // Handle different menu item types
-      if (item.blockType === "pageLink" && item.page) {
-        href = `/${item.page.slug}`;
-      } else if (item.blockType === "collectionLink") {
-        href = `/${item.page}`;
-      } else if (item.blockType === "externalLink" && item.url) {
-        href = item.url;
+      switch (item.blockType) {
+        case "pageLink":
+          href = `${item.page?.slug || ""}`;
+          break;
+        case "externalLink":
+          href = item.url || "";
+          break;
+        case "collectionTypeLink":
+          href = `/${item.collectionType?.slug || ""}`;
+          break;
+        case "collectionEntryLink":
+          href = `/${item.collectionEntry?.collectionSlug}/${item.collectionEntry?.slug}`;
+          break;
+        case "link":
+          href = item.url || "";
       }
 
       return {

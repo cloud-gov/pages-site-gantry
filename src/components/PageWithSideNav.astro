@@ -8,6 +8,10 @@ import {
   convertMenuToSideNav,
 } from "@/utilities/navigation";
 import Media from "./Media.astro";
+import {
+  buildMenuWithCollectionSlugs,
+  fetchCollectionEntry,
+} from "@/utilities/fetch";
 
 interface NavItem {
   id: string;
@@ -65,13 +69,17 @@ if (showSideNav && sideNavItems.length === 0) {
     if (sideNavResponse.ok) {
       const sideNavData = await sideNavResponse.json();
 
+      const [itemsWithSlugPath] = await Promise.all([
+        buildMenuWithCollectionSlugs(sideNavData.items, fetchCollectionEntry),
+      ]);
+
       // Check if page menu is enabled
       sideNavEnabled = sideNavData.enabled !== false;
       sideNavTitle = sideNavData.title || "Page Navigation";
 
       if (sideNavEnabled && sideNavData.items && sideNavData.items.length > 0) {
         // Convert page menu items to nav format
-        navItems = convertMenuToSideNav(sideNavData.items);
+        navItems = convertMenuToSideNav(itemsWithSlugPath);
       } else if (sideNavEnabled && sideNavData.fallbackToAllPages) {
         // Fallback to auto-generated navigation if enabled
         const response = await payloadFetch(
