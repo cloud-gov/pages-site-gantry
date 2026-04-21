@@ -144,40 +144,14 @@ const filtersSlugMetaData: FiltersSlugMetaDataModel = getFiltersSlugMetaData(
           <div class="maxw-72 margin-bottom-4">
             <p class="text-gray-50">
               {
-                item.date && (
-                  <p class="font-sans-sm text-italic" set:text={item.date} />
+                contentDate && (
+                  <p
+                    class="font-sans-sm text-italic"
+                    set:text={contentDate.full}
+                  />
                 )
               }
             </p>
-            {
-              /* possible deprecated feature */
-              contentDate && (
-                <div
-                  class="usa-summary-box maxw-tablet margin-bottom-2"
-                  role="region"
-                  aria-labelledby={`content-details-${data.slug}`}
-                >
-                  <div class="usa-summary-box__body">
-                    <h2
-                      class="usa-summary-box__heading"
-                      id={`content-details-${data.slug}`}
-                    >
-                      Details
-                    </h2>
-                    <div class="usa-summary-box__text">
-                      <ul class="usa-list">
-                        {contentDate && (
-                          <li>
-                            <b>Date:</b> {contentDate.full}
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )
-            }
-
             {
               /* main content entry body */
               data.content && (
