@@ -9,8 +9,8 @@ import type { MediaValueProps } from "@/env";
 export interface Props {
   title: string;
   description?: string;
-  date?: string | DateParts;
   publishedAt?: string | DateParts;
+  contentDate?: string | DateParts;
   tags?: Tag[];
   media?: MediaValueProps;
   link?: string;
@@ -23,7 +23,7 @@ export interface Props {
 const {
   title = "",
   description = "",
-  date = "",
+  contentDate = "",
   tags = [],
   media = null,
   link = "",
@@ -40,7 +40,10 @@ function normalizeDate(input?: string | DateParts | null): DateParts | null {
     : null;
 }
 
-const dateParts = date ? normalizeDate(date) : normalizeDate(publishedAt);
+const dateParts = contentDate
+  ? normalizeDate(contentDate)
+  : normalizeDate(publishedAt);
+const contentDateParts = contentDate ? normalizeDate(contentDate) : null;
 
 const hasTags = tags?.length > 0;
 const hasDescription = !!description?.trim();
@@ -104,7 +107,7 @@ const hasValidDate = !!(
           <ul class="usa-collection__meta" aria-label="More information">
             <li class="usa-collection__meta-item collection-item-date">
               <time datetime={dateParts.raw.toISOString()}>
-                {dateParts.full}
+                {contentDateParts ? contentDateParts.full : dateParts.full}
               </time>
             </li>
           </ul>
