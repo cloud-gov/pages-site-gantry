@@ -97,6 +97,8 @@ export const prerender = import.meta.env.PREVIEW_MODE ?? false;
         showSideNav={true}
         currentPath={`${page.slug}`}
         sideNavId={page.sideNavigation?.id}
+        heroImage={page.image}
+        description={page.description}
       >
         <div class="grid-row grid-gap grid-gap-6">
           <div
