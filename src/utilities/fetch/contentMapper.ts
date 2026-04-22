@@ -18,6 +18,7 @@ type ContentData = {
   content?: string;
   excerpt?: string;
   publishedAt?: string;
+  contentDate?: string;
   slug?: string;
   tags?: CollectionTagProps[];
   [key: string]: any;
@@ -26,7 +27,6 @@ type ContentData = {
 type MapperConfig = {
   baseUrl: string;
   dateField?: string;
-  dateConversionFunction?: (any) => any;
 };
 
 function safeParse(input?: string | number | Date): DateParts | null {
@@ -50,14 +50,15 @@ export function filteredContentMapper(data, baseUrl, yearTag) {
 
 export function contentMapper(
   data: ContentData,
-  { baseUrl, dateField = "publishedAt", dateConversionFunction }: MapperConfig,
+  { baseUrl, dateField = "publishedAt" }: MapperConfig,
 ) {
   const endSrc = (data as any).endDate;
 
   return {
     title: data.title,
     content: data.content,
-    date: dateConversionFunction(data[dateField] || data.publishedAt || ""),
+    publishedAt: data.publishedAt,
+    contentDate: data.contentDate,
     startDate: safeParse(data.startDate || ""),
     endDate: safeParse(endSrc),
     description: data.description || "",
@@ -77,7 +78,6 @@ export function customCollectionEntryMapper(data: any, collectionSlug: string) {
   return contentMapper(data, {
     baseUrl: `/${collectionSlug}`,
     dateField: data.contentDate ? "contentDate" : "publishedAt",
-    dateConversionFunction: formatDate,
   });
 }
 
