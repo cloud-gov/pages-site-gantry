@@ -1,3 +1,68 @@
+## 0.3.0 (2026-04-23)
+
+### Added
+
+- add card grid layout to collection list (#212)
+- add test for grid item
+- add styling for collections
+
+### Fixed
+
+- page description shown in hero section (#217)
+- added testing for component
+- heroImage-less description display
+- formatting error
+- use content date when available (#216)
+- remove old date abstraction
+- set entry content date for display (#215)
+- side nav collection type href value (#214)
+- add test to navigation utility
+- apply PageWithSideNav content container
+- filters not showing on card grid view
+- restore pagination in collection list and card view
+- remove comment crumb
+- pill buttons appear on direct browsing
+- baseurl for pill button svg
+- change pill image to css background
+- clean up imports
+- apply any to the compound filter in pagefind
+- change filter to use all inclusive any variety
+- pass union type array for content blocks, refactor tag props
+- replace prerender test
+- non collection page view content area
+- relative basepath in filter component
+- tag label vs title association, date, and layout tweak for slug view
+- run mapped content through filter template. refactor tests to expect correct object labels for tags
+- static path generation for collection items
+- disappearing border on filtered clone
+- remove unneeded filter changes, tag route, fix issue with page status
+- remove console log and clean up styles
+
+### Maintenance
+
+- refactor collection filter ui (#210)
+- add active filter pill buttons
+- add testing for filter status marker changes
+- update collection page, page content rendering (#209)
+- refactor contentBlocks array moved to component
+- remove inconsistent style class
+- enable page related items slug
+- refactor page elements (#208)
+- refactor page elements, clean up extraneous councils-based style rules
+- refactor collection items and filtering (#204)
+- collection entries in line with councils
+- update related items so links match schema changes. add date
+- added page n of n to collection list views
+- **ci**: Remove deprecated security-considerations automation
+- incorporate pagefind filter into collection items
+- **ci**: Remove deprecated security-considerations automation
+- add function to update pagination status text
+- added test for pagination status message
+- **ci**: Remove deprecated security-considerations automation
+- integrate councils based theme (#201)
+- integrate councils theme
+- page content styling
+
 ## 0.2.0 (2026-03-13)
 
 ### Added
