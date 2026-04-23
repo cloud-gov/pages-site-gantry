@@ -112,7 +112,7 @@ if (showSideNav && sideNavItems.length === 0) {
                   {heroImage && (
                     <div class="grid-row grid-gap sidebar-layout page-hero">
                       <div class="sidebar-layout__sidebar">
-                        <div class="council-hero__logo-container">
+                        <div class="council-hero__logo-container bg-white">
                           <Media media={heroImage} />
                         </div>
                       </div>
@@ -124,7 +124,16 @@ if (showSideNav && sideNavItems.length === 0) {
                       </div>
                     </div>
                   )}
-                  {!heroImage && <h1 class="margin-bottom-2">{heading}</h1>}
+                  {!heroImage && description && (
+                    <>
+                      <p class="council-hero__brow">{description}</p>
+                      <h1 class="margin-bottom-2">{heading}</h1>
+                    </>
+                  )}
+
+                  {!heroImage && !description && (
+                    <h1 class="margin-bottom-2">{heading}</h1>
+                  )}
                 </div>
               )}
             </div>
@@ -154,7 +163,7 @@ if (showSideNav && sideNavItems.length === 0) {
                   {heroImage && (
                     <div class="grid-row grid-gap sidebar-layout page-hero">
                       <div class="sidebar-layout__sidebar">
-                        <div class="council-hero__logo-container">
+                        <div class="council-hero__logo-container bg-white">
                           <Media media={heroImage} />
                         </div>
                       </div>
@@ -166,7 +175,15 @@ if (showSideNav && sideNavItems.length === 0) {
                       </div>
                     </div>
                   )}
-                  {!heroImage && <h1 class="margin-bottom-2">{heading}</h1>}
+                  {!heroImage && description && (
+                    <>
+                      <p class="council-hero__brow">{description}</p>
+                      <h1 class="margin-bottom-2">{heading}</h1>
+                    </>
+                  )}
+                  {!heroImage && !description && (
+                    <h1 class="margin-bottom-2">{heading}</h1>
+                  )}
                 </div>
               )}
             </div>
