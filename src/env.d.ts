@@ -229,6 +229,11 @@ export interface AlertModel {
   alignment?: "left" | "center";
 }
 
+export interface CollectionExternalLink {
+  label?: string;
+  url?: string;
+}
+
 export interface IdentifierColorFamilies {
   identifier: string;
   identityDomain: string;
