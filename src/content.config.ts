@@ -159,6 +159,33 @@ const homepage = defineCollection({
                 blockName: z.string().nullable().optional(),
                 blockType: z.literal("textBlock"),
               }),
+              z.object({
+                content: z
+                  .object({
+                    root: z.object({
+                      type: z.string(),
+                      children: z.array(z.any()),
+                      direction: z.enum(["ltr", "rtl"]).nullable(),
+                      format: z.enum([
+                        "left",
+                        "start",
+                        "center",
+                        "right",
+                        "end",
+                        "justify",
+                        "",
+                      ]),
+                      indent: z.number(),
+                      version: z.number(),
+                    }),
+                  })
+                  .nullable()
+                  .optional(),
+                id: z.string().nullable().optional(),
+                blockName: z.string().nullable().optional(),
+                blockType: z.literal("richText"),
+                
+              }),
             ]),
           )
           .nullable()
