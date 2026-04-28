@@ -437,7 +437,7 @@ export function getCouncilsExternalLinkGroups(): LinkGroup[] {
         {
           text: "Chief Information Officers Council",
           url: "#url3",
-        }
+        },
       ],
     },
   ];

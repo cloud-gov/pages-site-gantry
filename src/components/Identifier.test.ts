@@ -93,12 +93,11 @@ describe("Identifier", () => {
     );
     expect(result).toContain('href="https://www.usa.gov/"');
     expect(result).toContain("Visit USA.gov");
-    
-    expect(result).toContain("usa-link usa-link--external")
-    
+
+    expect(result).toContain("usa-link usa-link--external");
   });
 
-  it("does not render external link properties when no external link is provided", async()=>{
+  it("does not render external link properties when no external link is provided", async () => {
     const siteDomain = "Domain.gov";
     const container = await AstroContainer.create();
     const result = await container.renderToString(Identifier, {
@@ -128,13 +127,9 @@ describe("Identifier", () => {
       },
     });
 
-     
     expect(result).toContain(agencyText);
     expect(result).toContain(siteDomain);
     expect(result).toContain('href="https://domain.gov"');
     expect(result).to.not.contain("usa-link usa-link--external");
-   
-
-  })
+  });
 });
-

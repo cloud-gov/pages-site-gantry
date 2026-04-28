@@ -6,7 +6,10 @@ import {
   type PreFooterBigModel,
   CONNECT_SECTION_BOTTOM,
 } from "@/env";
-import { getCouncilsExternalLinkGroups, getCouncilsLinkGroups } from "@/components/PreFooterBig.testData";
+import {
+  getCouncilsExternalLinkGroups,
+  getCouncilsLinkGroups,
+} from "@/components/PreFooterBig.testData";
 import { getConnectSectionFull } from "@/components/ConnectSection.testData";
 
 describe("PreFooterBig", () => {
@@ -37,7 +40,7 @@ describe("PreFooterBig", () => {
       '<nav class="usa-footer__nav" aria-label="Pre-footer contact center and social links"',
     );
 
-    expect(result).not.to.contain("usa-link--external")
+    expect(result).not.to.contain("usa-link--external");
   });
 
   it("renders only Connect Section if no LinkGroups", async () => {
@@ -121,7 +124,7 @@ describe("PreFooterBig", () => {
     );
   });
 
-  it("render external link clase if external link is provided", async()=>{
+  it("render external link clase if external link is provided", async () => {
     const preFooterBig: PreFooterBigModel = {
       linkGroups: getCouncilsExternalLinkGroups(),
       connectSection: getConnectSectionFull(),
@@ -140,6 +143,6 @@ describe("PreFooterBig", () => {
     expect(result).toContain(
       '<nav class="usa-footer__nav" aria-label="Pre-footer contact center and social links"',
     );
-    expect(result).toContain("usa-link--external")
-  })
+    expect(result).toContain("usa-link--external");
+  });
 });
