@@ -4,7 +4,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Tags, { type Tag } from "@/components/Tags.astro";
 import Media from "@/components/Media.astro";
 import { parseDateParts, type DateParts } from "@/utilities/dates";
-import type { MediaValueProps } from "@/env";
+import type { CollectionExternalLink, MediaValueProps } from "@/env";
 
 export interface Props {
   title: string;
@@ -18,6 +18,7 @@ export interface Props {
   itemType?: "list" | "grid";
   collectionSlug?: string;
   showEvent?: boolean;
+  externalLink?: CollectionExternalLink;
 }
 
 const {
@@ -30,6 +31,7 @@ const {
   publishedAt = null,
   itemType = null,
   collectionSlug = null,
+  externalLink = null,
 } = Astro.props;
 
 function normalizeDate(input?: string | DateParts | null): DateParts | null {
@@ -47,6 +49,13 @@ const contentDateParts = contentDate ? normalizeDate(contentDate) : null;
 
 const hasTags = tags?.length > 0;
 const hasDescription = !!description?.trim();
+
+/* compute link text and href in case of an external link */
+const externalHref = externalLink?.url?.trim();
+const externalLabel = externalLink?.label?.trim();
+
+const resolvedHref = externalHref ?? link;
+const resolvedLabel = externalLabel ?? `View ${collectionSlug} item`;
 
 const hasValidDate = !!(
   dateParts &&
@@ -85,7 +94,7 @@ const hasValidDate = !!(
           </div>
           <div class="usa-card__footer">
             <span class="usa-link usa-link--external font-sans-sm">
-              <Link href={link}>View {collectionSlug} item</Link>
+              <Link href={resolvedHref}>{resolvedLabel}</Link>
             </span>
           </div>
         </div>
