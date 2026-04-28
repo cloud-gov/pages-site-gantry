@@ -35,7 +35,11 @@ function safeParse(input?: string | number | Date): DateParts | null {
   return Number.isNaN(parts.raw.getTime()) ? null : parts;
 }
 
-export function filteredContentMapper(data, baseUrl, yearTag) {
+export function filteredContentMapper(
+  data: any,
+  baseUrl: string,
+  yearTag: string,
+) {
   return {
     tags: (data.tags ?? []).map(
       (c): Tag => ({
@@ -66,6 +70,7 @@ export function contentMapper(
     imageAlt: data.image?.altText || data.title,
     link: `${baseUrl}/${data.slug}`,
     showInPageNav: data.showInPageNav ?? true,
+    externalLink: data.externalLink,
     ...filteredContentMapper(
       data,
       baseUrl,
@@ -101,11 +106,11 @@ export function alertsMapper(
   responseData: any,
   preRendered: boolean = false,
 ): AlertModel[] {
-  const getData = (a) => (preRendered ? a?.data : a);
+  const getData = (a: any) => (preRendered ? a?.data : a);
   return (
     responseData
-      ?.filter((a) => !!getData(a)?.isActive)
-      ?.map((a) => {
+      ?.filter((a: any) => !!getData(a)?.isActive)
+      ?.map((a: any) => {
         const data = getData(a);
         const result: AlertModel = {
           title: data.title,

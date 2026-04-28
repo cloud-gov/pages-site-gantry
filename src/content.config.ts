@@ -463,6 +463,10 @@ const collectionEntries = defineCollection({
       contentDate: z.string().datetime().optional(),
       tags: z.array(cCustom.optional()).optional(),
       site: z.any(),
+      externalLink: z.object({
+        url: z.string(),
+        hyperlinkLabel: z.string(),
+      }),
       content: z.any().optional(), // richText
       reviewReady: z.boolean().optional(),
       showInPageNav: z.boolean().optional(),
