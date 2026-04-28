@@ -80,7 +80,7 @@ const bkgColor = colors?.bkgColorLightest;
                             {topic.links.map((link, index) => (
                               <li class="usa-footer__secondary-content usa-footer__secondary-link">
                                 <Link
-                                  className="usa-footer__secondary-link"
+                                  className={`usa-footer__secondary-link${link.externalLink ? " usa-link--external" : ""}`}
                                   href={link.url}
                                 >
                                   {link.text}

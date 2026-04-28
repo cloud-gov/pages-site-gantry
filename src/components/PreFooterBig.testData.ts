@@ -419,6 +419,29 @@ function getThreeLongLinkGroups(): LinkGroup[] {
   ];
 }
 
+export function getCouncilsExternalLinkGroups(): LinkGroup[] {
+  return [
+    {
+      name: "Federal Executive Councils",
+      links: [
+        {
+          text: "Chief Acquisition Officers Council",
+          url: "#url1",
+          externalLink: true,
+        },
+        {
+          text: "Chief Data Officers Council",
+          url: "#url2",
+          externalLink: true,
+        },
+        {
+          text: "Chief Information Officers Council",
+          url: "#url3",
+        }
+      ],
+    },
+  ];
+}
 export function getPreFooterBig(): PreFooterBigModel {
   const preFooterBigTest: PreFooterBigModel = {
     linkGroups: getLinkGroups(6), // 1 - 13
