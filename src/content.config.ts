@@ -184,7 +184,6 @@ const homepage = defineCollection({
                 id: z.string().nullable().optional(),
                 blockName: z.string().nullable().optional(),
                 blockType: z.literal("richText"),
-                
               }),
             ]),
           )
