@@ -151,7 +151,7 @@ export function linkMapper(link): LinkModel {
       result = {
         text: link?.label,
         url: link?.url,
-        externalLink: true,
+        externalLink: false,
       };
       break;
     case "slimExternalLink":

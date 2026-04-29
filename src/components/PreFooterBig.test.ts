@@ -6,7 +6,10 @@ import {
   type PreFooterBigModel,
   CONNECT_SECTION_BOTTOM,
 } from "@/env";
-import { getCouncilsLinkGroups } from "@/components/PreFooterBig.testData";
+import {
+  getCouncilsExternalLinkGroups,
+  getCouncilsLinkGroups,
+} from "@/components/PreFooterBig.testData";
 import { getConnectSectionFull } from "@/components/ConnectSection.testData";
 
 describe("PreFooterBig", () => {
@@ -36,6 +39,8 @@ describe("PreFooterBig", () => {
     expect(result).toContain(
       '<nav class="usa-footer__nav" aria-label="Pre-footer contact center and social links"',
     );
+
+    expect(result).not.to.contain("usa-link--external");
   });
 
   it("renders only Connect Section if no LinkGroups", async () => {
@@ -117,5 +122,27 @@ describe("PreFooterBig", () => {
     expect(result).toContain(
       '<nav class="usa-footer__nav" aria-label="Pre-footer contact center and social links"',
     );
+  });
+
+  it("render external link clase if external link is provided", async () => {
+    const preFooterBig: PreFooterBigModel = {
+      linkGroups: getCouncilsExternalLinkGroups(),
+      connectSection: getConnectSectionFull(),
+      configuration: {
+        connectSectionLocation: CONNECT_SECTION_BOTTOM,
+        columnsInLinkGroup: LINK_GROUP_COLUMNS_DEFAULT,
+      },
+    };
+
+    const result = await container.renderToString(PreFooterBig, {
+      props: { preFooter: preFooterBig },
+    });
+    expect(result).toContain(
+      '<nav class="usa-footer__nav" aria-label="Pre-footer links"',
+    );
+    expect(result).toContain(
+      '<nav class="usa-footer__nav" aria-label="Pre-footer contact center and social links"',
+    );
+    expect(result).toContain("usa-link--external");
   });
 });

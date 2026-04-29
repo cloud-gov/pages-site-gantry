@@ -464,8 +464,8 @@ const collectionEntries = defineCollection({
       tags: z.array(cCustom.optional()).optional(),
       site: z.any(),
       externalLink: z.object({
-        url: z.string(),
-        hyperlinkLabel: z.string(),
+        url: z.string().optional().nullable(),
+        label: z.string().optional().nullable(),
       }),
       content: z.any().optional(), // richText
       reviewReady: z.boolean().optional(),

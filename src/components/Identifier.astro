@@ -78,7 +78,7 @@ const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
                 <li class={`usa-identifier__required-links-item`}>
                   <a
                     href={cleanBaseUrl + link.url}
-                    class={`usa-identifier__required-link usa-link text-${secondaryLinkColor}${link.externalLink && " usa-link--external"}`}
+                    class={`usa-identifier__required-link usa-link${secondaryLinkColor ? ` text-${secondaryLinkColor}` : ""}${link.externalLink ? " usa-link--external" : ""}`}
                   >
                     {link.text}
                   </a>
