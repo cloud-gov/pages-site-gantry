@@ -200,7 +200,7 @@ const homepage = defineCollection({
 // Menu types to satisfy dropdown
 const BaseBlock = z.object({
   id: z.string(),
-  label: z.string(),
+  label: z.string().nullable().optional(),
   blockName: z.string().nullable().optional(),
 });
 
