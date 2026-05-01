@@ -56,7 +56,7 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
                     {item.links?.map((subitem) => {
                       let subHref = "#";
                       let isExternal = false;
-                      
+
                       if (subitem.blockType === "pageLink") {
                         subHref = `/${subitem.page.slug}`;
                       } else if (subitem.blockType === "link") {
@@ -76,7 +76,7 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
                       return (
                         <li class="usa-nav__submenu-item">
                           <Link
-                            className={`usa-nav__link${isSubActive ? " usa-current" : ""}${isExternal? " usa-link--external " : ""}`}
+                            className={`usa-nav__link${isSubActive ? " usa-current" : ""}${isExternal ? " usa-link--external " : ""}`}
                             href={subHref}
                             aria-current={isSubActive ? "page" : undefined}
                           >
@@ -123,7 +123,7 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
             return (
               <li class="usa-nav__primary-item">
                 <Link
-                  className={`usa-nav__link${isActive ? " usa-current" : ""}${isExternal? " usa-link--external" : ""}`}
+                  className={`usa-nav__link${isActive ? " usa-current" : ""}${isExternal ? " usa-link--external" : ""}`}
                   href={href}
                   aria-current={isActive ? "page" : undefined}
                 >
