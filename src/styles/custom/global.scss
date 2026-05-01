@@ -808,6 +808,16 @@ main.home + .usa-footer:before{
 }
 
 .usa-header--basic {
+
+  .usa-link--external.usa-nav__link:hover::after {
+      position: inherit;
+      left: unset;
+      right: unset;
+      bottom: unset;
+      display: inline;
+      background-color: var(--color-white); 
+  }
+
   max-width: var(--max-width);
   width: 100%;
   margin-left: auto;
@@ -819,6 +829,14 @@ main.home + .usa-footer:before{
 
   @media (max-width: $breakpoint-desktop) {
     padding: 0;
+      .usa-link--external.usa-nav__link:hover::after {
+      position: inherit;
+      left: unset;
+      right: unset;
+      bottom: unset;
+      display: inline;
+      background-color: var(--primary-color); 
+  }
   }
 
   .usa-nav-container {
