@@ -55,19 +55,20 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
                   >
                     {item.links?.map((subitem) => {
                       let subHref = "#";
-
+                      let isExternal = false;
+                      
                       if (subitem.blockType === "pageLink") {
                         subHref = `/${subitem.page.slug}`;
                       } else if (subitem.blockType === "link") {
                         subHref = `${subitem.url}`;
                       } else if (subitem.blockType === "externalLink") {
+                        isExternal = true;
                         subHref = `${subitem.url}`;
                       } else if (subitem.blockType === "collectionEntryLink") {
                         subHref = `/${subitem.collectionEntry?.collectionSlug}/${subitem.collectionEntry?.slug || ""}`;
                       } else if (subitem.blockType === "collectionTypeLink") {
                         subHref = `/${subitem.collectionType?.slug || ""}`;
                       }
-
                       const isSubActive =
                         currentPath === subHref ||
                         currentPath.startsWith(subHref + "/");
@@ -75,7 +76,7 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
                       return (
                         <li class="usa-nav__submenu-item">
                           <Link
-                            className={`usa-nav__link${isSubActive ? " usa-current" : ""}`}
+                            className={`usa-nav__link${isSubActive ? " usa-current" : ""}${isExternal? " usa-link--external " : ""}`}
                             href={subHref}
                             aria-current={isSubActive ? "page" : undefined}
                           >
@@ -91,11 +92,13 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
 
             let href = "#";
             let label = "";
+            let isExternal = false;
 
             if (item.blockType === "navItem") {
               href = `/${item.page.slug}`;
               label = item.label;
             } else if (item.blockType === "externalLink") {
+              isExternal = true;
               href = item.url;
               label = item.label;
             } else if (item.blockType === "link") {
@@ -120,7 +123,7 @@ const { title, items = [], searchAccessKey, searchAffiliate } = Astro.props;
             return (
               <li class="usa-nav__primary-item">
                 <Link
-                  className={`usa-nav__link${isActive ? " usa-current" : ""}`}
+                  className={`usa-nav__link${isActive ? " usa-current" : ""}${isExternal? " usa-link--external" : ""}`}
                   href={href}
                   aria-current={isActive ? "page" : undefined}
                 >
