@@ -3,6 +3,7 @@ import { getMediaUrl } from "@/utilities/media";
 
 export interface Props {
   title?: string;
+  amountCards?: number;
   cards: Array<{
     title: string;
     description: string;
@@ -11,8 +12,7 @@ export interface Props {
     ctaURL?: string;
   }>;
 }
-
-const { title, cards } = Astro.props;
+const { title, cards, amountCards } = Astro.props;
 ---
 
 <section class="usa-section card-grid">
@@ -22,7 +22,10 @@ const { title, cards } = Astro.props;
     <div class="grid-row grid-gap">
       {
         cards?.map((card) => (
-          <div class="tablet:grid-col-4">
+          <div
+            class="tablet:grid-col-6"
+            style={`flex: 0 0 calc((100% - 4rem) /${amountCards || 3} );`}
+          >
             <div class="usa-card card-grid-item">
               <div class="usa-card__container">
                 {card.image && (

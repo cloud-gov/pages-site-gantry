@@ -109,6 +109,7 @@ const homepage = defineCollection({
               z.object({
                 title: z.string().nullable().optional(),
                 description: z.string().nullable().optional(),
+                amountCards: z.number().nullable().optional(),
                 cards: z
                   .array(
                     z.object({
