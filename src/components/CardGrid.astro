@@ -3,7 +3,7 @@ import { getMediaUrl } from "@/utilities/media";
 
 export interface Props {
   title?: string;
-  amountCards?: number;
+  amountCards?: string;
   cards: Array<{
     title: string;
     description: string;
@@ -24,7 +24,7 @@ const { title, cards, amountCards } = Astro.props;
         cards?.map((card) => (
           <div
             class="tablet:grid-col-6"
-            style={`flex: 0 0 calc((100% - 4rem) /${amountCards || 3} );`}
+            style={`flex: 0 0 calc((100% - 4rem) /${Number(amountCards) || 3} );`}
           >
             <div class="usa-card card-grid-item">
               <div class="usa-card__container">
