@@ -13,8 +13,7 @@ export interface Props {
   }>;
 }
 const { title, cards, amountCards } = Astro.props;
-const cardClass = `grid-col-${(12/Number(amountCards))-1}`;
-
+const cardClass = `grid-col-${12 / Number(amountCards) - 1}`;
 ---
 
 <section class="usa-section card-grid">
@@ -81,8 +80,6 @@ const cardClass = `grid-col-${(12/Number(amountCards))-1}`;
       flex: 0 0 100%;
     }
   }
-
-
 
   .usa-card__container {
     display: flex;
