@@ -556,9 +556,6 @@ footer.usa-footer .footer-grid-container,
   padding-bottom: 2rem;
   .grid-row {
     gap: 2rem;
-    & > div {
-      flex: 0 0 calc((100% - 4rem) / 3);
-    }
     @media (max-width: ($breakpoint-tablet - 0.0625rem)) {
       & > div {
       flex: none;
