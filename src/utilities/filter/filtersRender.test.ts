@@ -12,7 +12,7 @@ import {
 } from "@/utilities/filter/filtersRender";
 import * as searchModule from "@/utilities/filter/filtersSearch";
 import * as paginationModule from "@/utilities/filter/filtersPagination";
-import type { ElementsPair, FiltersData } from "@/env";
+import type { ElementsPair, FiltersData } from "@/env.d";
 import * as filtersUtilsModule from "@/utilities/filter/filtersUtils";
 
 /* ------------------------------------------------------------------ */

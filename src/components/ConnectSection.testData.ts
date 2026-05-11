@@ -2,7 +2,7 @@ import {
   type ConnectSectionModel,
   type SocialLink,
   SocialPlatform,
-} from "@/env";
+} from "@/env.d";
 
 export const contactCenterName = "Agency Contact Center";
 export const contactCenterPhone = "1-800-555-GOVT";

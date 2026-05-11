@@ -8,7 +8,7 @@ import {
   type PreFooterType,
   type SocialLink,
   SocialPlatform,
-} from "@/env";
+} from "@/env.d";
 import { cleanConfiguration } from "@/utilities/preFooterBig";
 import type { CollectionEntry } from "astro:content";
 import { linkMapper } from "./contentMapper.ts";

@@ -1,4 +1,4 @@
-import { type LinkModel, type PreFooterSlimModel } from "@/env";
+import { type LinkModel, type PreFooterSlimModel } from "@/env.d";
 
 export function cleanPreFooterSlim(
   preFooter: PreFooterSlimModel,

@@ -3,7 +3,7 @@ import type {
   FilterMapEntry,
   FiltersData,
   PageNavItemModel,
-} from "@/env";
+} from "@/env.d";
 import { getPageNavItems, getPaginationItemId } from "@/utilities/pagination";
 import {
   PAGINATION_ITEM_ID_PREFIX,

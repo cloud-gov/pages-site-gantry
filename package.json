@@ -24,12 +24,12 @@
     "test:coverage:run": "NODE_ENV=test vitest run --coverage"
   },
   "dependencies": {
-    "@astrojs/node": "^9.0.2",
-    "@astrojs/ts-plugin": "^1.10.4",
-    "@payloadcms/live-preview": "^3.58.0",
-    "@payloadcms/richtext-lexical": "^3.35.1",
+    "@astrojs/node": "^10.1.0",
+    "@astrojs/ts-plugin": "^1.10.7",
+    "@payloadcms/live-preview": "^3.84.1",
+    "@payloadcms/richtext-lexical": "^3.84.1",
     "@uswds/uswds": "^3.11.0",
-    "astro": "^5.2.5",
+    "astro": "^6.3.1",
     "body-parser": "^2.1.0",
     "cookie-parser": "^1.4.7",
     "esbuild": "^0.27.2",
@@ -47,15 +47,15 @@
     "npm": "^11.x.x"
   },
   "devDependencies": {
-    "@types/node": "^22.13.4",
-    "@types/sanitize-html": "^2.15.0",
+    "@types/node": "^25.7.0",
+    "@types/sanitize-html": "^2.16.1",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
-    "happy-dom": "^20.0.8",
-    "pagefind": "^1.4.0",
-    "prettier": "^3.6.2",
-    "prettier-plugin-astro": "0.14.1",
-    "sass-embedded": "^1.85.0",
+    "happy-dom": "^20.9.0",
+    "pagefind": "^1.5.2",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "sass-embedded": "^1.99.0",
     "vitest": "^3.2.4"
   },
   "optionalDependencies": {

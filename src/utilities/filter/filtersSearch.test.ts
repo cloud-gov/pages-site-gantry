@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { PageFindResults } from "@/env";
+import type { PageFindResults } from "@/env.d";
 import {
   getFilteredResultFragment,
   search,

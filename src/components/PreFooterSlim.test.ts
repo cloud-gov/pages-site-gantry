@@ -2,7 +2,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import PreFooterSlim from "@/components/PreFooterSlim.astro";
 
 import { describe, it, expect, beforeEach } from "vitest";
-import { type PreFooterSlimModel } from "@/env";
+import { type PreFooterSlimModel } from "@/env.d";
 
 describe("PreFooterSlim", () => {
   let container: any;
