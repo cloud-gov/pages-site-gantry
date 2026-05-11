@@ -1,5 +1,5 @@
 ---
-import { type FilterConfig } from "@/env";
+import { type FilterConfig } from "@/env.d";
 import { getFilterNavId } from "@/utilities/filter";
 
 interface Props {
@@ -10,7 +10,7 @@ const { filterName, filterLabel } = filter;
 const navId = getFilterNavId(filterName);
 ---
 
-<h3 class="usa-accordion__heading" id={navId} hidden>
+<h3 class="usa-accordion__heading" id={navId}>
   <button
     type="button"
     class="usa-accordion__button"

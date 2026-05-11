@@ -5,7 +5,7 @@ import {
   PRE_FOOTER_TYPE_BIG,
   PRE_FOOTER_TYPE_NONE,
   PRE_FOOTER_TYPE_SLIM,
-} from "@/env";
+} from "@/env.d";
 
 import { getPreFooterBig } from "@/components/PreFooterBig.testData";
 import { getPreFooterSlim } from "@/components/PreFooterSlim.testData.ts";

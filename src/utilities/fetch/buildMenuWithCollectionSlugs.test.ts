@@ -4,7 +4,7 @@ import {
   buildPreFooterWithCollectionSlugs,
 } from "./buildMenuWithCollectionSlugs";
 
-import type { FetchResult } from "@/env";
+import type { FetchResult } from "@/env.d";
 export const makeFetchMock = (map: Record<string | number, string | null>) => {
   // map: { entryId: collectionTypeSlugOrNull }
   return vi.fn(async (id: string | number): Promise<FetchResult> => {

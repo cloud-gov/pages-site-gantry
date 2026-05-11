@@ -1,4 +1,4 @@
-import type { ElementsPair, FilterSelection } from "@/env";
+import type { ElementsPair, FilterSelection } from "@/env.d";
 
 export function createDocumentFragment(clones: Awaited<Node>[]) {
   const nodes = clones?.filter(Boolean);

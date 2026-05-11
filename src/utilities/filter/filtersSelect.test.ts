@@ -8,7 +8,7 @@ import {
   sortFilterOptions,
   updateHistoryStateForWindow,
 } from "@/utilities/filter/filtersSelect";
-import type { FilterSelection } from "@/env";
+import type { FilterSelection } from "@/env.d";
 
 /* ------------------------------------------------------------------ */
 /* getCollectionFilters */

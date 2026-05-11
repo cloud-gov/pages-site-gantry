@@ -11,7 +11,7 @@ import {
   LINK_GROUP_COLUMNS_DEFAULT,
   LINK_GROUP_COLUMNS_MAX,
   CONNECT_SECTION_BOTTOM,
-} from "@/env";
+} from "@/env.d";
 
 function filterByPlatforms(
   items: SocialLink[],

@@ -1,4 +1,4 @@
-import type { FetchResult } from "@/env";
+import type { FetchResult } from "@/env.d";
 
 export interface RelatedItem {
   id: string;

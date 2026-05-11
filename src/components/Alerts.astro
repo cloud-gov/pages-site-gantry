@@ -1,5 +1,5 @@
 ---
-import type { AlertModel } from "@/env";
+import type { AlertModel } from "@/env.d";
 import RichText from "@/components/RichText.astro";
 import { cleanAlerts } from "@/utilities/alerts";
 
@@ -14,8 +14,8 @@ const alerts: AlertModel[] = cleanAlerts(alertsData);
         (a: AlertModel) =>
           a?.type && (
             <div
-              class={`usa-alert margin-y-0 usa-alert--${a.type} 
-              ${a?.icon ? " " : "usa-alert--no-icon "} 
+              class={`usa-alert margin-y-0 usa-alert--${a.type}
+              ${a?.icon ? " " : "usa-alert--no-icon "}
               ${a?.slim ? "usa-alert--slim " : " "}`}
               role="alert"
             >

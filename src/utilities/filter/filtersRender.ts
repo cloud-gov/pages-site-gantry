@@ -4,7 +4,7 @@ import type {
   FilterOption,
   FiltersData,
   FilterSelection,
-} from "@/env";
+} from "@/env.d";
 import { getCollectionFilters } from "@/utilities/filter/filtersSelect";
 import { FILTER_NAV_ID_PREFIX } from "@/utilities/filter/filtersConfig";
 import { getFilteredResultFragment } from "@/utilities/filter/filtersSearch";

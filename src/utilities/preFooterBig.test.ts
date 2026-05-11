@@ -17,7 +17,7 @@ import {
   type SocialLink,
   type LinkGroup,
   SocialPlatform,
-} from "@/env";
+} from "@/env.d";
 import {
   contactCenterEmail,
   contactCenterName,

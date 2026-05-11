@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { PageNavItemModel } from "@/env";
+import type { PageNavItemModel } from "@/env.d";
 import * as paginaton from "@/utilities/filter/filtersPagination";
 
 describe("Filters Utility, getFilteredPageNavInfo", () => {

@@ -6,7 +6,7 @@ import type {
   FiltersData,
   FiltersSlugMetaDataModel,
   Tag,
-} from "@/env";
+} from "@/env.d";
 import {
   DATASET_KEYS,
   FILTER_NAME_TAG,
