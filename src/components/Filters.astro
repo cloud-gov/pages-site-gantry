@@ -17,8 +17,10 @@ const baseUrl = import.meta.env.LOCAL_DEV
   ? "/"
   : (import.meta.env.BASEURL || "") + "/";
 
+const filtersConfig = FILTERS_CONFIG;
+
 const dataAttributes = getFiltersDataAttributes(
-  FILTERS_CONFIG,
+  filtersConfig,
   filteredPageConfig,
   baseUrl,
 );
@@ -35,7 +37,7 @@ const dataAttributes = getFiltersDataAttributes(
           <span id={FILTERS_DATA_ID} {...dataAttributes} style="display:none" />
         )
       }
-      {FILTERS_CONFIG?.map((filter) => <Filter filter={filter} />)}
+      {filtersConfig?.map((filter) => <Filter filter={filter} />)}
     </div>
   </div>
 </aside>
@@ -71,6 +73,20 @@ const dataAttributes = getFiltersDataAttributes(
       const pagefind = await import(data.baseUrl + "pagefind/pagefind.js");
       pagefind.init();
       const pagefindFilters = await pagefind.filters();
+
+      Object.keys(pagefindFilters || {}).forEach((filterKey) => {
+        const parts = filterKey.split("_");
+        const filterName = parts.slice(1).join("_");
+
+        if (!filterName) return;
+
+        if (!data.filtersMap.has(filterName)) {
+          data.filtersMap.set(filterName, {
+            filterName,
+            pagefindfilter: filterKey,
+          });
+        }
+      });
 
       const filtersFromQueryParams = getFiltersFromQueryParams(window);
       collectionListPair = createFilteredCollectionItemList();
