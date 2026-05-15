@@ -64,7 +64,7 @@ export default defineConfig({
           replacement: "/public/img",
         },
         {
-          find: "@/env",
+          find: "@/env.d",
           replacement: "/src/env.d.ts",
         },
         {

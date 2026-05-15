@@ -1,6 +1,7 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import type { ZodObject, ZodRawShape } from "astro:schema";
-import type { MediaValueProps, CollectionTagProps } from "@/env";
+import type { MediaValueProps, CollectionTagProps } from "@/env.d";
 import { collectionLoader } from "@/utilities/fetch";
 
 // NOTE: because we are rendering drafts, every property should
@@ -29,7 +30,7 @@ const mvCustom = z.custom<MediaValueProps>(
     );
   },
   {
-    message:
+    error:
       "Invalid MediaValueProps: must be an object with at least a 'url' string",
   },
 );
@@ -44,7 +45,7 @@ const cCustom = z.custom<CollectionTagProps>(
     );
   },
   {
-    message:
+    error:
       "Invalid CollectionTagProps: must be an object with at least a 'title' string",
   },
 );
@@ -69,8 +70,8 @@ const alerts = defineCollection({
       icon: z.boolean().nullable().optional(),
       site: z.any().nullable().optional(),
       reviewReady: z.boolean().nullable().optional(),
-      updatedAt: z.string().datetime().nullable().optional(),
-      createdAt: z.string().datetime().nullable().optional(),
+      updatedAt: z.iso.datetime().nullable().optional(),
+      createdAt: z.iso.datetime().nullable().optional(),
       _status: z.enum(["draft", "published"]).nullable().optional(),
     }),
   ),
@@ -262,8 +263,8 @@ const menu = defineCollection({
       .object({
         items: z.array(MenuItem).nullable().optional(),
         _status: z.enum(["draft", "published"]),
-        updatedAt: z.string().datetime(),
-        createdAt: z.string().datetime(),
+        updatedAt: z.iso.datetime(),
+        createdAt: z.iso.datetime(),
         globalType: z.string(),
       })
       .partial(),
@@ -362,8 +363,8 @@ const PreFooterBase = z.object({
 
   reviewReady: z.boolean().nullable().optional(),
   _status: z.enum(["draft", "published"]).nullable().optional(),
-  updatedAt: z.string().datetime().nullable().optional(),
-  createdAt: z.string().datetime().nullable().optional(),
+  updatedAt: z.iso.datetime().nullable().optional(),
+  createdAt: z.iso.datetime().nullable().optional(),
   globalType: z.string().nullable().optional(),
 });
 
@@ -408,16 +409,16 @@ const general = defineCollection({
         .optional(),
       slug: z.string(),
       slugLock: z.boolean().optional(),
-      contentDate: z.string().datetime().optional(),
+      contentDate: z.iso.datetime().optional(),
       location: z.string().optional(),
       tags: z.array(cCustom.optional()).optional(),
       site: z.any(),
       content: z.any().optional(), // richText
       reviewReady: z.boolean().optional(),
       showInPageNav: z.boolean().optional(),
-      publishedAt: z.string().datetime().optional(),
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
+      publishedAt: z.iso.datetime().optional(),
+      updatedAt: z.iso.datetime(),
+      createdAt: z.iso.datetime(),
       _status: z.enum(["draft", "published"]),
     }),
   ),
@@ -433,8 +434,8 @@ const collectionTypes = defineCollection({
       description: z.string().optional(),
       site: z.any(),
       reviewReady: z.boolean().optional(),
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
+      updatedAt: z.iso.datetime(),
+      createdAt: z.iso.datetime(),
       _status: z.enum(["draft", "published"]),
     }),
   ),
@@ -445,7 +446,7 @@ const collectionEntries = defineCollection({
   schema: makeAllKeysNullable(
     z.object({
       id: z.string(),
-      collectionConfig: z.any(), // relationship to collection-types
+      collectionConfig: z.any().optional(),
       title: z.string(),
       excerpt: z.string().optional(),
       image: mvCustom.optional(),
@@ -460,7 +461,7 @@ const collectionEntries = defineCollection({
         .optional(),
       slug: z.string(),
       slugLock: z.boolean().optional(),
-      contentDate: z.string().datetime().optional(),
+      contentDate: z.iso.datetime().optional(),
       tags: z.array(cCustom.optional()).optional(),
       site: z.any(),
       externalLink: z.object({
@@ -470,9 +471,9 @@ const collectionEntries = defineCollection({
       content: z.any().optional(), // richText
       reviewReady: z.boolean().optional(),
       showInPageNav: z.boolean().optional(),
-      publishedAt: z.string().datetime().optional(),
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
+      publishedAt: z.iso.datetime().optional(),
+      updatedAt: z.iso.datetime(),
+      createdAt: z.iso.datetime(),
       _status: z.enum(["draft", "published"]),
     }),
   ),
@@ -510,8 +511,8 @@ const sideNavigations = defineCollection({
           }),
         )
         .optional(),
-      updatedAt: z.string().datetime(),
-      createdAt: z.string().datetime(),
+      updatedAt: z.iso.datetime(),
+      createdAt: z.iso.datetime(),
       _status: z.enum(["draft", "published"]),
     }),
   ),
@@ -538,8 +539,8 @@ const footer = defineCollection({
         secondaryLinkColor: z.string().nullable().optional(),
         link: z.array(MenuItem).nullable().optional(),
         _status: z.enum(["draft", "published"]),
-        updatedAt: z.string().datetime(),
-        createdAt: z.string().datetime(),
+        updatedAt: z.iso.datetime(),
+        createdAt: z.iso.datetime(),
         globalType: z.string(),
       })
       .partial(),
@@ -552,7 +553,7 @@ const notFoundPage = defineCollection({
     z.object({
       title: z.string().nullable().optional(),
       heading: z.string().nullable().optional(),
-      content: z.any(), // richText
+      content: z.object().optional(),
       showSearch: z.boolean().optional(),
     }),
   ),

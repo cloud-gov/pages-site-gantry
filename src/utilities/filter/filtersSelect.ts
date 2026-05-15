@@ -3,7 +3,7 @@ import type {
   FilterMapEntry,
   FilterOption,
   FilterSelection,
-} from "@/env";
+} from "@/env.d";
 import {
   FILTERS_CONFIG,
   UNSPECIFIED_FILTER_VALUE,

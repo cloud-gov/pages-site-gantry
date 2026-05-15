@@ -3,12 +3,12 @@ import type {
   PreFooterModel,
   PreFooterBigModel,
   PreFooterSlimModel,
-} from "@/env";
+} from "@/env.d";
 import {
   PRE_FOOTER_TYPE_BIG,
   PRE_FOOTER_TYPE_NONE,
   PRE_FOOTER_TYPE_SLIM,
-} from "@/env";
+} from "@/env.d";
 
 import { cleanPreFooterBig } from "@/utilities/preFooterBig";
 import { cleanPreFooterSlim } from "@/utilities/preFooterSlim";

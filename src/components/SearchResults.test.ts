@@ -3,6 +3,7 @@ import {
   renderSearchResults,
   highlightKeyword,
 } from "@/utilities/searchResultsClient";
+import { setupDom } from "test/utils";
 
 vi.mock("astro:content", () => ({
   getCollection: vi.fn(),
@@ -31,6 +32,8 @@ const mockResults = {
 };
 
 describe("searchResultsClient", () => {
+  setupDom();
+
   beforeEach(() => {
     document.body.innerHTML = ` <div id="results-count"></div> <div id="search-results"></div> <div id="pagination"></div> `;
 

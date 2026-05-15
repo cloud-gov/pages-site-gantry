@@ -1,7 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cloneElementWithId } from "@/utilities/filter/filtersUtils";
+import { setupDom } from "test/utils";
 
 describe("Filters Utility, cloneElementWithId", () => {
+  setupDom();
+
   beforeEach(() => {
     vi.spyOn(document, "getElementById").mockReturnValue(null);
   });

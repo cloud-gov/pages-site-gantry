@@ -1,4 +1,4 @@
-import type { ElementsPair, FiltersData, PageFindResults } from "@/env";
+import type { ElementsPair, FiltersData, PageFindResults } from "@/env.d";
 
 import {
   COLLECTION_ITEM_LIST_FILTERED_ID,

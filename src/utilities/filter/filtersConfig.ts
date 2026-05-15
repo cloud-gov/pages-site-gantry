@@ -1,4 +1,4 @@
-import type { FilterConfig } from "@/env";
+import type { FilterConfig } from "@/env.d";
 
 export const FILTER_NAME_TAG = "tag";
 export const FILTER_NAME_YEAR = "year";

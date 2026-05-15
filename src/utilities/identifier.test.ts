@@ -7,7 +7,7 @@ import {
   PRE_FOOTER_TYPE_SLIM,
   type PreFooterModel,
   type PreFooterBigModel,
-} from "@/env";
+} from "@/env.d";
 import { cleanPreFooter } from "@/utilities/preFooter";
 import { getPreFooterSlim } from "@/components/PreFooterSlim.testData";
 import { getFooterColors } from "@/utilities/identifier.ts";
