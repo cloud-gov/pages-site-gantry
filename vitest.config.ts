@@ -4,7 +4,7 @@ import { getViteConfig } from "astro/config";
 export default getViteConfig({
   test: {
     // Vitest configuration options
-    environment: "happy-dom",
+    environment: "node",
     coverage: {
       provider: "v8",
       reporter: ["text", "text-summary", "html", "json"],
