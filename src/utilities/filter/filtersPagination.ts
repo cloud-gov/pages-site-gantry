@@ -30,7 +30,7 @@ export function getFilteredPaginationFragmentForPageNavItems(
       }),
     );
     if (templateElement) {
-      if (templateElement instanceof HTMLTemplateElement) {
+      if (templateElement instanceof global.window.HTMLTemplateElement) {
         const clonedTemplateElement: DocumentFragment =
           templateElement.content.cloneNode(true) as DocumentFragment;
         let paginationNavItem = clonedTemplateElement.querySelector("li");
