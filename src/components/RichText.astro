@@ -12,7 +12,6 @@ import { table, tablerow, tablecell } from "./RichTextConverters/table";
 import { getTextContent } from "./RichTextConverters/helpers";
 import { processListBlock } from "./RichTextConverters/processList";
 import { accordionBlock } from "./RichTextConverters/accordion";
-import { cardGridBlock } from "./RichTextConverters/cardGrid";
 import { imageBlock } from "./RichTextConverters/image";
 import type { SerializedEditorState } from "node_modules/lexical/LexicalEditorState";
 import type { SerializedLexicalNode } from "node_modules/lexical/LexicalNode";
@@ -122,8 +121,6 @@ const htmlConverters: HTMLConvertersFunction<NodeTypes> = ({
       accordion: ({ node }) =>
         accordionBlock({ node, htmlConverters: nestedConverters }),
 
-      cardGrid: ({ node }) => cardGridBlock({ node }),
-
       image: ({ node }) => imageBlock({ node }),
     },
   };
@@ -179,7 +176,6 @@ let rawHTML = convertLexicalToHTML({
         "usa-card--flag",
         "flex-1",
         "usa-card--media-right",
-        "cardgrid-component",
         "maxw-tablet",
         "maxw-desktop",
         "maxw-mobile-lg",
@@ -250,12 +246,6 @@ let rawHTML = convertLexicalToHTML({
     margin-top: 2rem;
   }
 
-  :global(.cardgrid-component .usa-card__container) {
-    border-radius: 0;
-    border: none;
-    background-color: #e6e6e2;
-  }
-
   :global(.textblock-image-bg .text-center .usa-prose p) {
     max-width: none;
   }
@@ -266,52 +256,6 @@ let rawHTML = convertLexicalToHTML({
   }
 
   @media (min-width: 40em) {
-    :global(.cardgrid-component.usa-card--flag .usa-card__media) {
-      width: 25%;
-    }
-    :global(.cardgrid-component.usa-card--flag .usa-card__img) {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-
-    :global(.cardgrid-component.usa-card--flag .usa-card__header),
-    :global(.cardgrid-component.usa-card--flag .usa-card__body),
-    :global(.cardgrid-component.usa-card--flag .usa-card__footer) {
-      margin-left: 25%;
-      padding-left: 1rem;
-    }
-
-    :global(
-      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__img
-    ) {
-      border-top-left-radius: inherit;
-      border-bottom-left-radius: inherit;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    :global(
-      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__header
-    ),
-    :global(
-      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__body
-    ),
-    :global(
-      .cardgrid-component.usa-card--flag.usa-card--media-right .usa-card__footer
-    ) {
-      margin-left: 0;
-      padding-left: 0;
-      margin-right: 25%;
-      padding-right: 1rem;
-    }
-
-    :global(.cardgrid-component.usa-card--flag .usa-card__header) {
-      padding-top: 1rem;
-    }
-    :global(.cardgrid-component.usa-card--flag .usa-card__body) {
-      padding-top: 0;
-    }
-
     :global(.usa-table-container--scrollable .usa-table.table-centered) {
       margin: 0 auto;
     }
