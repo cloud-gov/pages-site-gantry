@@ -18,6 +18,7 @@ type CardGridProps = {
     ctaText: string;
     ctaURL: string;
   }[];
+  amoundCard: number;
   title: string;
 };
 
@@ -74,6 +75,7 @@ const { contentBlocks = [] } = Astro.props;
           return (
             <CardGrid
               title={block.title}
+              amountCards={block.amountCards}
               cards={
                 block.cards?.map((card: any) => ({
                   title: card.title,

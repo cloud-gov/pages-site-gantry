@@ -80,6 +80,7 @@ export interface HomePage {
               | {
                   title: string;
                   description?: string | null;
+                  amountCards?: string | null;
                   image?: (number | null) | MediaValueProps;
                   link?: {
                     url?: string | null;
