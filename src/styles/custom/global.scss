@@ -555,10 +555,6 @@ footer.usa-footer .footer-grid-container,
   padding-top: 2rem;
   padding-bottom: 2rem;
   .grid-row {
-    gap: 2rem;
-    & > div {
-      flex: 0 0 calc((100% - 4rem) / 3);
-    }
     @media (max-width: ($breakpoint-tablet - 0.0625rem)) {
       & > div {
       flex: none;
@@ -580,9 +576,7 @@ footer.usa-footer .footer-grid-container,
         color: var(--primary-color);
       }
     }
-    &:last-child {
-      margin-bottom: 0;
-    }
+
     .usa-card__container {
       border-radius: 0;
       .usa-card__heading {
