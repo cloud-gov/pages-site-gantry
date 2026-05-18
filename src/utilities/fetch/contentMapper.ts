@@ -45,6 +45,7 @@ export function filteredContentMapper(
       (c): Tag => ({
         title: c.title,
         url: `${baseUrl}?tag=${c.slug}`,
+        tagTypes: c.tagTypes,
       }),
     ),
     yearTag: yearTag,

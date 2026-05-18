@@ -6,7 +6,10 @@ import type {
   FilterSelection,
 } from "@/env";
 import { getCollectionFilters } from "@/utilities/filter/filtersSelect";
-import { FILTER_NAV_ID_PREFIX } from "@/utilities/filter/filtersConfig";
+import {
+  FILTER_NAV_ID_PREFIX,
+  FILTERS_DATA_ID,
+} from "@/utilities/filter/filtersConfig";
 import { getFilteredResultFragment } from "@/utilities/filter/filtersSearch";
 import { getFilteredPaginationFragment } from "@/utilities/filter/filtersPagination";
 import { getPaginationItemId } from "@/utilities/pagination";
@@ -23,6 +26,60 @@ function getFilterContainer(filterName: string): HTMLElement | null {
   );
 }
 
+function createDynamicFilterUI(filterName: string): {
+  navElement: HTMLElement;
+  optionsContainer: HTMLElement;
+} | null {
+  const dataEl = document.getElementById(FILTERS_DATA_ID);
+  if (!dataEl?.parentElement) return null;
+
+  const navId = getFilterNavId(filterName); // e.g. nav-cfoc
+  const contentId = `filter-${filterName}`; // e.g. filter-cfoc
+
+  // Avoid duplicate render
+  if (document.getElementById(navId)) {
+    return {
+      navElement: document.getElementById(navId),
+      optionsContainer: document.querySelector(
+        `.filter-options[data-filter-name="${filterName}"]`,
+      ) as HTMLElement,
+    };
+  }
+
+  const label = filterName.toUpperCase();
+
+  const wrapper = document.createElement("div");
+
+  wrapper.innerHTML = `
+    <h3 class="usa-accordion__heading" id="${navId}">
+      <button
+        type="button"
+        class="usa-accordion__button"
+        aria-expanded="true"
+        aria-controls="${contentId}"
+      >
+        ${label}
+      </button>
+    </h3>
+    <div id="${contentId}" class="usa-accordion__content usa-prose">
+      <div class="filter-options" data-filter-name="${filterName}"></div>
+    </div>
+  `;
+
+  dataEl.insertAdjacentElement("afterend", wrapper);
+
+  const optionsContainer = wrapper.querySelector(
+    `.filter-options[data-filter-name="${filterName}"]`,
+  ) as HTMLElement;
+
+  const navElement = wrapper.querySelector(`#${navId}`) as HTMLElement;
+
+  return {
+    navElement,
+    optionsContainer,
+  };
+}
+
 export function renderFilters(
   filtersMap: Map<string, FilterMapEntry>,
   filtersFromQueryParams: Map<string, string>,
@@ -30,13 +87,21 @@ export function renderFilters(
 ): boolean {
   let displayedFilters = false;
 
+  const accordion = document.querySelector(".usa-accordion");
+
   filtersMap?.forEach((filterMapEntry) => {
     const { filterName, pagefindfilter } = filterMapEntry;
 
-    const el = getFilterContainer(filterName);
-    const navEl = document.getElementById(getFilterNavId(filterName));
+    let el = getFilterContainer(filterName);
+    let navEl = document.getElementById(getFilterNavId(filterName));
 
-    if (!el || !navEl) return;
+    if (!el || !navEl) {
+      const dynamic = createDynamicFilterUI(filterName, accordion);
+      if (!dynamic) return;
+
+      el = dynamic.optionsContainer;
+      navEl = dynamic.navElement;
+    }
 
     filterMapEntry.filterElement = el;
     filterMapEntry.navElement = navEl;

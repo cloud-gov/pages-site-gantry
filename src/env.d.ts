@@ -37,6 +37,11 @@ export interface CollectionTagProps {
   title: string;
   slug?: string | null;
   slugLock?: boolean;
+  tagTypes?: {
+    id: number;
+    title: string;
+    slug: string;
+  };
   site: {
     bucket: string;
   };
@@ -336,6 +341,11 @@ export interface FilterOption {
 export interface Tag {
   title: string;
   url: string;
+  tagTypes?: {
+    id: number;
+    title: string;
+    slug: string;
+  };
 }
 
 interface PageFindResults {

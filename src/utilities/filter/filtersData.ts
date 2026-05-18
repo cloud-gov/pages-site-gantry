@@ -25,9 +25,13 @@ export function getFiltersSlugMetaData(
 
   const tags: FilterAttribute[] = collectionItem?.tags
     ?.filter((tag: Tag) => tag?.title)
-    .map((tag: Tag) => {
+    ?.map((tag: Tag) => {
+      const filterName = tag?.tagTypes?.slug
+        ? tag.tagTypes.slug.toLowerCase()
+        : FILTER_NAME_TAG;
+
       return {
-        attributeValue: `${getPagefindFilterName(collectionName, FILTER_NAME_TAG)}[content]`,
+        attributeValue: `${getPagefindFilterName(collectionName, filterName)}[content]`,
         content: tag?.title?.toUpperCase(),
       };
     });
@@ -66,16 +70,22 @@ export function getFiltersDataAttributes(
   dataAttributes[`data-${DATASET_KEYS.PAGE_SIZE}`] = String(
     filteredPageConfig?.pageSize ?? getPageSize(),
   );
+
   dataAttributes[`data-${DATASET_KEYS.CURRENT_PAGE}`] = String(
     filteredPageConfig?.currentPage ?? 1,
   );
+
   dataAttributes[`data-${DATASET_KEYS.BASE_URL}`] = baseUrl;
-  dataAttributes[`data-${DATASET_KEYS.COLLECTION_NAME}`] =
-    filteredPageConfig.collectionName;
+
+  if (filteredPageConfig?.collectionName) {
+    dataAttributes[`data-${DATASET_KEYS.COLLECTION_NAME}`] =
+      filteredPageConfig.collectionName;
+  }
 
   dataAttributes[`data-${DATASET_KEYS.TOTAL_ITEMS}`] = Number(
     filteredPageConfig?.totalItems ?? 0,
   );
+
   return dataAttributes;
 }
 
@@ -93,7 +103,7 @@ export function getElementFiltersData(dataset: DOMStringMap): FiltersData {
   Object.entries(dataset)
     .filter(([key]) => key.startsWith(PAGEFIND_FILTER_PREFIX))
     .forEach(([key, value]) => {
-      let filterName: string = key.replace(PAGEFIND_FILTER_PREFIX, "");
+      const filterName = key.replace(PAGEFIND_FILTER_PREFIX, "");
 
       filtersMap.set(filterName, {
         filterName,
