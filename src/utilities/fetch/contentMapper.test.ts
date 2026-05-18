@@ -6,7 +6,7 @@ import {
   pageUrlMapper,
   footerMapper,
 } from "./contentMapper";
-import type { PageModel } from "@/env";
+import type { PageModel } from "@/env.d";
 
 vi.mock("astro:content", () => ({
   getCollection: vi.fn(),

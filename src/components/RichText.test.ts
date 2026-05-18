@@ -1,6 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, it, expect, beforeEach } from "vitest";
 import RichText from "./RichText.astro";
+import { escapeHtml } from "test/utils";
 
 describe("RichText", () => {
   let container: Awaited<ReturnType<typeof AstroContainer.create>>;
@@ -145,8 +146,10 @@ describe("RichText", () => {
 
       // Check for cell content
       expect(result).toContain("Header 1");
-      expect(result).toContain("<h2>Header 2</h2>");
-      expect(result).toContain('<a href="http://gsa.gov">gsa.gov</a>');
+      expect(result).toContain(escapeHtml("<h2>Header 2</h2>"));
+      expect(result).toContain(
+        escapeHtml('<a href="http://gsa.gov">gsa.gov</a>'),
+      );
       expect(result).toContain('<img src="/~assets/logo.png" alt="image" />');
     });
   });

@@ -4,7 +4,7 @@ import {
   getFiltersDataAttributes,
   getFiltersSlugMetaData,
 } from "@/utilities/filter";
-import type { FilterConfig, FilteredPageConfig } from "@/env";
+import type { FilterConfig, FilteredPageConfig } from "@/env.d";
 import {
   FILTERS_CONFIG,
   UNSPECIFIED_FILTER_VALUE,

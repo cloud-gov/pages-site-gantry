@@ -1,5 +1,6 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, it, expect, beforeEach } from "vitest";
+import { JSDOM } from "jsdom";
 import PaginationNav from "./PaginationNav.astro";
 
 describe("PaginationNav", () => {
@@ -15,8 +16,9 @@ describe("PaginationNav", () => {
     basePath: string;
   }) {
     const result = await container.renderToString(PaginationNav, { props });
-    const parser = new DOMParser();
-    return parser.parseFromString(result, "text/html");
+    const parsed = new JSDOM(result);
+
+    return parsed.window.document;
   }
 
   function getPaginationElements(doc: Document) {

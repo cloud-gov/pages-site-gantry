@@ -15,6 +15,7 @@ import { accordionBlock } from "./RichTextConverters/accordion";
 import { imageBlock } from "./RichTextConverters/image";
 import type { SerializedEditorState } from "node_modules/lexical/LexicalEditorState";
 import type { SerializedLexicalNode } from "node_modules/lexical/LexicalNode";
+import "../styles/richtext.scss";
 
 const { content, alert = false, identifier = undefined } = Astro.props;
 const { textColor, linkColor } = identifier ?? {};
@@ -225,46 +226,6 @@ let rawHTML = convertLexicalToHTML({
     },
   })}
 />
-
-<style lang="scss">
-  :global(.alert-prose p) {
-    max-width: 100%;
-  }
-
-  :global(.identifier-prose p) {
-    font-weight: 700;
-    color: var(--textColor);
-  }
-
-  :global(.identifier-prose a),
-  :global(.identifier-prose a:hover) :global(.identifier-prose a:visited) {
-    font-weight: 700;
-    color: var(--linkColor) !important;
-  }
-
-  :global(.usa-card-group) {
-    margin-top: 2rem;
-  }
-
-  :global(.textblock-image-bg .text-center .usa-prose p) {
-    max-width: none;
-  }
-
-  :global(.usa-prose .grid-row.usa-card-group) {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  @media (min-width: 40em) {
-    :global(.usa-table-container--scrollable .usa-table.table-centered) {
-      margin: 0 auto;
-    }
-  }
-  // prevents paragraph elements from escaping table cell
-  :global(.usa-table-container--scrollable .usa-table p) {
-    max-width: none;
-  }
-</style>
 
 <script>
   document.querySelectorAll(".alert-prose a").forEach((a) => {

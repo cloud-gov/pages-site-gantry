@@ -1,5 +1,5 @@
 import { getConnectSection } from "@/components/ConnectSection.testData.ts";
-import type { PreFooterBigModel, LinkGroup } from "@/env";
+import type { PreFooterBigModel, LinkGroup } from "@/env.d";
 
 export function getLinkGroups(testCase: number = 1): LinkGroup[] {
   let linkGroups: LinkGroup[];

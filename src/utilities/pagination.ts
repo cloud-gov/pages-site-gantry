@@ -1,6 +1,6 @@
 import navigate_next from "@uswds-images/usa-icons/navigate_next.svg";
 import navigate_before from "@uswds-images/usa-icons/navigate_before.svg";
-import type { PageNavItemModel, PageNavItemType } from "@/env";
+import type { PageNavItemModel, PageNavItemType } from "@/env.d";
 import { PAGINATION_ITEM_ID_PREFIX } from "@/utilities/filter";
 
 export function paginate<T>(items: T[], currentPage: number, pageSize: number) {
@@ -60,8 +60,8 @@ export function searchPagination(
         ${
           currentPage > 1
             ? `<li class="usa-pagination__item usa-pagination__arrow">
-              
-              <a 
+
+              <a
                 href="#"
                 data-page="${(currentPage - 2) * limit + 1}"
               class="page-number usa-pagination__link usa-pagination__previous-page"

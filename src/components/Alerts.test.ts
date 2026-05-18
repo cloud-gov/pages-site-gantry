@@ -1,7 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeEach, describe, expect, it } from "vitest";
 import Alerts from "@/components/Alerts.astro";
-import { type AlertModel } from "@/env";
+import { type AlertModel } from "@/env.d";
 
 describe("Alerts", () => {
   let container: any;

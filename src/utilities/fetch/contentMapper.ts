@@ -10,7 +10,7 @@ import {
   type MediaValueProps,
   type PageModel,
   type Tag,
-} from "@/env";
+} from "@/env.d";
 import { preFooterMapper } from "./preFooterMapper.ts";
 
 type ContentData = {

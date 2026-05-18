@@ -1,4 +1,4 @@
-import type { HomePage, SiteConfig } from "@/env";
+import type { HomePage, SiteConfig } from "@/env.d";
 import type { CollectionEntry } from "astro:content";
 import { payloadFetch, safeJsonParse } from "./payload-fetch";
 import {
