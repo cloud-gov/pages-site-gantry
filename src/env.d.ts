@@ -152,6 +152,25 @@ export const CONNECT_SECTION_LOCATION_DEFAULT = CONNECT_SECTION_RIGHT;
 export const LINK_GROUP_COLUMNS_DEFAULT = 2;
 export const LINK_GROUP_COLUMNS_MAX = 4;
 
+export interface SiteTheme {
+  colorPrimary?: string | null;
+  colorPrimaryOn?: string | null;
+  colorSecondary?: string | null;
+  colorSecondaryOn?: string | null;
+  colorAccent?: string | null;
+  colorText?: string | null;
+  colorBg?: string | null;
+  colorSurface?: string | null;
+  colorBorder?: string | null;
+  colorLink?: string | null;
+  fontBody?: string | null;
+  fontHeading?: string | null;
+  layoutMaxWidth?: string | null;
+  spaceSectionY?: string | null;
+  radiusMd?: string | null;
+  customCss?: string | null;
+}
+
 export interface SiteConfig {
   searchAccessKey?: string;
   searchAffiliate?: string;
@@ -164,6 +183,7 @@ export interface SiteConfig {
   agencyName?: string;
   dapAgencyCode?: string;
   dapSubAgencyCode?: string;
+  theme?: SiteTheme;
   collectionDisplayNames?: {
     collectionSlug: string;
     displayName: string;

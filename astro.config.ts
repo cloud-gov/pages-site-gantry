@@ -2,7 +2,6 @@
 import { loadEnv } from "vite";
 import { defineConfig, envField } from "astro/config";
 import node from "@astrojs/node";
-import { buildThemeStyle } from "./scripts/setTheme";
 
 const env = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 const MODE = <"static" | "server" | undefined>env.RENDER_MODE;
@@ -19,27 +18,12 @@ if (MODE !== "static") {
 const isTestEnvironment =
   process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const hasRequiredEnvVars = env.EDITOR_APP_URL && env.PAYLOAD_API_KEY;
-const customTheme = String(env.USE_USWSDS_THEME).toLowerCase() != "true";
 if (!isTestEnvironment && !hasRequiredEnvVars) {
   console.error("Unable to build site:");
   console.error(
     "Verify $EDITOR_APP_URL and $PAYLOAD_API_KEY are set in the environment.",
   );
   process.exit(1);
-}
-
-let theme;
-
-if (isTestEnvironment) {
-  // Mock theme for testing
-  theme = "";
-} else {
-  // Use API-fetched theme for production builds
-  theme = await buildThemeStyle(
-    env.EDITOR_APP_URL,
-    env.PAYLOAD_API_KEY,
-    env.PREVIEW_MODE,
-  );
 }
 
 export default defineConfig({
@@ -51,7 +35,6 @@ export default defineConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: theme,
           loadPaths: ["./node_modules/@uswds/uswds/packages/"],
           quietDeps: true,
         },
@@ -73,9 +56,7 @@ export default defineConfig({
         },
         {
           find: "@theme",
-          replacement: customTheme
-            ? "@/styles/custom/index.scss"
-            : "@/styles/index.scss",
+          replacement: "@/styles/index.scss",
         },
       ],
     },

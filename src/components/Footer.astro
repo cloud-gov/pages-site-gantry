@@ -1,6 +1,5 @@
 ---
 import {
-  type FooterColors,
   type FooterModel,
   PRE_FOOTER_TYPE_BIG,
   PRE_FOOTER_TYPE_SLIM,
@@ -9,7 +8,6 @@ import { cleanPreFooter, getUsaFooterClass } from "@/utilities/preFooter.ts";
 import PreFooterSlim from "@/components/PreFooterSlim.astro";
 import PreFooterBig from "@/components/PreFooterBig.astro";
 import Identifier from "@/components/Identifier.astro";
-import { getFooterColors } from "@/utilities/identifier.ts";
 
 interface Props {
   footer?: FooterModel;
@@ -18,7 +16,6 @@ const { footer } = Astro.props;
 
 const { preFooterType, preFooterData } = cleanPreFooter(footer?.preFooter);
 let usaFooterClass = await getUsaFooterClass(preFooterType);
-const colors: FooterColors = getFooterColors(footer?.identifier?.colorFamilies);
 ---
 
 <footer class={`usa-footer ${usaFooterClass}`}>
@@ -28,14 +25,14 @@ const colors: FooterColors = getFooterColors(footer?.identifier?.colorFamilies);
 
   {
     preFooterType === PRE_FOOTER_TYPE_BIG && (
-      <PreFooterBig preFooter={preFooterData} colors={colors?.preFooter} />
+      <PreFooterBig preFooter={preFooterData} />
     )
   }
   {
     preFooterType === PRE_FOOTER_TYPE_SLIM && (
-      <PreFooterSlim preFooter={preFooterData} colors={colors?.preFooter} />
+      <PreFooterSlim preFooter={preFooterData} />
     )
   }
 
-  <Identifier identifier={footer?.identifier} colors={colors?.identifier} />
+  <Identifier identifier={footer?.identifier} />
 </footer>

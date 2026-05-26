@@ -767,7 +767,7 @@ main.home + .usa-footer:before{
   color: white;
   font-size: 1.25rem;
   font-weight: 400;
-  margin: 0; 
+  margin: 0;
   font-family: var(--font-sans);
   line-height: 1;
 }
@@ -809,7 +809,7 @@ main.home + .usa-footer:before{
       right: unset;
       bottom: unset;
       display: inline;
-      background-color: var(--color-white); 
+      background-color: var(--color-white);
   }
 
   max-width: var(--max-width);
@@ -829,7 +829,7 @@ main.home + .usa-footer:before{
       right: unset;
       bottom: unset;
       display: inline;
-      background-color: var(--primary-color); 
+      background-color: var(--primary-color);
   }
   }
 
@@ -982,7 +982,7 @@ main.home + .usa-footer:before{
 }
 
 .usa-sidenav .usa-current {
-  color: 3px solid var(--primary-color);
+  color: var(--primary-color);
 
   &:after {
     background-color: var(--accent-color);

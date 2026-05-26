@@ -1,0 +1,18 @@
+@use "./custom/global.scss";
+
+:root {
+  --primary-color: var(--color-primary);
+  --secondary-color: var(--color-secondary);
+  --accent-color: var(--color-accent);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+  --max-width: var(--layout-max-width);
+}
+
+.usa-footer__primary-section {
+  background-color: var(--color-secondary);
+}
+
+.usa-identifier {
+  background-color: var(--color-primary);
+}

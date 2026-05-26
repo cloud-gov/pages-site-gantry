@@ -40,14 +40,14 @@ jobs:
         passed: [set-pipeline]
         trigger: true
       - get: general-task
-      - get: node22
+      - get: node24
       - in_parallel:
         - task: check-format
           file: src/ci/partials/check-formatting.yml
-          image: node22
+          image: node24
         - task: test
           file: src/ci/partials/test.yml
-          image: node22
+          image: node24
 
     on_failure:
       in_parallel:
@@ -230,7 +230,7 @@ resources:
   #@ end
 
   - name: general-task
-  - name: node22
+  - name: node24
   - name: pipeline-tasks
 
   #! Temp until we deploy prod app
