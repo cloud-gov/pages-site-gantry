@@ -27,8 +27,10 @@ import type {
   AlertModel,
   FooterModel,
   MenuRoot,
+  SiteConfig,
 } from "@/env.d";
 import { buildPreFooterWithCollectionSlugs } from "@/utilities/fetch/buildMenuWithCollectionSlugs";
+import { buildThemeCss } from "@/utilities/theme/buildThemeCss";
 import type { DataEntryMap } from "astro:content";
 
 const siteConfigCollectionName = "siteConfig";
@@ -80,7 +82,11 @@ async function loadData() {
         searchAffiliate: siteConfigRaw?.searchAffiliate,
         dapAgencyCode: siteConfigRaw?.dapAgencyCode,
         dapSubAgencyCode: siteConfigRaw?.dapSubAgencyCode,
-      },
+        primaryColor: siteConfigRaw?.primaryColor,
+        secondaryColor: siteConfigRaw?.secondaryColor,
+        primaryFont: siteConfigRaw?.primaryFont,
+        theme: siteConfigRaw?.theme,
+      } satisfies SiteConfig,
       menu: menuBase,
       collectionsMenu,
       footerCollectionResponse: footerRaw,
@@ -124,7 +130,11 @@ async function loadData() {
         searchAffiliate: siteConfigData?.searchAffiliate,
         dapAgencyCode: siteConfigData?.dapAgencyCode,
         dapSubAgencyCode: siteConfigData?.dapSubAgencyCode,
-      },
+        primaryColor: siteConfigData?.primaryColor,
+        secondaryColor: siteConfigData?.secondaryColor,
+        primaryFont: siteConfigData?.primaryFont,
+        theme: siteConfigData?.theme,
+      } satisfies SiteConfig,
       menu: menuBase,
       collectionsMenu,
       footerCollectionResponse: footerWithSlugs,
@@ -180,6 +190,8 @@ const metaTitle = title
 // Get proper URL for social image
 const socialImageUrl = socialImage ? getMediaUrl(socialImage) : null;
 const isHome = Astro.url.pathname === "/";
+const { themeBlock, customCss } = buildThemeCss(siteConfig);
+const hasCustomCss = Boolean(customCss);
 ---
 
 <!doctype html>
@@ -201,19 +213,11 @@ const isHome = Astro.url.pathname === "/";
     <meta name="twitter:title" content={metaTitle} />
     {description && <meta name="twitter:description" content={description} />}
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600;1,700;1,900&display=swap"
-      rel="stylesheet"
-    />
     <FiltersSlugMetaData filtersSlugMetaData={filtersSlugMetaData} />
+    {themeBlock && <style id="site-theme" set:html={themeBlock} />}
+    {customCss && <style id="site-custom-css" set:html={customCss} />}
   </head>
-  <body>
+  <body class:list={{ "has-custom-css": hasCustomCss }}>
     <Config />
     <GovIdentifier />
     <Alerts alertsData={alerts} />

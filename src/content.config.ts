@@ -288,6 +288,27 @@ const siteConfig = defineCollection({
         searchAffiliate: z.any().optional(),
         dapAgencyCode: z.string().optional(),
         dapSubAgencyCode: z.string().optional(),
+        theme: z
+          .object({
+            colorPrimary: z.string().nullable().optional(),
+            colorPrimaryOn: z.string().nullable().optional(),
+            colorSecondary: z.string().nullable().optional(),
+            colorSecondaryOn: z.string().nullable().optional(),
+            colorAccent: z.string().nullable().optional(),
+            colorText: z.string().nullable().optional(),
+            colorBg: z.string().nullable().optional(),
+            colorSurface: z.string().nullable().optional(),
+            colorBorder: z.string().nullable().optional(),
+            colorLink: z.string().nullable().optional(),
+            fontBody: z.string().nullable().optional(),
+            fontHeading: z.string().nullable().optional(),
+            layoutMaxWidth: z.string().nullable().optional(),
+            spaceSectionY: z.string().nullable().optional(),
+            radiusMd: z.string().nullable().optional(),
+            customCss: z.string().nullable().optional(),
+          })
+          .nullable()
+          .optional(),
         collectionDisplayNames: z
           .array(
             z.object({

@@ -1,0 +1,56 @@
+:root {
+  --color-primary: var(--uswds-blue-warm-80v);
+  --color-primary-on: var(--uswds-white);
+  --color-secondary: var(--uswds-blue-warm-60v);
+  --color-secondary-on: var(--uswds-white);
+  --color-accent: var(--uswds-red-60v);
+  --color-text: var(--uswds-base-darkest);
+  --color-bg: #fcfcfc;
+  --color-surface: var(--uswds-gray-5);
+  --color-border: #dfe1e2;
+  --color-link: var(--uswds-blue-warm-60v);
+
+  --font-body: var(--uswds-font-body);
+  --font-heading: var(--uswds-font-heading);
+
+  --layout-max-width: var(--uswds-layout-max-width);
+  --space-section-y: 3rem;
+  --radius-md: var(--uswds-radius-md);
+  --focus-ring-color: var(--uswds-blue-40v);
+  --shadow-interactive-hover: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  /* legacy compatibility aliases */
+  --primary-color: var(--color-primary);
+  --secondary-color: var(--color-secondary);
+  --accent-color: var(--color-accent);
+  --color-white: var(--uswds-white);
+  --color-white-80: rgba(255, 255, 255, 0.8);
+  --color-ink: var(--color-text);
+  --color-gray-1: #fcfcfc;
+  --color-gray-2: #f9f9f9;
+  --color-gray-3: #f6f6f6;
+  --color-gray-4: #f3f3f3;
+  --color-gray-5: var(--uswds-gray-5);
+  --color-gray-10: var(--uswds-gray-10);
+  --color-gray-60: var(--uswds-gray-cool-60);
+  --blue-40v: var(--uswds-blue-40v);
+  --blue-warm-10v: var(--uswds-blue-warm-10v);
+  --blue-warm-20v: var(--uswds-blue-warm-20v);
+  --gray-cool-60: var(--uswds-gray-cool-60);
+  --shadow-hover: var(--shadow-interactive-hover);
+  --max-width: var(--layout-max-width);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+  --councils-waves-url: url(/src/assets/backgrounds/waves_2.svg);
+  --filter-pill-bg-url: url(/src/assets/usa-icons/close.svg);
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-link);
+}

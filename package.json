@@ -21,7 +21,8 @@
     "test:run": "NODE_ENV=test vitest run",
     "test:coverage": "NODE_ENV=test vitest --coverage",
     "test:coverage:ui": "NODE_ENV=test vitest --coverage --ui",
-    "test:coverage:run": "NODE_ENV=test vitest run --coverage"
+    "test:coverage:run": "NODE_ENV=test vitest run --coverage",
+    "lint:styles": "bash scripts/lint-styles.sh"
   },
   "dependencies": {
     "@astrojs/node": "^10.1.0",
@@ -43,8 +44,8 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "^22.x.x",
-    "npm": "^11.x.x"
+    "node": "^24.x.x",
+    "npm": "^11.10.x"
   },
   "devDependencies": {
     "@types/node": "^25.7.0",

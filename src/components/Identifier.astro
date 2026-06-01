@@ -1,32 +1,26 @@
 ---
-import { type IdentifierColors, type IdentifierModel } from "@/env.d";
+import { type IdentifierModel } from "@/env.d";
 import RichText from "@/components/RichText.astro";
 import { getMediaUrl } from "@/utilities/media.ts";
 
 interface Props {
   identifier?: IdentifierModel;
-  colors: IdentifierColors;
 }
-const { identifier, colors } = Astro.props;
+const { identifier } = Astro.props;
 const siteDomain = identifier?.siteDomain;
 const links = identifier?.links;
 const logos = identifier?.logos;
 const content = identifier?.content;
 
-const bkgColor = colors?.bkgColor;
-const identityDomainColor = colors?.identityDomainColor;
-const primaryLinkColor = colors?.primaryLinkColor;
-const secondaryLinkColor = colors?.secondaryLinkColor;
-
 const richTextIdentifier = {
-  textColor: "--" + identityDomainColor,
-  linkColor: "--" + primaryLinkColor,
+  textColor: "--color-primary-on",
+  linkColor: "--color-primary-on",
 };
 const baseUrl = import.meta.env.BASEURL || "";
 const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
 ---
 
-<div class={`usa-identifier bg-${bkgColor}`}>
+<div class="usa-identifier site-identifier">
   <section
     class="usa-identifier__section usa-identifier__section--masthead"
     aria-label="Agency identifier"
@@ -38,11 +32,11 @@ const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
             <div class="usa-identifier__logos">
               <a
                 href={logo?.url}
-                class={`usa-identifier__logo usa-identifier__required-link text-${secondaryLinkColor}`}
+                class="usa-identifier__logo usa-identifier__required-link"
               >
                 <img
                   src={getMediaUrl(logo?.media)}
-                  class={`usa-identifier__logo-img text-${secondaryLinkColor}`}
+                  class="usa-identifier__logo-img"
                   alt={logo?.media?.altText}
                   loading="lazy"
                   decoding="async"
@@ -52,9 +46,7 @@ const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
           ))
       }
       <section class="usa-identifier__identity" aria-label="Agency description">
-        <p
-          class={`usa-identifier__identity-domain bg-${bkgColor} text-${secondaryLinkColor}`}
-        >
+        <p class="usa-identifier__identity-domain">
           {siteDomain}
         </p>
         <p class="usa-identifier__identity-disclaimer">
@@ -75,10 +67,10 @@ const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
           {
             links &&
               links.map((link) => (
-                <li class={`usa-identifier__required-links-item`}>
+                <li class="usa-identifier__required-links-item">
                   <a
                     href={cleanBaseUrl + link.url}
-                    class={`usa-identifier__required-link usa-link${secondaryLinkColor ? ` text-${secondaryLinkColor}` : ""}${link.externalLink ? " usa-link--external" : ""}`}
+                    class={`usa-identifier__required-link usa-link${link.externalLink ? " usa-link--external" : ""}`}
                   >
                     {link.text}
                   </a>
@@ -93,17 +85,40 @@ const cleanBaseUrl = baseUrl === "/" ? "" : baseUrl;
       aria-label="Government information and services"
     >
       <div class="usa-identifier__container">
-        <div
-          class={`usa-identifier__usagov-description text-${identityDomainColor}`}
-        >
+        <div class="usa-identifier__usagov-description">
           Looking for U.S. government information and services?
         </div>
-        <a
-          href="https://www.usa.gov/"
-          class={`usa-link--external text-${primaryLinkColor}`}
+        <a href="https://www.usa.gov/" class="usa-link--external"
           >&nbsp;Visit USA.gov</a
         >
       </div>
     </section>
   </section>
 </div>
+
+<style>
+  .site-identifier,
+  .site-identifier .usa-identifier__section--masthead,
+  .site-identifier .usa-identifier__section--required-links {
+    background-color: var(--color-primary);
+    color: var(--color-primary-on);
+  }
+
+  .site-identifier .usa-identifier__identity-domain,
+  .site-identifier .usa-identifier__required-link,
+  .site-identifier .usa-identifier__required-link:visited,
+  .site-identifier .usa-identifier__section--masthead a,
+  .site-identifier .usa-identifier__section--masthead a:visited {
+    color: var(--color-primary-on);
+  }
+
+  .site-identifier .usa-identifier__section--usagov {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .site-identifier .usa-identifier__section--usagov a,
+  .site-identifier .usa-identifier__section--usagov a:visited {
+    color: var(--color-link);
+  }
+</style>

@@ -9,15 +9,13 @@ import {
   type PreFooterBigModel,
   type LinkGroup,
   type PreFooterBigConfiguration,
-  type PreFooterColors,
 } from "@/env.d";
 
 interface Props {
   preFooter?: any;
-  colors: PreFooterColors;
 }
 
-const { preFooter, colors } = Astro.props;
+const { preFooter } = Astro.props;
 
 const cleanedPreFooter: PreFooterBigModel = cleanPreFooterBig(preFooter);
 const linkGroups: LinkGroup[] = cleanedPreFooter?.linkGroups;
@@ -25,18 +23,12 @@ const connectSection: ConnectSectionModel = cleanedPreFooter?.connectSection;
 const configuration: PreFooterBigConfiguration =
   cleanedPreFooter?.configuration;
 
+const connectSectionLocation =
+  configuration?.connectSectionLocation?.trim().toLowerCase() ?? "";
 const connectSectionRight =
-  connectSection != null &&
-  configuration?.connectSectionLocation.trim().toLowerCase() ===
-    CONNECT_SECTION_RIGHT
-    ? true
-    : false;
+  connectSection != null && connectSectionLocation === CONNECT_SECTION_RIGHT;
 const connectSectionBottom =
-  connectSection != null &&
-  configuration?.connectSectionLocation.trim().toLowerCase() ===
-    CONNECT_SECTION_BOTTOM
-    ? true
-    : false;
+  connectSection != null && connectSectionLocation === CONNECT_SECTION_BOTTOM;
 
 const linkGroupsCol =
   configuration?.connectSectionLocation === CONNECT_SECTION_BOTTOM ||
@@ -47,8 +39,6 @@ const connectSectionCol = 3;
 
 const linkGroupsGridColClass = `grid-col-12 tablet:grid-col-${linkGroupsCol}`;
 const connectSectionGridColClass = `grid-col-12 tablet:grid-col-${connectSectionCol}`;
-
-const bkgColor = colors?.bkgColorLightest;
 ---
 
 {
@@ -56,8 +46,8 @@ const bkgColor = colors?.bkgColorLightest;
     <>
       {linkGroups && (
         <div
-          class={`usa-footer__primary-section bg-${bkgColor}`}
-          style={`--columns: ${configuration.columnsInLinkGroup};`}
+          class="usa-footer__primary-section"
+          style={`--columns: ${configuration?.columnsInLinkGroup};`}
           id="pre-footer-big-link-groups"
         >
           <div class="grid-container">
