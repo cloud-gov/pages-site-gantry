@@ -190,7 +190,7 @@ resources:
     check_every: 1m
     source:
       repository: ((pages-site-gantry-repository-path))
-      access_token: ((pages-operations-ci-github-token))
+      access_token: ((gh-access-token))
       base_branch: main
       disable_forks: true
       ignore_drafts: true
@@ -221,7 +221,7 @@ resources:
     source:
       owner: cloud-gov
       repository: pages-site-gantry
-      access_token: ((pages-operations-ci-github-token))
+      access_token: ((gh-access-token))
 
   - name: slack-cg-pages
     type: slack-notification
