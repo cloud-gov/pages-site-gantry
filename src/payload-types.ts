@@ -107,27 +107,22 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     sites: SitesSelect<false> | SitesSelect<true>;
     "menu-site-collection":
-      | MenuSiteCollectionSelect<false>
-      | MenuSiteCollectionSelect<true>;
+      MenuSiteCollectionSelect<false> | MenuSiteCollectionSelect<true>;
     "site-config-site-collection":
       | SiteConfigSiteCollectionSelect<false>
       | SiteConfigSiteCollectionSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     "form-submissions":
-      | FormSubmissionsSelect<false>
-      | FormSubmissionsSelect<true>;
+      FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
+      PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     "payload-preferences":
-      | PayloadPreferencesSelect<false>
-      | PayloadPreferencesSelect<true>;
+      PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     "payload-migrations":
-      | PayloadMigrationsSelect<false>
-      | PayloadMigrationsSelect<true>;
+      PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -213,8 +208,7 @@ export interface Post {
   slug?: string | null;
   slugLock?: boolean | null;
   "Example Custom Field"?:
-    | ("radio" | "television" | "podcast" | "video")
-    | null;
+    ("radio" | "television" | "podcast" | "video") | null;
   updatedAt: string;
   createdAt: string;
   _status?: ("draft" | "published") | null;
@@ -1064,13 +1058,7 @@ export interface Form {
             }[];
             direction: ("ltr" | "rtl") | null;
             format:
-              | "left"
-              | "start"
-              | "center"
-              | "right"
-              | "end"
-              | "justify"
-              | "";
+              "left" | "start" | "center" | "right" | "end" | "justify" | "";
             indent: number;
             version: number;
           };
