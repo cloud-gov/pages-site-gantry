@@ -41,13 +41,11 @@ export function filteredContentMapper(
   yearTag: string,
 ) {
   return {
-    tags: (data.tags ?? []).map(
-      (c): Tag => ({
-        title: c.title,
-        url: `${baseUrl}?tag=${c.slug}`,
-        tagTypes: c.tagTypes,
-      }),
-    ),
+    tags: (data.tags ?? []).map((c): Tag => ({
+      title: c.title,
+      url: `${baseUrl}?tag=${c.slug}`,
+      tagTypes: c.tagTypes,
+    })),
     yearTag: yearTag,
     sortField: data.publishedAt,
   };

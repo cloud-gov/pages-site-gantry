@@ -13,16 +13,23 @@ describe("Filters Search Utility, getFilteredResultFragment", () => {
   let template;
   let consoleErrorSpy;
 
-  function initParser(template) {
+  function initParser(template: HTMLTemplateElement) {
     const mockDoc = {
       getElementById: vi.fn(() => template),
     };
 
-    const mockParser = {
-      parseFromString: vi.fn(() => mockDoc),
-    };
+    const parseFromString = vi.fn(() => mockDoc);
 
-    (global.DOMParser as any).mockImplementation(() => mockParser);
+    class MockDOMParser {
+      parseFromString = parseFromString;
+    }
+
+    vi.stubGlobal("DOMParser", MockDOMParser);
+
+    return {
+      mockDoc,
+      parseFromString,
+    };
   }
 
   function mockFetchResolvedValue(mockResponse: { ok: boolean; text: any }) {
@@ -37,9 +44,12 @@ describe("Filters Search Utility, getFilteredResultFragment", () => {
     fragment = { appendChild: vi.fn() };
 
     global.fetch = vi.fn();
-    global.DOMParser = vi.fn(() => ({
-      parseFromString: vi.fn(),
-    })) as any;
+
+    class MockDOMParser {
+      parseFromString = vi.fn();
+    }
+
+    vi.stubGlobal("DOMParser", MockDOMParser);
 
     vi.spyOn(document, "createDocumentFragment").mockReturnValue(
       fragment as any,
