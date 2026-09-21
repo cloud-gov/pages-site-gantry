@@ -4,7 +4,7 @@ import {
   getPaginationItemId,
 } from "@/utilities/pagination.ts";
 import PaginationNavItem from "@/components/PaginationNavItem.astro";
-import type { PageNavItemModel } from "@/env";
+import type { PageNavItemModel } from "@/env.d";
 import { PAGINATION_LIST_ID } from "@/utilities/filter";
 const { currentPage, totalPages, basePath } = Astro.props;
 

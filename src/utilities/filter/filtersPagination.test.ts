@@ -1,8 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { PageNavItemModel } from "@/env";
+import type { PageNavItemModel } from "@/env.d";
 import * as paginaton from "@/utilities/filter/filtersPagination";
+import { setupDom } from "test/utils";
 
 describe("Filters Utility, getFilteredPageNavInfo", () => {
+  setupDom();
+
   it("should calculate total and current pages correctly", () => {
     function getFilteredPageNavInfoTester(resultSize, pageSize, currentPage) {
       let resultForStrings = paginaton.getFilteredPageNavInfo(
@@ -101,7 +104,7 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
   });
 
   it("should skip items when element is not an HTMLTemplateElement", () => {
-    const mockDiv = Object.create(HTMLDivElement.prototype);
+    const mockDiv = Object.create(global.window.HTMLDivElement.prototype);
     vi.spyOn(document, "getElementById").mockReturnValue(mockDiv);
     const mockFragment = { appendChild: vi.fn() };
     vi.spyOn(document, "createDocumentFragment").mockReturnValue(
@@ -143,7 +146,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
       })),
     };
 
-    const mockTemplate = Object.create(HTMLTemplateElement.prototype);
+    const mockTemplate = Object.create(
+      global.window.HTMLTemplateElement.prototype,
+    );
     Object.defineProperty(mockTemplate, "content", {
       value: mockContent,
       writable: false,
@@ -192,7 +197,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
       })),
     };
 
-    const mockTemplate = Object.create(HTMLTemplateElement.prototype);
+    const mockTemplate = Object.create(
+      global.window.HTMLTemplateElement.prototype,
+    );
     Object.defineProperty(mockTemplate, "content", {
       value: mockContent,
       writable: false,
@@ -240,7 +247,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
       })),
     };
 
-    const mockTemplate = Object.create(HTMLTemplateElement.prototype);
+    const mockTemplate = Object.create(
+      global.window.HTMLTemplateElement.prototype,
+    );
     Object.defineProperty(mockTemplate, "content", {
       value: mockContent,
       writable: false,
@@ -288,7 +297,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
         })),
       };
 
-      const mockTemplate = Object.create(HTMLTemplateElement.prototype);
+      const mockTemplate = Object.create(
+        global.window.HTMLTemplateElement.prototype,
+      );
       Object.defineProperty(mockTemplate, "content", {
         value: mockContent,
         writable: false,
@@ -351,7 +362,9 @@ describe("Filters Utility, getFilteredPaginationFragmentForPageNavItems", () => 
       })),
     };
 
-    const mockTemplate = Object.create(HTMLTemplateElement.prototype);
+    const mockTemplate = Object.create(
+      global.window.HTMLTemplateElement.prototype,
+    );
     Object.defineProperty(mockTemplate, "content", {
       value: mockContent,
       writable: false,

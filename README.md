@@ -3,6 +3,7 @@
 This repository contains the necessary code for launching a cloud-gov application with two separate functions:
 
 - Building and deploying a preview website (using [Astro](https://astro.build/)) which is based on content and settings from a [pages-editor](https://github.com/cloud-gov/pages-editor/) instance.
+
 - Deploying a [sidecar](https://docs.cloudfoundry.org/devguide/sidecars.html) proxy application to ensure that the site is only accessible to certain users.
 
 This site itself will prioritize standardization and consistency above deep customization.

@@ -234,7 +234,7 @@ const baseUrl = import.meta.env.LOCAL_DEV
   }
 
   .search-result-item .result-desc .result-url-text {
-    color: #4b6346;
+    color: var(--color-link);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -242,7 +242,7 @@ const baseUrl = import.meta.env.LOCAL_DEV
   }
 
   .row-mobile-divider {
-    border-top: 1px solid #dfe1e2;
+    border-top: 1px solid var(--color-border);
     margin-bottom: 1rem;
     margin-top: 1rem;
     visibility: hidden;
@@ -269,7 +269,7 @@ const baseUrl = import.meta.env.LOCAL_DEV
 
   @media (max-width: 767px) {
     .result-meta-grid-wrapper:active {
-      outline: 0.25rem solid #2491ff;
+      outline: 0.25rem solid var(--focus-ring-color);
     }
 
     .search-result-item .result-title-link {

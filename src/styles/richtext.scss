@@ -1,0 +1,38 @@
+.alert-prose p {
+    max-width: 100%;
+  }
+
+  .identifier-prose p {
+    font-weight: 700;
+    color: var(--textColor);
+  }
+
+  .identifier-prose a,
+  .identifier-prose a:hover .identifier-prose a:visited {
+    font-weight: 700;
+    color: var(--linkColor) !important;
+  }
+
+  .usa-card-group {
+    margin-top: 2rem;
+  }
+
+  .textblock-image-bg .text-center .usa-prose p {
+    max-width: none;
+  }
+
+  .usa-prose .grid-row.usa-card-group {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 40em) {
+    .usa-table-container--scrollable .usa-table.table-centered {
+      margin: 0 auto;
+    }
+  }
+  // prevents paragraph elements from escaping table cell
+  .usa-table-container--scrollable .usa-table p {
+    max-width: none;
+  }
+  

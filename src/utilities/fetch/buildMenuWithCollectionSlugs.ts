@@ -11,7 +11,7 @@ import type {
   Dropdown,
   FetchResult,
   MenuItem,
-} from "@/env";
+} from "@/env.d";
 
 export async function buildMenuWithCollectionSlugs<T>(
   data: T,

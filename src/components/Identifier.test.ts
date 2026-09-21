@@ -82,10 +82,10 @@ describe("Identifier", () => {
     expect(result).toContain("usa-identifier__logo-img");
     expect(result).toContain('href="https://domain.gov"');
 
-    expect(result).toContain("> About This Agency <");
+    expect(result).toContain(">About This Agency<");
     expect(result).toContain('href="https://www.agency.gov/about-us"');
 
-    expect(result).toContain("> Agency Statement <");
+    expect(result).toContain(">Agency Statement<");
     expect(result).toContain('href="https://www.agency.gov/statement"');
 
     expect(result).toContain(

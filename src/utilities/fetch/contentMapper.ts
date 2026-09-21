@@ -10,7 +10,7 @@ import {
   type MediaValueProps,
   type PageModel,
   type Tag,
-} from "@/env";
+} from "@/env.d";
 import { preFooterMapper } from "./preFooterMapper.ts";
 
 type ContentData = {
@@ -41,12 +41,11 @@ export function filteredContentMapper(
   yearTag: string,
 ) {
   return {
-    tags: (data.tags ?? []).map(
-      (c): Tag => ({
-        title: c.title,
-        url: `${baseUrl}?tag=${c.slug}`,
-      }),
-    ),
+    tags: (data.tags ?? []).map((c): Tag => ({
+      title: c.title,
+      url: `${baseUrl}?tag=${c.slug}`,
+      tagTypes: c.tagTypes,
+    })),
     yearTag: yearTag,
     sortField: data.publishedAt,
   };

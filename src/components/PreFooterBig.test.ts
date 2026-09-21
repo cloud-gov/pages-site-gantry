@@ -5,7 +5,7 @@ import {
   LINK_GROUP_COLUMNS_DEFAULT,
   type PreFooterBigModel,
   CONNECT_SECTION_BOTTOM,
-} from "@/env";
+} from "@/env.d";
 import {
   getCouncilsExternalLinkGroups,
   getCouncilsLinkGroups,

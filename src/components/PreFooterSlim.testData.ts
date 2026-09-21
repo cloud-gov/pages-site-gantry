@@ -1,4 +1,4 @@
-import type { PreFooterSlimModel } from "@/env";
+import type { PreFooterSlimModel } from "@/env.d";
 
 export function getPreFooterSlim(): PreFooterSlimModel {
   return {

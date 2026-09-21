@@ -1,5 +1,5 @@
 import { getUploadUrl, imageMimeTypes } from "@/utilities/media";
-import type { MediaValueProps } from "@/env";
+import type { MediaValueProps } from "@/env.d";
 
 export const imageBlock = ({ node }: { node: any }): string => {
   const fields = node?.fields ?? node;

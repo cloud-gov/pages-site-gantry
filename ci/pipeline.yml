@@ -40,14 +40,14 @@ jobs:
         passed: [set-pipeline]
         trigger: true
       - get: general-task
-      - get: node22
+      - get: node24
       - in_parallel:
         - task: check-format
           file: src/ci/partials/check-formatting.yml
-          image: node22
+          image: node24
         - task: test
           file: src/ci/partials/test.yml
-          image: node22
+          image: node24
 
     on_failure:
       in_parallel:
@@ -186,7 +186,7 @@ resources:
     check_every: 1m
     source:
       repository: ((pages-site-gantry-repository-path))
-      access_token: ((pages-operations-ci-github-token))
+      access_token: ((gh-access-token))
       base_branch: main
       disable_forks: true
       ignore_drafts: true
@@ -217,7 +217,7 @@ resources:
     source:
       owner: cloud-gov
       repository: pages-site-gantry
-      access_token: ((pages-operations-ci-github-token))
+      access_token: ((gh-access-token))
 
   - name: slack-cg-pages
     type: slack-notification
@@ -226,7 +226,7 @@ resources:
   #@ end
 
   - name: general-task
-  - name: node22
+  - name: node24
   - name: pipeline-tasks
 
   - name: s3-active-site-configs

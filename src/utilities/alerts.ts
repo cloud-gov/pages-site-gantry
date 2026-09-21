@@ -1,4 +1,4 @@
-import { type AlertModel } from "@/env";
+import { type AlertModel } from "@/env.d";
 
 const alertsOrder: Record<string, number> = {
   emergency: 1,

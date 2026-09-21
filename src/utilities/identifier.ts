@@ -1,4 +1,4 @@
-import type { IdentifierColorFamilies, FooterColors } from "@/env";
+import type { IdentifierColorFamilies, FooterColors } from "@/env.d";
 
 const backgroundColorGrade = 80; // <= 80
 const backgroundLightestColorGrade = 5; //

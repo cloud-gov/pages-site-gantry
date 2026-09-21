@@ -8,7 +8,7 @@ import {
   type PreFooterModel,
   type PreFooterBigModel,
   type PageNavItemModel,
-} from "@/env";
+} from "@/env.d";
 import { cleanPreFooter } from "@/utilities/preFooter";
 import { getPreFooterSlim } from "@/components/PreFooterSlim.testData";
 import { getPageNumbers, getPageNavItems } from "@/utilities/pagination.ts";

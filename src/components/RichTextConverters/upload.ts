@@ -6,7 +6,7 @@ import {
   formatMimeType,
   formatBytes,
 } from "@/utilities/media";
-import type { MediaValueProps as UploadValueProps } from "@/env";
+import type { MediaValueProps as UploadValueProps } from "@/env.d";
 
 const upload = ({ node }: { node: SerializedUploadNode }): string => {
   const value = node.value as UploadValueProps;

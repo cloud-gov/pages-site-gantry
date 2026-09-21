@@ -3,7 +3,7 @@ import type {
   FilterMapEntry,
   FilterOption,
   FilterSelection,
-} from "@/env";
+} from "@/env.d";
 import {
   FILTERS_CONFIG,
   UNSPECIFIED_FILTER_VALUE,
@@ -159,17 +159,16 @@ export function updateHistoryStateForWindow(
 ) {
   const url = new URL(win.location.href);
 
-  FILTERS_CONFIG.forEach((filterConfig: FilterConfig) => {
-    const filterSelection: FilterSelection = filters?.get(
-      filterConfig.filterName,
-    );
+  if (!filters || filters.size === 0) {
+    win.history.replaceState(filters, "", url);
+    return;
+  }
+
+  filters.forEach((filterSelection, filterName) => {
     if (filterSelection?.selectedValue?.trim().length > 0) {
-      url.searchParams.set(
-        filterConfig.filterName,
-        filterSelection?.selectedValue,
-      );
+      url.searchParams.set(filterName, filterSelection.selectedValue);
     } else {
-      url.searchParams.delete(filterConfig.filterName);
+      url.searchParams.delete(filterName);
     }
   });
 
