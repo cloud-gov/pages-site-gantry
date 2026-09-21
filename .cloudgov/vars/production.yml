@@ -1,0 +1,6 @@
+instances: 1
+editor_app_url: https://publisher.cloud.gov
+env: production
+log_level: verbose
+node_env: production
+preview_mode: true
