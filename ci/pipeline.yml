@@ -59,8 +59,6 @@ jobs:
         #@ if/end env == 'dev':
         -  #@ pr_hook("success", "test-pages-site-gantry")
 
-  #! Temp until we deploy prod app
-  #@ if/end env != 'production':
   - name: new-deploys
     plan:
       - get: src
@@ -110,8 +108,6 @@ jobs:
         #@ if/end env == 'dev':
         -  #@ pr_hook("success", "deploy-pages-site-gantry-previews")
 
-  #! Temp until we deploy prod app
-  #@ if/end env != 'production':
   - name: delete-deploys
     plan:
       - get: src
@@ -233,8 +229,6 @@ resources:
   - name: node24
   - name: pipeline-tasks
 
-  #! Temp until we deploy prod app
-  #@ if/end env != 'production':
   - name: s3-active-site-configs
     type: s3-resource
     source:
@@ -244,8 +238,6 @@ resources:
       bucket: ((editor-site-data-bucket-((deploy-env))))
       region: us-gov-west-1
 
-  #! Temp until we deploy prod app
-  #@ if/end env != 'production':
   - name: s3-deleted-site-configs
     type: s3-resource
     source:
