@@ -1,3 +1,16 @@
+## 0.3.1 (2026-09-21)
+
+### Fixed
+
+- formatting
+- add comment to package override
+- remove package comment
+
+### Maintenance
+
+- update dependencies (#235)
+- updated esbuild and added dompurify override
+
 ## 0.3.0 (2026-06-02)
 
 ### Added
